@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kisan Procurement Mitra — SIH26032 Prototype</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Top Navigation Header -->
+  <header class="site-header">
+    <div class="header-container">
+      <a href="index.html" class="brand-logo">
+        <span class="brand-icon">🌾</span>
+        <div>
+          <div class="brand-title">
+            Kisan Procurement Mitra
+            <span class="brand-tag">SIH26032 Prototype</span>
+          </div>
+          <div class="brand-subtitle">Simple • Transparent • Farmer First</div>
+        </div>
+      </a>
+
+      <div class="header-actions">
+        <button id="langSwitchBtn" class="lang-btn">हिंदी</button>
+        <a href="login.html" class="btn btn-outline-primary btn-sm" data-i18n="login">Farmer Login</a>
+        <a href="register.html" class="btn btn-primary btn-sm" data-i18n="register">Register</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Landing Container -->
+  <main class="main-content">
+    
+    <!-- Hero Section -->
+    <section class="landing-hero">
+      <div style="margin-bottom: 0.75rem;">
+        <span class="demo-tag">Smart India Hackathon • SIH26032 Prototype</span>
+      </div>
+      <h1 class="landing-title">Your Procurement. Your Schedule. Clearly.</h1>
+      <p class="landing-subtitle">
+        Kisan Procurement Mitra helps farmers view their procurement schedule, token, centre information, live queue estimates and payment status in one simple, transparent interface.
+      </p>
+
+      <div style="display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
+        <a href="login.html" class="btn btn-primary" style="padding: 0.75rem 2rem; font-size: 1rem;">
+          🌾 <span data-i18n="login">Farmer Login</span>
+        </a>
+        <a href="register.html" class="btn btn-secondary" style="padding: 0.75rem 2rem; font-size: 1rem;">
+          📝 <span data-i18n="register">Register New Farmer</span>
+        </a>
+        <a href="login.html" class="btn btn-outline-primary" style="padding: 0.75rem 1.5rem; font-size: 0.95rem;">
+          ⚙️ <span data-i18n="adminLogin">Admin Portal</span>
+        </a>
+      </div>
+
+      <!-- Quick Demo Credentials Box -->
+      <div class="quick-demo-box" style="max-width: 600px; margin: 1.5rem auto 0 auto; text-align: left;">
+        <div style="font-weight: 700; color: var(--primary-dark); margin-bottom: 0.4rem; display: flex; align-items: center; justify-content: space-between;">
+          <span>⚡ Instant Demo Credentials (SIH Evaluation)</span>
+          <span class="demo-tag">One-Click Ready</span>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; font-size: 0.85rem;">
+          <div style="background: #fff; padding: 0.6rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+            <strong>Farmer (Ramesh Patel):</strong><br>
+            Mobile: <code>9876543210</code><br>
+            Password: <code>123456</code>
+          </div>
+          <div style="background: #fff; padding: 0.6rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+            <strong>Admin (Mandi Officer):</strong><br>
+            Mobile: <code>9999999999</code><br>
+            Password: <code>admin123</code>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3 Core Feature Highlights -->
+    <section style="margin-bottom: 2.5rem;">
+      <h2 style="text-align: center; font-size: 1.35rem; font-weight: 700; margin-bottom: 1.25rem;">
+        Key Farmer Services
+      </h2>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem;">
+        
+        <div class="card" style="margin-bottom: 0;">
+          <div style="font-size: 2rem; margin-bottom: 0.5rem;">📅</div>
+          <h3 style="font-size: 1.1rem; margin-bottom: 0.35rem;" data-i18n="schedule">Procurement Schedule</h3>
+          <p style="color: var(--text-muted); font-size: 0.9rem;">
+            Know exactly when to bring your crop with assigned time slots, reducing unnecessary wait times and mandi congestion.
+          </p>
+        </div>
+
+        <div class="card" style="margin-bottom: 0;">
+          <div style="font-size: 2rem; margin-bottom: 0.5rem;">🎫</div>
+          <h3 style="font-size: 1.1rem; margin-bottom: 0.35rem;" data-i18n="tokenNumber">Digital Token & Verification</h3>
+          <p style="color: var(--text-muted); font-size: 0.9rem;">
+            Instant digital tokens (e.g. TK-1042) with QR-compatible printouts, crop quantity specs, and centre verification.
+          </p>
+        </div>
+
+        <div class="card" style="margin-bottom: 0;">
+          <div style="font-size: 2rem; margin-bottom: 0.5rem;">💰</div>
+          <h3 style="font-size: 1.1rem; margin-bottom: 0.35rem;" data-i18n="paymentStatus">Transparent Payment Status</h3>
+          <p style="color: var(--text-muted); font-size: 0.9rem;">
+            Real-time tracking of procurement acceptance, weighing receipts, bank payment processing, and direct transaction IDs.
+          </p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="card" style="padding: 2rem 1.5rem;">
+      <h2 style="text-align: center; font-size: 1.35rem; font-weight: 700; margin-bottom: 1.5rem;">
+        How It Works — Farmer Journey
+      </h2>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; text-align: center;">
+        <div style="padding: 0.75rem;">
+          <div style="width: 42px; height: 42px; background: var(--primary-bg); color: var(--primary-dark); font-weight: 800; border-radius: var(--radius-full); display: flex; align-items: center; justify-content: center; margin: 0 auto 0.75rem auto; border: 1px solid var(--primary-subtle);">1</div>
+          <div style="font-weight: 700; margin-bottom: 0.25rem;">Register</div>
+          <div style="font-size: 0.82rem; color: var(--text-muted);">Enter land & crop details once.</div>
+        </div>
+
+        <div style="padding: 0.75rem;">
+          <div style="width: 42px; height: 42px; background: var(--primary-bg); color: var(--primary-dark); font-weight: 800; border-radius: var(--radius-full); display: flex; align-items: center; justify-content: center; margin: 0 auto 0.75rem auto; border: 1px solid var(--primary-subtle);">2</div>
+          <div style="font-weight: 700; margin-bottom: 0.25rem;">Get Schedule</div>
+          <div style="font-size: 0.82rem; color: var(--text-muted);">Receive confirmed date & token.</div>
+        </div>
+
+        <div style="padding: 0.75rem;">
+          <div style="width: 42px; height: 42px; background: var(--primary-bg); color: var(--primary-dark); font-weight: 800; border-radius: var(--radius-full); display: flex; align-items: center; justify-content: center; margin: 0 auto 0.75rem auto; border: 1px solid var(--primary-subtle);">3</div>
+          <div style="font-weight: 700; margin-bottom: 0.25rem;">Visit Centre</div>
+          <div style="font-size: 0.82rem; color: var(--text-muted);">Check queue status and arrive in slot.</div>
+        </div>
+
+        <div style="padding: 0.75rem;">
+          <div style="width: 42px; height: 42px; background: var(--primary-bg); color: var(--primary-dark); font-weight: 800; border-radius: var(--radius-full); display: flex; align-items: center; justify-content: center; margin: 0 auto 0.75rem auto; border: 1px solid var(--primary-subtle);">4</div>
+          <div style="font-weight: 700; margin-bottom: 0.25rem;">Track Procurement</div>
+          <div style="font-size: 0.82rem; color: var(--text-muted);">Weighing and quality verification.</div>
+        </div>
+
+        <div style="padding: 0.75rem;">
+          <div style="width: 42px; height: 42px; background: var(--primary-bg); color: var(--primary-dark); font-weight: 800; border-radius: var(--radius-full); display: flex; align-items: center; justify-content: center; margin: 0 auto 0.75rem auto; border: 1px solid var(--primary-subtle);">5</div>
+          <div style="font-weight: 700; margin-bottom: 0.25rem;">Check Payment</div>
+          <div style="font-size: 0.82rem; color: var(--text-muted);">Direct bank credit update & TxID.</div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Global Footer -->
+  <footer class="site-footer">
+    <div><strong>Kisan Procurement Mitra</strong> • SIH26032 Prototype | Student Project</div>
+    <div class="footer-prototype-note">
+      Demo data for SIH26032 prototype. Designed as a farmer-centric interface layer compatible with authorized government procurement systems.
+    </div>
+  </footer>
+
+  <script src="js/api.js"></script>
+</body>
+</html>

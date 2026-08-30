@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard — Kisan Procurement Mitra</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Top Navigation Header -->
+  <header class="site-header">
+    <div class="header-container">
+      <a href="dashboard.html" class="brand-logo">
+        <span class="brand-icon">🌾</span>
+        <div>
+          <div class="brand-title">
+            Kisan Procurement Mitra
+            <span class="brand-tag">SIH26032</span>
+          </div>
+          <div class="brand-subtitle">Simple • Transparent • Farmer First</div>
+        </div>
+      </a>
+
+      <button id="hamburgerBtn" class="hamburger-btn" aria-label="Toggle Navigation">☰</button>
+
+      <ul class="nav-links" id="navLinks">
+        <li class="nav-item active"><a href="dashboard.html" data-i18n="dashboard">Dashboard</a></li>
+        <li class="nav-item"><a href="schedule.html" data-i18n="schedule">My Schedule</a></li>
+        <li class="nav-item"><a href="procurement.html" data-i18n="procurement">Procurement</a></li>
+        <li class="nav-item"><a href="notifications.html" data-i18n="notifications">Notifications</a></li>
+        <li class="nav-item"><a href="profile.html" data-i18n="profile">Profile</a></li>
+      </ul>
+
+      <div class="header-actions">
+        <button id="langSwitchBtn" class="lang-btn">हिंदी</button>
+        
+        <a href="notifications.html" class="notif-bell-btn" title="Notifications">
+          🔔
+          <span id="headerNotifBadge" class="notif-badge" style="display: none;">0</span>
+        </a>
+
+        <a href="profile.html" class="user-profile-badge">
+          <span class="user-avatar" id="headerUserAvatar">R</span>
+          <span id="headerUserName">Ramesh Patel</span>
+        </a>
+
+        <button id="headerLogoutBtn" class="btn-logout" data-i18n="logout">Logout</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Body -->
+  <main class="main-content">
+
+    <!-- Loading Placeholder -->
+    <div id="dashboardLoading" style="text-align: center; padding: 3rem 1rem; color: var(--text-muted);">
+      <div style="font-size: 2rem; margin-bottom: 0.5rem;">⏳</div>
+      <div>Loading procurement details...</div>
+    </div>
+
+    <!-- Dashboard Dynamic Content -->
+    <div id="dashboardContent" style="display: none;">
+
+      <!-- Top Greeting -->
+      <div class="page-header">
+        <div class="page-title-group">
+          <h1 id="dashboardGreeting">Namaste, Ramesh 👋</h1>
+          <p class="page-subtitle">Here is your procurement summary.</p>
+        </div>
+        <div>
+          <span class="demo-tag">SIH26032 Prototype</span>
+        </div>
+      </div>
+
+      <!-- 4 Important Summary Cards -->
+      <div class="stat-grid-4">
+        <!-- CARD 1 -->
+        <div class="stat-card stat-blue">
+          <div class="stat-header">
+            <span data-i18n="procurementDate">📅 Procurement Date</span>
+          </div>
+          <div class="stat-value" id="statProcDate">12 September 2026</div>
+          <div class="stat-meta">Slot: 10:00 AM – 11:00 AM</div>
+        </div>
+
+        <!-- CARD 2 -->
+        <div class="stat-card stat-amber">
+          <div class="stat-header">
+            <span data-i18n="tokenNumber">🎫 Token Number</span>
+          </div>
+          <div class="stat-value" id="statTokenNumber">TK-1042</div>
+          <div class="stat-meta">Digital Verification Active</div>
+        </div>
+
+        <!-- CARD 3 -->
+        <div class="stat-card stat-green">
+          <div class="stat-header">
+            <span data-i18n="procurementCentre">📍 Procurement Centre</span>
+          </div>
+          <div class="stat-value" id="statCentreName" style="font-size: 1.2rem;">Sanwer Mandi</div>
+          <div class="stat-meta">Indore District</div>
+        </div>
+
+        <!-- CARD 4 -->
+        <div class="stat-card stat-purple">
+          <div class="stat-header">
+            <span data-i18n="paymentStatus">💰 Payment Status</span>
+          </div>
+          <div class="stat-value" id="statPaymentStatus" style="font-size: 1.15rem;">
+            <span class="badge badge-amber">Pending</span>
+          </div>
+          <div class="stat-meta">Est: ₹45,000 (18 Qtl Wheat)</div>
+        </div>
+      </div>
+
+      <!-- Large "Next Visit" Card -->
+      <section class="next-visit-card">
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;">
+          <h2 style="font-size: 1.25rem; font-weight: 700; color: var(--primary-dark); display: flex; align-items: center; gap: 0.5rem;" data-i18n="nextVisit">
+            <span>🚚</span> Your Next Procurement Visit
+          </h2>
+          <span id="nvStatus"><span class="badge badge-blue">Scheduled</span></span>
+        </div>
+
+        <div class="next-visit-grid">
+          <div>
+            <div class="visit-item-label">Date</div>
+            <div class="visit-item-val" id="nvDate">12 September 2026</div>
+          </div>
+          <div>
+            <div class="visit-item-label">Assigned Time Slot</div>
+            <div class="visit-item-val" id="nvTime">10:00 AM – 11:00 AM</div>
+          </div>
+          <div>
+            <div class="visit-item-label">Centre</div>
+            <div class="visit-item-val" id="nvCentre">Sanwer Procurement Centre</div>
+          </div>
+          <div>
+            <div class="visit-item-label">Token Code</div>
+            <div class="visit-item-val" id="nvToken">TK-1042</div>
+          </div>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 0.75rem; flex-wrap: wrap;">
+          <a href="procurement.html" class="btn btn-outline-primary btn-sm" data-i18n="printToken">Print Token</a>
+          <a href="schedule.html" class="btn btn-primary btn-sm" data-i18n="viewFullSchedule">View Full Schedule →</a>
+        </div>
+      </section>
+
+      <!-- Procurement Progress Tracker -->
+      <section class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <span>📈</span> Procurement Progress Status
+          </div>
+          <span class="badge badge-green">Live Tracking</span>
+        </div>
+
+        <div class="progress-tracker">
+          <!-- Step 1 -->
+          <div class="progress-step" id="step-1">
+            <div class="step-node">✓</div>
+            <div class="step-label">1. Registration</div>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="progress-step" id="step-2">
+            <div class="step-node">✓</div>
+            <div class="step-label">2. Token Generated</div>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="progress-step active" id="step-3">
+            <div class="step-node">3</div>
+            <div class="step-label">3. Scheduled</div>
+          </div>
+
+          <!-- Step 4 -->
+          <div class="progress-step" id="step-4">
+            <div class="step-node">○</div>
+            <div class="step-label">4. Arrived</div>
+          </div>
+
+          <!-- Step 5 -->
+          <div class="progress-step" id="step-5">
+            <div class="step-node">○</div>
+            <div class="step-label">5. Procurement Completed</div>
+          </div>
+
+          <!-- Step 6 -->
+          <div class="progress-step" id="step-6">
+            <div class="step-node">○</div>
+            <div class="step-label">6. Payment Processed</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Two-Column Section: Centre Queue Status & Smart Visit Recommendation -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.25rem; margin-bottom: 1.25rem;">
+        
+        <!-- Queue Information (Centre Status) -->
+        <div class="card" style="margin-bottom: 0;">
+          <div class="card-header">
+            <div class="card-title">
+              <span>🏛️</span> <span data-i18n="centreStatus">Centre Status</span>
+            </div>
+            <span id="centreStatusBadge" class="badge badge-green">🟢 Open</span>
+          </div>
+
+          <h3 id="centreNameHeading" style="font-size: 1.05rem; font-weight: 700; margin-bottom: 0.75rem;">
+            Sanwer Procurement Centre
+          </h3>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 1rem;">
+            <div style="background: #f8fafc; padding: 0.85rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+              <div style="font-size: 0.8rem; color: var(--text-muted);" data-i18n="farmersAhead">Farmers ahead</div>
+              <div style="font-size: 1.5rem; font-weight: 700; color: var(--primary-dark);" id="centreFarmersAhead">18</div>
+            </div>
+            <div style="background: #f8fafc; padding: 0.85rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+              <div style="font-size: 0.8rem; color: var(--text-muted);" data-i18n="estimatedWaiting">Estimated waiting time</div>
+              <div style="font-size: 1.3rem; font-weight: 700; color: var(--text-main);" id="centreWaitTime">~45 minutes</div>
+            </div>
+          </div>
+
+          <div style="font-size: 0.75rem; color: var(--text-muted); background: #fefce8; padding: 0.5rem 0.75rem; border-radius: var(--radius-sm); border: 1px solid #fef08a;">
+            ℹ️ <strong>Note:</strong> Queue information shown in this prototype is demo data.
+          </div>
+        </div>
+
+        <!-- Smart Visit Indicator -->
+        <div class="card" style="margin-bottom: 0;">
+          <div class="card-header">
+            <div class="card-title">
+              <span>💡</span> <span data-i18n="smartRecommendation">Recommended Visit</span>
+            </div>
+            <span id="smartWaitStatus" class="badge badge-amber">Moderate waiting</span>
+          </div>
+
+          <p id="smartAdviceText" style="font-size: 0.95rem; color: var(--text-main); margin-bottom: 1rem; line-height: 1.5;">
+            Your scheduled slot is <strong>10:00 AM – 11:00 AM</strong>. Please carry your required documents and arrive during your assigned slot.
+          </p>
+
+          <div style="background: var(--primary-bg); padding: 0.75rem; border-radius: var(--radius-sm); border: 1px solid var(--primary-subtle); font-size: 0.85rem; color: var(--primary-dark); margin-bottom: 0.75rem;">
+            📋 <strong>Checklist before leaving:</strong>
+            <ul style="margin-left: 1.25rem; margin-top: 0.25rem; font-size: 0.82rem;">
+              <li>Printed Token (TK-1042) or Mobile SMS</li>
+              <li>Aadhaar Card & Bank Account Passbook</li>
+              <li>Khasra / Land Revenue Document</li>
+            </ul>
+          </div>
+
+          <div style="font-size: 0.75rem; color: var(--text-muted); text-align: right;">
+            <span class="demo-tag">Prototype recommendation</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Recent Notifications Preview -->
+      <section class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <span>🔔</span> Recent Notifications
+          </div>
+          <a href="notifications.html" style="font-size: 0.85rem; color: var(--primary); font-weight: 600; text-decoration: none;">
+            View All →
+          </a>
+        </div>
+        <div id="dashboardRecentNotifs">
+          <!-- Dynamic Notification Cards -->
+        </div>
+      </section>
+
+    </div>
+
+  </main>
+
+  <!-- Global Footer -->
+  <footer class="site-footer">
+    <div>Kisan Procurement Mitra • SIH26032 Prototype | Student Project</div>
+    <div class="footer-prototype-note">Demo data for SIH26032 prototype</div>
+  </footer>
+
+  <script src="js/api.js"></script>
+  <script src="js/dashboard.js"></script>
+</body>
+</html>

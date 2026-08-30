@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Farmer Registration — Kisan Procurement Mitra (SIH26032)</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="header-container">
+      <a href="index.html" class="brand-logo">
+        <span class="brand-icon">🌾</span>
+        <div>
+          <div class="brand-title">Kisan Procurement Mitra</div>
+          <div class="brand-subtitle">SIH26032 Prototype</div>
+        </div>
+      </a>
+      <div class="header-actions">
+        <button id="langSwitchBtn" class="lang-btn">हिंदी</button>
+        <a href="login.html" class="btn btn-outline-primary btn-sm" data-i18n="login">Farmer Login</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <div class="auth-card-container" style="max-width: 640px;">
+      <div style="text-align: center; margin-bottom: 1.5rem;">
+        <div style="font-size: 2.2rem; margin-bottom: 0.25rem;">📝</div>
+        <h1 style="font-size: 1.4rem; font-weight: 700;">Farmer Registration</h1>
+        <p style="color: var(--text-muted); font-size: 0.85rem;">Register to generate procurement token and schedule slot</p>
+      </div>
+
+      <div style="margin-bottom: 1rem; text-align: right;">
+        <button type="button" id="fillRegisterDemoBtn" class="btn btn-sm btn-secondary">
+          ⚡ Auto-fill Sample Farmer Data
+        </button>
+      </div>
+
+      <form id="registerForm">
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label" for="name">Full Name * / पूरा नाम</label>
+            <input type="text" id="name" class="form-input" placeholder="e.g. Ramesh Patel" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="mobile">Mobile Number * / मोबाइल नंबर</label>
+            <input type="tel" id="mobile" class="form-input" placeholder="10-digit mobile" required maxlength="10">
+          </div>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label" for="password">Password * / पासवर्ड</label>
+            <input type="password" id="password" class="form-input" placeholder="Create password" required minlength="4">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="farmerId">Farmer ID (Optional) / किसान आईडी</label>
+            <input type="text" id="farmerId" class="form-input" placeholder="e.g. FMR1001">
+          </div>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label" for="village">Village * / ग्राम</label>
+            <input type="text" id="village" class="form-input" placeholder="e.g. Sanwer" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="district">District * / जिला</label>
+            <input type="text" id="district" class="form-input" placeholder="e.g. Indore" required>
+          </div>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label" for="state">State * / राज्य</label>
+            <input type="text" id="state" class="form-input" value="Madhya Pradesh" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="crop">Crop * / फसल</label>
+            <select id="crop" class="form-select" required>
+              <option value="Wheat">Wheat (गेहूँ)</option>
+              <option value="Soybean">Soybean (सोयाबीन)</option>
+              <option value="Gram (Chana)">Gram / Chana (चना)</option>
+              <option value="Paddy (Dhan)">Paddy / Dhan (धान)</option>
+              <option value="Maize">Maize (मक्का)</option>
+              <option value="Mustard">Mustard (सरसों)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label" for="landArea">Land Area * / भूमि का रकबा</label>
+            <input type="text" id="landArea" class="form-input" placeholder="e.g. 4.5 Acres" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="preferredCentre">Preferred Mandi Centre * / पसंदीदा उपार्जन केंद्र</label>
+            <select id="preferredCentre" class="form-select" required>
+              <option value="Sanwer Procurement Centre">Sanwer Procurement Centre (Indore)</option>
+              <option value="Indore Central Mandi">Indore Central Mandi (Laxmibai Nagar)</option>
+              <option value="Depalpur Krishi Upaj Mandi">Depalpur Krishi Upaj Mandi</option>
+            </select>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block" style="margin-top: 1rem; font-size: 1rem;">
+          Complete Registration & Generate Token →
+        </button>
+      </form>
+
+      <div style="text-align: center; margin-top: 1.25rem; font-size: 0.88rem; color: var(--text-muted);">
+        Already registered? <a href="login.html" style="color: var(--primary); font-weight: 600; text-decoration: none;">Login to Dashboard</a>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div>Kisan Procurement Mitra • SIH26032 Prototype</div>
+  </footer>
+
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+</body>
+</html>
