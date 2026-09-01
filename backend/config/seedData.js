@@ -13,7 +13,7 @@ const seedInitialData = async () => {
       return;
     }
 
-    console.log("Seeding demo data for SIH26032 prototype...");
+    console.log("Seeding initial data for MSP procurement portal...");
 
     const salt = await bcrypt.genSalt(10);
     const farmerPassword = await bcrypt.hash("123456", salt);

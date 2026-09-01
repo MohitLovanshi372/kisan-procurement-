@@ -278,7 +278,7 @@ function updateSimulatorPreview() {
 
   if (currentSimulatorLang === "en") {
     if (waTextEl) {
-      waTextEl.innerHTML = `🌾 <strong>Kisan Procurement Mitra (SIH26032)</strong><br><br>` +
+      waTextEl.innerHTML = `🌾 <strong>Kisan Procurement Mitra</strong><br><br>` +
         `Namaste <strong>${escapeHtml(user.name)}</strong> ji,<br><br>` +
         `Here is your scheduled procurement appointment reminder:<br>` +
         `📅 <strong>Date:</strong> ${escapeHtml(date)}<br>` +
@@ -297,7 +297,7 @@ function updateSimulatorPreview() {
   } else {
     // Hindi Version
     if (waTextEl) {
-      waTextEl.innerHTML = `🌾 <strong>किसान खरीद मित्र (SIH26032)</strong><br><br>` +
+      waTextEl.innerHTML = `🌾 <strong>किसान खरीद मित्र</strong><br><br>` +
         `नमस्ते <strong>${escapeHtml(user.name)}</strong> जी,<br><br>` +
         `आपकी निर्धारित कृषि उपज खरीद का अनुस्मारक:<br>` +
         `📅 <strong>दिनांक:</strong> ${escapeHtml(date)}<br>` +

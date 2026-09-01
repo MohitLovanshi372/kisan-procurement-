@@ -40,7 +40,7 @@ app.get("/api/health", (req, res) => {
     status: "ok",
     app: "Kisan Procurement Mitra",
     version: "1.0.0",
-    prototype: "SIH26032",
+    service: "MSP Direct Procurement Portal",
     time: new Date().toISOString()
   });
 });
@@ -57,7 +57,7 @@ async function start() {
 
   app.listen(PORT, "0.0.0.0", () => {
     console.log(`🌾 Kisan Procurement Mitra running on http://0.0.0.0:${PORT}`);
-    console.log(`📌 SIH26032 Student Prototype server ready`);
+    console.log(`📌 MSP Procurement & Token Portal server ready`);
   });
 }
 

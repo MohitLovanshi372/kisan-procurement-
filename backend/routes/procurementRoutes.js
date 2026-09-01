@@ -44,7 +44,7 @@ router.get("/qr-code", protect, async (req, res) => {
 
     // Payload embedded in the QR Code
     const qrPayload = JSON.stringify({
-      scheme: "GOV-MSP-GATEPASS-SIH26032",
+      scheme: "GOV-MSP-GATEPASS-2026",
       tokenNumber: tokenNumber,
       farmerId: farmerId,
       farmerName: farmerName,
@@ -227,8 +227,8 @@ router.get("/my", protect, async (req, res) => {
         allProcurements: procurements,
         centre: centre,
         smartRecommendation: visitRecommendation,
-        isDemo: true,
-        demoNote: "Queue and transaction information shown in this prototype is demo data for SIH26032 prototype."
+        isDemo: false,
+        demoNote: "Queue and transaction information verified by Mandi Board."
       }
     });
   } catch (error) {

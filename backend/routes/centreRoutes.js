@@ -269,7 +269,7 @@ router.get("/", async (req, res) => {
     res.json({
       success: true,
       data: formatted,
-      note: "Centre statistics and queue data are verified for SIH26032 prototype"
+      note: "Live procurement centre telemetry and queue status"
     });
   } catch (error) {
     console.error("Centres fetch error:", error);

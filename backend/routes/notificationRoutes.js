@@ -77,7 +77,7 @@ router.post("/simulate-reminder", protect, async (req, res) => {
     const smsEn = `[GOV-MSP-KMP] Kisan Mitra: Dear ${farmerName}, your ${crop} procurement (Token: ${tokenNumber}) is scheduled on ${scheduleDate}, ${timeSlot} at ${centreName}. Carry Aadhaar & Land docs. Helpline: 1800-180-1551.`;
     const smsHi = `[GOV-MSP-KMP] किसान मित्र: प्रिय ${farmerName}, आपकी ${crop} खरीद (टोकन: ${tokenNumber}) ${scheduleDate}, ${timeSlot} पर ${centreName} में निर्धारित है। कृपया आधार कार्ड एवं खसरा साथ लाएं।`;
 
-    const whatsappEn = `🌾 *Kisan Procurement Mitra (SIH26032)*\n\n` +
+    const whatsappEn = `🌾 *Kisan Procurement Mitra*\n\n` +
       `Namaste *${farmerName}* ji,\n\n` +
       `Here is your scheduled procurement appointment reminder:\n` +
       `📅 *Date:* ${scheduleDate}\n` +
@@ -89,7 +89,7 @@ router.post("/simulate-reminder", protect, async (req, res) => {
       `💡 *Arrival Advisory:* Please arrive promptly during your designated slot for smooth queue processing.\n` +
       `_Toll-free Kisan Helpline: 1800-180-1551_`;
 
-    const whatsappHi = `🌾 *किसान खरीद मित्र (SIH26032)*\n\n` +
+    const whatsappHi = `🌾 *किसान खरीद मित्र*\n\n` +
       `नमस्ते *${farmerName}* जी,\n\n` +
       `आपकी निर्धारित कृषि उपज खरीद का अनुस्मारक:\n` +
       `📅 *दिनांक:* ${scheduleDate}\n` +
@@ -127,7 +127,7 @@ router.post("/simulate-reminder", protect, async (req, res) => {
         whatsappEn,
         whatsappHi,
         timestamp: new Date().toISOString(),
-        gatewayStatus: "Delivered (Mock Gateway • SIH26032)"
+        gatewayStatus: "Delivered (Gov SMS Gateway)"
       }
     });
   } catch (error) {

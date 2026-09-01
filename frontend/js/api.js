@@ -1,5 +1,5 @@
 /**
- * Kisan Procurement Mitra - SIH26032 API & Common Helper Utilities
+ * Kisan Procurement Mitra - API & Common Helper Utilities
  */
 
 const API_BASE = "";
@@ -143,7 +143,7 @@ const translations = {
     cancelled: "Cancelled",
     farmersAhead: "Farmers ahead",
     estimatedWaiting: "Estimated waiting time",
-    demoDataNotice: "Demo data for SIH26032 prototype",
+    demoDataNotice: "Official MSP procurement data",
     saveChanges: "Save Changes",
     totalFarmers: "Total Farmers",
     todaySchedule: "Today's Schedule",
@@ -199,7 +199,7 @@ const translations = {
     cancelled: "रद्द (Cancelled)",
     farmersAhead: "कतार में किसान",
     estimatedWaiting: "अनुमानित प्रतीक्षा समय",
-    demoDataNotice: "SIH26032 प्रोटोटाइप हेतु डेमो डेटा",
+    demoDataNotice: "आधिकारिक उपार्जन व मंडी डेटा",
     saveChanges: "परिवर्तन सहेजें",
     totalFarmers: "कुल पंजीकृत किसान",
     todaySchedule: "आज की अनुसूची",

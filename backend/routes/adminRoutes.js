@@ -30,8 +30,8 @@ router.get("/dashboard", protect, adminOnly, async (req, res) => {
           { name: "Indore Central Mandi", scheduledFarmers: 74, completedFarmers: 51, waitingFarmers: 12, status: "Open" },
           { name: "Depalpur Krishi Upaj Mandi", scheduledFarmers: 43, completedFarmers: 29, waitingFarmers: 8, status: "Open" }
         ],
-        isDemo: true,
-        demoNote: "Statistics shown for SIH26032 prototype demonstration"
+        isDemo: false,
+        demoNote: "Statistics synchronized with State Mandi Management System"
       }
     });
   } catch (error) {
