@@ -14,11 +14,7 @@ let autoRefreshTimer = null;
 document.addEventListener("DOMContentLoaded", async () => {
   if (!requireAuth(["farmer"])) return;
 
-  const user = getUser();
-  const greetingEl = document.getElementById("dashboardGreeting");
-  if (greetingEl && user) {
-    greetingEl.textContent = `Namaste, ${user.name.split(" ")[0]} 👋`;
-  }
+  updateDashboardGreeting();
 
   setupSimulatorEventListeners();
   setupQrEventListeners();
@@ -28,6 +24,49 @@ document.addEventListener("DOMContentLoaded", async () => {
   await loadCentresLiveStatus();
   startAutoRefreshInterval();
 });
+
+// Re-render dynamic elements on language change
+window.addEventListener("languageChanged", () => {
+  updateDashboardGreeting();
+  if (currentProcurement && currentCentre) {
+    refreshDashboardDynamicUI();
+  }
+  updateSimulatorPreview();
+  renderCentresGrid();
+  loadRecentNotifications();
+});
+
+function updateDashboardGreeting() {
+  const user = getUser();
+  const greetingEl = document.getElementById("dashboardGreeting");
+  if (greetingEl && user) {
+    const greetingText = t("dashboardGreeting", "Namaste");
+    greetingEl.textContent = `${greetingText}, ${user.name.split(" ")[0]} 👋`;
+  }
+}
+
+function refreshDashboardDynamicUI() {
+  if (!currentProcurement || !currentCentre) return;
+
+  const paymentStatEl = document.getElementById("statPaymentStatus");
+  if (paymentStatEl) {
+    const payStatus = currentProcurement.paymentStatus || "Pending";
+    paymentStatEl.innerHTML = `<span class="badge ${getPaymentBadgeClass(payStatus)}">${getLocalizedStatusText(payStatus)}</span>`;
+  }
+
+  const nvStatus = document.getElementById("nvStatus");
+  if (nvStatus) {
+    const status = currentProcurement.procurementStatus || "Scheduled";
+    nvStatus.innerHTML = `<span class="badge ${getStatusBadgeClass(status)}">${getLocalizedStatusText(status)}</span>`;
+  }
+
+  const centreStatusBadge = document.getElementById("centreStatusBadge");
+  if (centreStatusBadge) {
+    const statusVal = currentCentre.status || "Open";
+    centreStatusBadge.textContent = statusVal === "Open" ? t("openStatus", "Open") : t("closedStatus", "Closed");
+    centreStatusBadge.className = `badge ${statusVal === 'Open' ? 'badge-green' : 'badge-amber'}`;
+  }
+}
 
 async function loadDashboardData() {
   const loadingIndicator = document.getElementById("dashboardLoading");
@@ -60,7 +99,7 @@ async function loadDashboardData() {
     
     if (paymentStatEl) {
       const payStatus = procurement.paymentStatus || "Pending";
-      paymentStatEl.innerHTML = `<span class="badge ${getPaymentBadgeClass(payStatus)}">${payStatus}</span>`;
+      paymentStatEl.innerHTML = `<span class="badge ${getPaymentBadgeClass(payStatus)}">${getLocalizedStatusText(payStatus)}</span>`;
     }
 
     // 2. Next Visit Card
@@ -76,7 +115,7 @@ async function loadDashboardData() {
     if (nvToken) nvToken.textContent = procurement.tokenNumber || "TK-1042";
     if (nvStatus) {
       const status = procurement.procurementStatus || "Scheduled";
-      nvStatus.innerHTML = `<span class="badge ${getStatusBadgeClass(status)}">${status}</span>`;
+      nvStatus.innerHTML = `<span class="badge ${getStatusBadgeClass(status)}">${getLocalizedStatusText(status)}</span>`;
     }
 
     // 3. Progress Tracker Step Activation
@@ -90,8 +129,9 @@ async function loadDashboardData() {
 
     if (centreNameHeading) centreNameHeading.textContent = centre.name || "Sanwer Procurement Centre";
     if (centreStatusBadge) {
-      centreStatusBadge.textContent = centre.status || "Open";
-      centreStatusBadge.className = `badge ${centre.status === 'Open' ? 'badge-green' : 'badge-amber'}`;
+      const statusVal = centre.status || "Open";
+      centreStatusBadge.textContent = statusVal === "Open" ? t("openStatus", "Open") : t("closedStatus", "Closed");
+      centreStatusBadge.className = `badge ${statusVal === 'Open' ? 'badge-green' : 'badge-amber'}`;
     }
     if (centreFarmersAhead) centreFarmersAhead.textContent = centre.waitingFarmers !== undefined ? centre.waitingFarmers : 18;
     if (centreWaitTime) centreWaitTime.textContent = centre.estimatedWait ? `~${centre.estimatedWait}` : "~45 minutes";
@@ -437,7 +477,31 @@ async function loadRecentNotifications() {
       </div>
     `).join("");
   } else {
-    container.innerHTML = `<p style="color: var(--text-muted); font-size: 0.9rem;">You're all caught up. No new notifications.</p>`;
+    container.innerHTML = `<p style="color: var(--text-muted); font-size: 0.9rem;">${t("allCaughtUpMsg", "You're all caught up. No new notifications.")}</p>`;
+  }
+}
+
+function getLocalizedStatusText(status) {
+  switch (status) {
+    case "Procurement Completed":
+    case "Completed":
+      return t("completed", "Completed");
+    case "Scheduled":
+      return t("scheduled", "Scheduled");
+    case "Token Generated":
+      return t("stepToken", "Token Generated");
+    case "Arrived":
+      return t("arrived", "Arrived");
+    case "Pending":
+      return t("pending", "Pending");
+    case "Paid":
+      return t("paid", "Paid");
+    case "Processing":
+      return t("processing", "Processing");
+    case "Cancelled":
+      return t("cancelled", "Cancelled");
+    default:
+      return status;
   }
 }
 
@@ -817,8 +881,8 @@ function renderCentresGrid() {
     container.innerHTML = `
       <div style="grid-column: 1 / -1; text-align: center; padding: 2.5rem; background: #f8fafc; border-radius: var(--radius-md); border: 1px dashed var(--border-color); color: var(--text-muted);">
         <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">🔍</div>
-        <div style="font-weight: 600;">No procurement centres matched your filter or search.</div>
-        <button class="btn btn-outline-primary btn-sm" style="margin-top: 0.75rem;" onclick="resetCentresFilter()">Reset Filters</button>
+        <div style="font-weight: 600;">${t("noMatchedCentres", "No procurement centres matched your filter or search.")}</div>
+        <button class="btn btn-outline-primary btn-sm" style="margin-top: 0.75rem;" onclick="resetCentresFilter()">${t("resetFilters", "Reset Filters")}</button>
       </div>
     `;
     return;
@@ -835,7 +899,15 @@ function renderCentresGrid() {
                        c.congestionLevel === "Moderate" ? "gauge-moderate" : "gauge-heavy";
     const levelIcon = c.congestionLevel === "Low Traffic" ? "🟢" :
                       c.congestionLevel === "Moderate" ? "🟡" : "🔴";
-    const trendIcon = c.trend === "Rising" ? "↗ Rising" : c.trend === "Easing" ? "↘ Easing" : "→ Stable";
+    
+    const localizedCongestion = c.congestionLevel === "Low Traffic" ? t("lowTraffic", "Low Traffic") :
+                                c.congestionLevel === "Moderate" ? t("moderateTraffic", "Moderate") :
+                                t("heavyTraffic", "Heavy");
+
+    const trendText = c.trend === "Rising" ? t("risingTrend", "↗ Rising") :
+                      c.trend === "Easing" ? t("easingTrend", "↘ Easing") :
+                      t("stableTrend", "→ Stable");
+
     const score = c.congestionScore || (c.congestionLevel === "Low Traffic" ? 25 : c.congestionLevel === "Moderate" ? 55 : 85);
 
     return `
@@ -846,7 +918,7 @@ function renderCentresGrid() {
             <div>
               <div style="display: flex; align-items: center; gap: 0.4rem; margin-bottom: 0.2rem; flex-wrap: wrap;">
                 <span class="badge badge-gray" style="font-size: 0.72rem; padding: 0.15rem 0.45rem;">📍 ${escapeHtml(c.district || "Indore")}</span>
-                ${isPreferred ? '<span class="badge badge-green" style="font-size: 0.72rem; padding: 0.15rem 0.45rem;">⭐ Assigned Centre</span>' : ''}
+                ${isPreferred ? `<span class="badge badge-green" style="font-size: 0.72rem; padding: 0.15rem 0.45rem;">⭐ ${t("assignedCentre", "Assigned Centre")}</span>` : ''}
               </div>
               <h4 style="font-size: 1.05rem; font-weight: 700; color: var(--text-main); margin: 0; line-height: 1.3;">
                 ${escapeHtml(c.name)}
@@ -856,10 +928,10 @@ function renderCentresGrid() {
             <div style="text-align: right;">
               <span class="congestion-badge ${levelClass}">
                 <span>${levelIcon}</span>
-                <span>${escapeHtml(c.congestionLevel)}</span>
+                <span>${escapeHtml(localizedCongestion)}</span>
               </span>
               <div style="font-size: 0.7rem; color: var(--text-muted); font-weight: 600; margin-top: 0.2rem;">
-                ${trendIcon}
+                ${trendText}
               </div>
             </div>
           </div>
@@ -872,8 +944,8 @@ function renderCentresGrid() {
           <!-- Traffic Density Gauge Bar -->
           <div style="margin-bottom: 0.85rem;">
             <div style="display: flex; justify-content: space-between; font-size: 0.74rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.2rem;">
-              <span>Gate Traffic Density</span>
-              <span style="color: var(--text-main);">${score}% Capacity</span>
+              <span>${t("gateTrafficDensity", "Gate Traffic Density")}</span>
+              <span style="color: var(--text-main);">${score}% ${t("capacityText", "Capacity")}</span>
             </div>
             <div class="traffic-gauge-container">
               <div class="traffic-gauge-fill ${gaugeClass}" style="width: ${score}%;"></div>
@@ -883,21 +955,21 @@ function renderCentresGrid() {
           <!-- 3-Box Telemetry Metrics -->
           <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.45rem; margin-bottom: 0.85rem;">
             <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 0.5rem 0.4rem; text-align: center;">
-              <div style="font-size: 0.68rem; color: var(--text-muted); font-weight: 600;">EST. WAIT</div>
+              <div style="font-size: 0.68rem; color: var(--text-muted); font-weight: 600;">${t("estWait", "EST. WAIT")}</div>
               <div style="font-size: 0.95rem; font-weight: 800; color: var(--primary-dark); margin-top: 0.15rem;">
                 ${escapeHtml(c.estimatedWait || "25 mins")}
               </div>
             </div>
             
             <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 0.5rem 0.4rem; text-align: center;">
-              <div style="font-size: 0.68rem; color: var(--text-muted); font-weight: 600;">TRACTOR LINE</div>
+              <div style="font-size: 0.68rem; color: var(--text-muted); font-weight: 600;">${t("tractorLine", "TRACTOR LINE")}</div>
               <div style="font-size: 0.95rem; font-weight: 800; color: var(--text-main); margin-top: 0.15rem;">
-                ${c.queueTractors || Math.round((c.waitingFarmers || 10) * 0.7)} <span style="font-size: 0.7rem; font-weight: 500; color: var(--text-muted);">(${c.waitingFarmers || 0} fmr)</span>
+                ${c.queueTractors || Math.round((c.waitingFarmers || 10) * 0.7)} <span style="font-size: 0.7rem; font-weight: 500; color: var(--text-muted);">(${c.waitingFarmers || 0})</span>
               </div>
             </div>
 
             <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 0.5rem 0.4rem; text-align: center;">
-              <div style="font-size: 0.68rem; color: var(--text-muted); font-weight: 600;">SCALES ACTIVE</div>
+              <div style="font-size: 0.68rem; color: var(--text-muted); font-weight: 600;">${t("scalesActive", "SCALES ACTIVE")}</div>
               <div style="font-size: 0.95rem; font-weight: 800; color: var(--text-main); margin-top: 0.15rem;">
                 ${c.activeWeighbridges || 2} / ${c.totalWeighbridges || 3}
               </div>
@@ -906,23 +978,23 @@ function renderCentresGrid() {
 
           <!-- Recommended Window Banner -->
           <div style="background: #f0fdf4; border: 1px solid #dcfce7; border-radius: 6px; padding: 0.45rem 0.65rem; font-size: 0.74rem; color: #166534; margin-bottom: 0.85rem; display: flex; align-items: center; justify-content: space-between;">
-            <span>💡 Best Slot: <strong>${escapeHtml(c.bestTimeToVisit || "02:00 PM – 04:00 PM")}</strong></span>
-            <span style="font-size: 0.7rem; color: #15803d; font-weight: 600;">Min Wait</span>
+            <span>💡 ${t("bestSlot", "Best Slot:")} <strong>${escapeHtml(c.bestTimeToVisit || "02:00 PM – 04:00 PM")}</strong></span>
+            <span style="font-size: 0.7rem; color: #15803d; font-weight: 600;">${t("minWait", "Min Wait")}</span>
           </div>
         </div>
 
         <!-- Action Buttons -->
         <div style="display: flex; gap: 0.45rem; margin-top: 0.5rem;">
           <button class="btn btn-outline-primary btn-xs" style="flex: 1; font-weight: 600; font-size: 0.75rem; padding: 0.35rem 0.5rem;" onclick="openCentreForecastModal('${c._id}')">
-            📊 Hourly Forecast
+            📊 ${t("hourlyForecast", "Hourly Forecast")}
           </button>
           ${!isPreferred ? `
             <button class="btn btn-secondary btn-xs" style="font-size: 0.75rem; padding: 0.35rem 0.6rem;" onclick="setAsPreferredCentre('${c.name}')">
-              📌 Set Preferred
+              📌 ${t("setPreferred", "Set Preferred")}
             </button>
           ` : `
             <span style="display: inline-flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; color: #15803d; padding: 0.35rem 0.6rem; background: #ecfdf5; border-radius: 4px; border: 1px solid #a7f3d0;">
-              ✓ Current
+              ✓ ${t("currentBadge", "Current")}
             </span>
           `}
         </div>
@@ -1057,9 +1129,13 @@ window.openCentreForecastModal = async function(centreId) {
   const levelIcon = centre.congestionLevel === "Low Traffic" ? "🟢" :
                     centre.congestionLevel === "Moderate" ? "🟡" : "🔴";
 
+  const localizedCongestion = centre.congestionLevel === "Low Traffic" ? t("lowTraffic", "Low Traffic") :
+                              centre.congestionLevel === "Moderate" ? t("moderateTraffic", "Moderate") :
+                              t("heavyTraffic", "Heavy");
+
   if (mBadge) {
     mBadge.className = `congestion-badge ${levelClass}`;
-    mBadge.innerHTML = `<span>${levelIcon}</span> <span>${centre.congestionLevel}</span>`;
+    mBadge.innerHTML = `<span>${levelIcon}</span> <span>${escapeHtml(localizedCongestion)}</span>`;
   }
 
   if (mWait) mWait.textContent = centre.estimatedWait || "25 mins";
@@ -1067,30 +1143,30 @@ window.openCentreForecastModal = async function(centreId) {
   if (mScales) mScales.textContent = `${centre.activeWeighbridges || 2} / ${centre.totalWeighbridges || 3} Active`;
 
   const score = centre.congestionScore || (centre.congestionLevel === "Low Traffic" ? 22 : centre.congestionLevel === "Moderate" ? 58 : 88);
-  if (mDensityText) mDensityText.textContent = `${score}% Gate Capacity (${centre.congestionLevel})`;
+  if (mDensityText) mDensityText.textContent = `${score}% ${t("capacityText", "Capacity")} (${localizedCongestion})`;
   if (mGaugeFill) {
     mGaugeFill.className = `traffic-gauge-fill ${gaugeClass}`;
     mGaugeFill.style.width = `${score}%`;
   }
 
-  if (mBestTime) mBestTime.textContent = `${centre.bestTimeToVisit || "02:00 PM – 04:00 PM"} (Minimal Wait)`;
+  if (mBestTime) mBestTime.textContent = `${centre.bestTimeToVisit || "02:00 PM – 04:00 PM"} (${t("minWait", "Min Wait")})`;
   if (mPeakHours) mPeakHours.textContent = centre.peakHours || "11:00 AM – 01:30 PM";
 
   // Render Hourly Forecast Curve
   if (mForecastGrid) {
     const defaultForecast = [
-      { time: "09:00 AM", level: "Low", wait: "10m", color: "#15803d", bg: "#f0fdf4" },
-      { time: "11:00 AM", level: "Peak", wait: centre.congestionLevel === 'Heavy' ? "1h 30m" : "55m", color: "#be123c", bg: "#fff1f2" },
-      { time: "01:00 PM", level: "Moderate", wait: "35m", color: "#a16207", bg: "#fefce8" },
-      { time: "03:00 PM", level: "Optimal", wait: "15m", color: "#15803d", bg: "#f0fdf4" },
-      { time: "05:00 PM", level: "Low", wait: "10m", color: "#15803d", bg: "#f0fdf4" }
+      { time: "09:00 AM", level: t("lowTraffic", "Low"), wait: "10m", color: "#15803d", bg: "#f0fdf4" },
+      { time: "11:00 AM", level: t("heavyTraffic", "Peak"), wait: centre.congestionLevel === 'Heavy' ? "1h 30m" : "55m", color: "#be123c", bg: "#fff1f2" },
+      { time: "01:00 PM", level: t("moderateTraffic", "Moderate"), wait: "35m", color: "#a16207", bg: "#fefce8" },
+      { time: "03:00 PM", level: t("optProcStatus", "Optimal"), wait: "15m", color: "#15803d", bg: "#f0fdf4" },
+      { time: "05:00 PM", level: t("lowTraffic", "Low"), wait: "10m", color: "#15803d", bg: "#f0fdf4" }
     ];
 
     mForecastGrid.innerHTML = defaultForecast.map(f => `
       <div class="forecast-hour-pill" style="background: ${f.bg}; border-color: ${f.color}40;">
         <div style="font-weight: 700; color: var(--text-main); font-size: 0.72rem;">${f.time}</div>
         <div style="font-weight: 800; color: ${f.color}; font-size: 0.85rem; margin: 0.15rem 0;">${f.wait}</div>
-        <div style="font-size: 0.65rem; color: ${f.color}; font-weight: 700; text-transform: uppercase;">${f.level}</div>
+        <div style="font-size: 0.65rem; color: ${f.color}; font-weight: 700; text-transform: uppercase;">${escapeHtml(f.level)}</div>
       </div>
     `).join("");
   }

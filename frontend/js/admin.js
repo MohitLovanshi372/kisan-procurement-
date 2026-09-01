@@ -11,6 +11,12 @@ document.addEventListener("DOMContentLoaded", async () => {
   setupAdminListeners();
   await loadAdminDashboard();
   await loadAdminFarmers();
+
+  window.addEventListener("languageChanged", () => {
+    if (allFarmersData && allFarmersData.length > 0) {
+      renderAdminFarmersTable(allFarmersData);
+    }
+  });
 });
 
 function setupAdminListeners() {
@@ -61,12 +67,12 @@ function setupAdminListeners() {
       submitBtn.disabled = false;
 
       if (res.success) {
-        showToast("Procurement and Payment status updated in database!", "success");
+        showToast(t("procStatusUpdatedSuccess"), "success");
         if (modal) modal.classList.remove("active");
         await loadAdminDashboard();
         await loadAdminFarmers();
       } else {
-        showToast(res.message || "Update failed", "error");
+        showToast(res.message || t("updateFailed"), "error");
       }
     });
   }
@@ -94,10 +100,10 @@ function setupAdminListeners() {
       submitBtn.disabled = false;
 
       if (res.success) {
-        showToast("Notification dispatched successfully to farmers!", "success");
+        showToast(t("notifDispatchedSuccess"), "success");
         notifForm.reset();
       } else {
-        showToast(res.message || "Failed to dispatch notification", "error");
+        showToast(res.message || t("failedDispatchNotif"), "error");
       }
     });
   }
@@ -160,7 +166,7 @@ function renderAdminFarmersTable(farmers) {
   if (!tbody) return;
 
   if (farmers.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; padding: 2rem; color: var(--text-muted);">No farmers matching search query.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; padding: 2rem; color: var(--text-muted);">${t("noFarmersMatchingSearch")}</td></tr>`;
     return;
   }
 
@@ -179,7 +185,7 @@ function renderAdminFarmersTable(farmers) {
       </td>
       <td>
         <button class="btn btn-sm btn-outline-primary" onclick="openStatusUpdateModal(${idx})">
-          Update Status
+          ${t("updateStatusBtn")}
         </button>
       </td>
     </tr>

@@ -6,6 +6,12 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (!requireAuth(["farmer"])) return;
 
   await loadSchedules();
+
+  window.addEventListener("languageChanged", () => {
+    if (schedulesData && schedulesData.length > 0) {
+      renderScheduleTable(schedulesData);
+    }
+  });
 });
 
 let schedulesData = [];
@@ -23,12 +29,12 @@ async function loadSchedules() {
       renderScheduleTable(schedulesData);
     } else {
       if (tbody) {
-        tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 2rem;">No procurement schedule available.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 2rem;">${t("noScheduleAvailable")}</td></tr>`;
       }
     }
   } catch (error) {
     console.error("Schedule error:", error);
-    if (loading) loading.textContent = "Unable to load schedule. Please try again.";
+    if (loading) loading.textContent = t("unableLoadSchedule");
   }
 }
 
@@ -37,7 +43,7 @@ function renderScheduleTable(items) {
   if (!tbody) return;
 
   if (items.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 2rem;">No records found.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 2rem;">${t("noRecordsFound")}</td></tr>`;
     return;
   }
 
@@ -55,9 +61,9 @@ function renderScheduleTable(items) {
       </td>
       <td>
         <div style="display: flex; gap: 0.35rem; flex-wrap: wrap;">
-          <a href="procurement.html" class="btn btn-sm btn-secondary">View Details</a>
+          <a href="procurement.html" class="btn btn-sm btn-secondary">${t("viewDetailsBtn")}</a>
           <button class="btn btn-sm btn-outline-primary" onclick="simulateInstantReminder('${escapeHtml(item.scheduleDate || "12 September 2026")}', '${escapeHtml(item.startTime || "10:00 AM")}')" style="display: inline-flex; align-items: center; gap: 0.25rem;">
-            <span>📲</span> Reminder
+            <span>📲</span> ${t("reminderBtn")}
           </button>
         </div>
       </td>

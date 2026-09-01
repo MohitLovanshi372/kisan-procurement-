@@ -47,14 +47,14 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       if (res.success && res.data) {
         setUser(res.data);
-        showToast("Profile updated successfully!", "success");
+        showToast(t("profileUpdateSuccess"), "success");
         if (editModal) editModal.classList.remove("active");
         renderProfile(res.data);
 
         const headerName = document.getElementById("headerUserName");
         if (headerName) headerName.textContent = res.data.name;
       } else {
-        showToast(res.message || "Failed to update profile", "error");
+        showToast(res.message || t("profileUpdateFailed"), "error");
       }
     });
   }

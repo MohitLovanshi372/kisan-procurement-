@@ -66,10 +66,10 @@
       <div class="page-header">
         <div class="page-title-group">
           <h1 id="dashboardGreeting">Namaste, Ramesh 👋</h1>
-          <p class="page-subtitle">Here is your procurement summary.</p>
+          <p class="page-subtitle" data-i18n="dashboardSubtitle">Here is your procurement summary.</p>
         </div>
         <div>
-          <span class="badge badge-green" style="font-size: 0.8rem; padding: 0.3rem 0.75rem;">🌾 Rabi Season 2026</span>
+          <span class="badge badge-green" style="font-size: 0.8rem; padding: 0.3rem 0.75rem;" data-i18n="rabiSeasonBadge">🌾 Rabi Season 2026</span>
         </div>
       </div>
 
@@ -87,7 +87,7 @@
           </div>
         </div>
         <button id="btnBannerSimulate" class="btn btn-sm" style="background: #059669; color: #ffffff; border: 1px solid #047857; font-weight: 600; display: flex; align-items: center; gap: 0.35rem;">
-          <span>💬</span> <span>Simulate Reminder</span>
+          <span>💬</span> <span data-i18n="simulateReminderBtn">Simulate Reminder</span>
         </button>
       </div>
 
@@ -99,20 +99,20 @@
             <span data-i18n="procurementDate">📅 Procurement Date</span>
           </div>
           <div class="stat-value" id="statProcDate">12 September 2026</div>
-          <div class="stat-meta">Slot: 10:00 AM – 11:00 AM</div>
+          <div class="stat-meta" id="statProcSlotMeta">Slot: 10:00 AM – 11:00 AM</div>
         </div>
 
         <!-- CARD 2 -->
         <div class="stat-card stat-amber" id="cardTokenBox" style="cursor: pointer;" title="Click to view Scannable QR Gate Pass">
           <div class="stat-header">
             <span data-i18n="tokenNumber">🎫 Token Number</span>
-            <span style="font-size: 0.72rem; background: #fef3c7; color: #92400e; padding: 0.15rem 0.4rem; border-radius: 4px; font-weight: 700;">⚡ QR Ready</span>
+            <span style="font-size: 0.72rem; background: #fef3c7; color: #92400e; padding: 0.15rem 0.4rem; border-radius: 4px; font-weight: 700;" data-i18n="qrReady">⚡ QR Ready</span>
           </div>
           <div class="stat-value" id="statTokenNumber" style="display: flex; align-items: center; justify-content: space-between;">
             <span>TK-1042</span>
             <span style="font-size: 1.25rem;">📱</span>
           </div>
-          <div class="stat-meta" style="color: var(--primary-dark); font-weight: 600;">Click to generate / scan QR pass →</div>
+          <div class="stat-meta" style="color: var(--primary-dark); font-weight: 600;" data-i18n="clickQrPass">Click to generate / scan QR pass →</div>
         </div>
 
         <!-- CARD 3 -->
@@ -121,7 +121,7 @@
             <span data-i18n="procurementCentre">📍 Procurement Centre</span>
           </div>
           <div class="stat-value" id="statCentreName" style="font-size: 1.2rem;">Sanwer Mandi</div>
-          <div class="stat-meta">Indore District</div>
+          <div class="stat-meta" data-i18n="indoreDistrict">Indore District</div>
         </div>
 
         <!-- CARD 4 -->
@@ -132,7 +132,7 @@
           <div class="stat-value" id="statPaymentStatus" style="font-size: 1.15rem;">
             <span class="badge badge-amber">Pending</span>
           </div>
-          <div class="stat-meta">Est: ₹45,000 (18 Qtl Wheat)</div>
+          <div class="stat-meta" id="statPaymentMeta">Est: ₹45,000 (18 Qtl Wheat)</div>
         </div>
       </div>
 
@@ -147,19 +147,19 @@
 
         <div class="next-visit-grid">
           <div>
-            <div class="visit-item-label">Date</div>
+            <div class="visit-item-label" data-i18n="date">Date</div>
             <div class="visit-item-val" id="nvDate">12 September 2026</div>
           </div>
           <div>
-            <div class="visit-item-label">Assigned Time Slot</div>
+            <div class="visit-item-label" data-i18n="assignedTimeSlot">Assigned Time Slot</div>
             <div class="visit-item-val" id="nvTime">10:00 AM – 11:00 AM</div>
           </div>
           <div>
-            <div class="visit-item-label">Centre</div>
+            <div class="visit-item-label" data-i18n="centre">Centre</div>
             <div class="visit-item-val" id="nvCentre">Sanwer Procurement Centre</div>
           </div>
           <div>
-            <div class="visit-item-label">Token Code</div>
+            <div class="visit-item-label" data-i18n="tokenCode">Token Code</div>
             <div class="visit-item-val" id="nvToken">TK-1042</div>
           </div>
         </div>
@@ -186,16 +186,16 @@
               ⏳
             </div>
             <span style="font-size: 0.72rem; font-weight: 700; color: var(--primary-dark); margin-top: 0.35rem; display: flex; align-items: center; gap: 0.25rem;">
-              <span>🔍</span> Tap to Scan
+              <span>🔍</span> <span data-i18n="tapToScan">Tap to Scan</span>
             </span>
           </div>
 
           <!-- QR Pass Overview Info -->
           <div>
             <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.35rem; flex-wrap: wrap;">
-              <span class="fast-track-pill">⚡ Fast-Track Entry</span>
+              <span class="fast-track-pill" data-i18n="fastTrackEntryBadge">⚡ Fast-Track Entry</span>
               <span class="badge badge-green" id="dashQrTokenBadge">TK-1042</span>
-              <span style="font-size: 0.78rem; color: var(--text-muted);">Mandi Check-in Ready</span>
+              <span style="font-size: 0.78rem; color: var(--text-muted);" data-i18n="mandiCheckinReady">Mandi Check-in Ready</span>
             </div>
             <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.25rem;" data-i18n="qrGatePass">
               Digital Token Scannable QR Gate Pass
@@ -217,10 +217,10 @@
             <span>📱</span> <span data-i18n="viewQrCode">View Scannable QR</span>
           </button>
           <button id="btnMainDownloadQr" class="btn btn-outline-primary btn-sm" style="display: flex; align-items: center; justify-content: center; gap: 0.4rem;">
-            <span>📥</span> <span>Download QR Pass</span>
+            <span>📥</span> <span data-i18n="downloadQrPassBtn">Download QR Pass</span>
           </button>
           <button id="btnMainSimulateScan" class="btn btn-sm" style="background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 0.35rem;">
-            <span>🔬</span> <span>Test Gate Scanner</span>
+            <span>🔬</span> <span data-i18n="testGateScannerBtn">Test Gate Scanner</span>
           </button>
         </div>
       </section>
@@ -229,46 +229,46 @@
       <section class="card">
         <div class="card-header">
           <div class="card-title">
-            <span>📈</span> Procurement Progress Status
+            <span>📈</span> <span data-i18n="procProgressStatus">Procurement Progress Status</span>
           </div>
-          <span class="badge badge-green">Live Tracking</span>
+          <span class="badge badge-green" data-i18n="liveTrackingBadge">Live Tracking</span>
         </div>
 
         <div class="progress-tracker">
           <!-- Step 1 -->
           <div class="progress-step" id="step-1">
             <div class="step-node">✓</div>
-            <div class="step-label">1. Registration</div>
+            <div class="step-label" data-i18n="step1">1. Registration</div>
           </div>
 
           <!-- Step 2 -->
           <div class="progress-step" id="step-2">
             <div class="step-node">✓</div>
-            <div class="step-label">2. Token Generated</div>
+            <div class="step-label" data-i18n="step2">2. Token Generated</div>
           </div>
 
           <!-- Step 3 -->
           <div class="progress-step active" id="step-3">
             <div class="step-node">3</div>
-            <div class="step-label">3. Scheduled</div>
+            <div class="step-label" data-i18n="step3">3. Scheduled</div>
           </div>
 
           <!-- Step 4 -->
           <div class="progress-step" id="step-4">
             <div class="step-node">○</div>
-            <div class="step-label">4. Arrived</div>
+            <div class="step-label" data-i18n="step4">4. Arrived</div>
           </div>
 
           <!-- Step 5 -->
           <div class="progress-step" id="step-5">
             <div class="step-node">○</div>
-            <div class="step-label">5. Procurement Completed</div>
+            <div class="step-label" data-i18n="step5">5. Procurement Completed</div>
           </div>
 
           <!-- Step 6 -->
           <div class="progress-step" id="step-6">
             <div class="step-node">○</div>
-            <div class="step-label">6. Payment Processed</div>
+            <div class="step-label" data-i18n="step6">6. Payment Processed</div>
           </div>
         </div>
       </section>
@@ -308,23 +308,23 @@
         <!-- KPI Metrics Summary Bar -->
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 0.65rem; margin-bottom: 1rem;">
           <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: var(--radius-sm); padding: 0.65rem 0.85rem; text-align: center;">
-            <div style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Monitored Hubs</div>
+            <div style="font-size: 0.72rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;" data-i18n="monitoredHubs">Monitored Hubs</div>
             <div style="font-size: 1.3rem; font-weight: 800; color: var(--text-main);" id="kpiTotalCentres">6</div>
           </div>
           <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: var(--radius-sm); padding: 0.65rem 0.85rem; text-align: center;">
-            <div style="font-size: 0.72rem; font-weight: 700; color: #15803d; text-transform: uppercase;">🟢 Low Traffic</div>
+            <div style="font-size: 0.72rem; font-weight: 700; color: #15803d; text-transform: uppercase;" data-i18n="lowTrafficKpi">🟢 Low Traffic</div>
             <div style="font-size: 1.3rem; font-weight: 800; color: #15803d;" id="kpiLowTraffic">3</div>
           </div>
           <div style="background: #fefce8; border: 1px solid #fef08a; border-radius: var(--radius-sm); padding: 0.65rem 0.85rem; text-align: center;">
-            <div style="font-size: 0.72rem; font-weight: 700; color: #a16207; text-transform: uppercase;">🟡 Moderate</div>
+            <div style="font-size: 0.72rem; font-weight: 700; color: #a16207; text-transform: uppercase;" data-i18n="moderateKpi">🟡 Moderate</div>
             <div style="font-size: 1.3rem; font-weight: 800; color: #a16207;" id="kpiModerateTraffic">2</div>
           </div>
           <div style="background: #fff1f2; border: 1px solid #fecdd3; border-radius: var(--radius-sm); padding: 0.65rem 0.85rem; text-align: center;">
-            <div style="font-size: 0.72rem; font-weight: 700; color: #be123c; text-transform: uppercase;">🔴 Heavy</div>
+            <div style="font-size: 0.72rem; font-weight: 700; color: #be123c; text-transform: uppercase;" data-i18n="heavyKpi">🔴 Heavy</div>
             <div style="font-size: 1.3rem; font-weight: 800; color: #be123c;" id="kpiHeavyTraffic">1</div>
           </div>
           <div style="background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%); border: 1px solid #86efac; border-radius: var(--radius-sm); padding: 0.65rem 0.85rem; display: flex; flex-direction: column; justify-content: center;">
-            <div style="font-size: 0.7rem; font-weight: 700; color: #166534; text-transform: uppercase;">⚡ Recommended Fastest</div>
+            <div style="font-size: 0.7rem; font-weight: 700; color: #166534; text-transform: uppercase;" data-i18n="recommendedFastest">⚡ Recommended Fastest</div>
             <div style="font-size: 0.85rem; font-weight: 800; color: #14532d; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" id="kpiFastestCentre">
               Depalpur (~15m)
             </div>
@@ -335,22 +335,22 @@
         <div style="display: flex; justify-content: space-between; align-items: center; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 0.75rem;">
           <!-- Filter Chips -->
           <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
-            <button class="filter-chip active" data-congestion-filter="all" id="filterAllCentres">All (6)</button>
-            <button class="filter-chip" data-congestion-filter="Low Traffic" id="filterLowCentres">🟢 Low Traffic</button>
-            <button class="filter-chip" data-congestion-filter="Moderate" id="filterModCentres">🟡 Moderate</button>
-            <button class="filter-chip" data-congestion-filter="Heavy" id="filterHeavyCentres">🔴 Heavy</button>
+            <button class="filter-chip active" data-congestion-filter="all" id="filterAllCentres" data-i18n="filterAllCentres">All (6)</button>
+            <button class="filter-chip" data-congestion-filter="Low Traffic" id="filterLowCentres" data-i18n="filterLowCentres">🟢 Low Traffic</button>
+            <button class="filter-chip" data-congestion-filter="Moderate" id="filterModCentres" data-i18n="filterModCentres">🟡 Moderate</button>
+            <button class="filter-chip" data-congestion-filter="Heavy" id="filterHeavyCentres" data-i18n="filterHeavyCentres">🔴 Heavy</button>
           </div>
 
           <!-- Search Input -->
           <div style="min-width: 220px; flex-grow: 1; max-width: 320px;">
-            <input type="text" id="centreSearchInput" class="form-control" placeholder="Search centre or district..." style="font-size: 0.82rem; padding: 0.35rem 0.75rem;">
+            <input type="text" id="centreSearchInput" class="form-control" placeholder="Search centre or district..." data-i18n-placeholder="searchCentrePlaceholder" style="font-size: 0.82rem; padding: 0.35rem 0.75rem;">
           </div>
         </div>
 
         <!-- Live Centres Congestion Cards Grid -->
         <div id="liveCentresGrid" class="centre-congestion-grid">
           <!-- Dynamic Centre Cards Rendered by JS -->
-          <div style="grid-column: 1 / -1; text-align: center; padding: 2rem; color: var(--text-muted);">
+          <div style="grid-column: 1 / -1; text-align: center; padding: 2rem; color: var(--text-muted);" data-i18n="loadingTelemetry">
             ⏳ Loading live mandi congestion telemetrics...
           </div>
         </div>
@@ -365,7 +365,7 @@
             <div class="card-title">
               <span>🏛️</span> <span data-i18n="centreStatus">Centre Status</span>
             </div>
-            <span id="centreStatusBadge" class="badge badge-green">🟢 Open</span>
+            <span id="centreStatusBadge" class="badge badge-green" data-i18n="openStatus">🟢 Open</span>
           </div>
 
           <h3 id="centreNameHeading" style="font-size: 1.05rem; font-weight: 700; margin-bottom: 0.75rem;">
@@ -383,7 +383,7 @@
             </div>
           </div>
 
-          <div style="font-size: 0.75rem; color: #166534; background: #f0fdf4; padding: 0.5rem 0.75rem; border-radius: var(--radius-sm); border: 1px solid #bbf7d0;">
+          <div style="font-size: 0.75rem; color: #166534; background: #f0fdf4; padding: 0.5rem 0.75rem; border-radius: var(--radius-sm); border: 1px solid #bbf7d0;" data-i18n="mandiSmoothUpdate">
             ℹ️ <strong>Live Update:</strong> Mandi operations are running smoothly with active weighbridges.
           </div>
         </div>
@@ -394,7 +394,7 @@
             <div class="card-title">
               <span>💡</span> <span data-i18n="smartRecommendation">Recommended Visit</span>
             </div>
-            <span id="smartWaitStatus" class="badge badge-amber">Moderate waiting</span>
+            <span id="smartWaitStatus" class="badge badge-amber" data-i18n="moderateWaiting">Moderate waiting</span>
           </div>
 
           <p id="smartAdviceText" style="font-size: 0.95rem; color: var(--text-main); margin-bottom: 1rem; line-height: 1.5;">
@@ -402,16 +402,16 @@
           </p>
 
           <div style="background: var(--primary-bg); padding: 0.75rem; border-radius: var(--radius-sm); border: 1px solid var(--primary-subtle); font-size: 0.85rem; color: var(--primary-dark); margin-bottom: 0.75rem;">
-            📋 <strong>Checklist before leaving:</strong>
+            📋 <strong data-i18n="checklistBeforeLeaving">Checklist before leaving:</strong>
             <ul style="margin-left: 1.25rem; margin-top: 0.25rem; font-size: 0.82rem;">
-              <li>Printed Token (TK-1042) or Mobile SMS</li>
-              <li>Aadhaar Card & Bank Account Passbook</li>
-              <li>Khasra / Land Revenue Document</li>
+              <li data-i18n="checklistItem1">Printed Token or Mobile SMS</li>
+              <li data-i18n="checklistItem2">Aadhaar Card & Bank Account Passbook</li>
+              <li data-i18n="checklistItem3">Khasra / Land Revenue Document</li>
             </ul>
           </div>
 
           <div style="font-size: 0.75rem; color: var(--text-muted); text-align: right;">
-            <span class="badge badge-green">⚡ AI Queue Advisory</span>
+            <span class="badge badge-green" data-i18n="aiQueueAdvisory">⚡ AI Queue Advisory</span>
           </div>
         </div>
 
@@ -421,9 +421,9 @@
       <section class="card">
         <div class="card-header">
           <div class="card-title">
-            <span>🔔</span> Recent Notifications
+            <span>🔔</span> <span data-i18n="recentNotifications">Recent Notifications</span>
           </div>
-          <a href="notifications.html" style="font-size: 0.85rem; color: var(--primary); font-weight: 600; text-decoration: none;">
+          <a href="notifications.html" style="font-size: 0.85rem; color: var(--primary); font-weight: 600; text-decoration: none;" data-i18n="viewAll">
             View All →
           </a>
         </div>
@@ -440,9 +440,9 @@
         <div style="display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.75rem;">
           <div>
             <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--primary-dark); display: flex; align-items: center; gap: 0.5rem;">
-              <span>📲</span> Mock SMS / WhatsApp Notification
+              <span>📲</span> <span data-i18n="mockNotificationHeader">Mock SMS / WhatsApp Notification</span>
             </h3>
-            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.2rem;">
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.2rem;" data-i18n="mockNotificationSubheader">
               Simulate instant procurement date & time reminders on farmer's mobile.
             </p>
           </div>
@@ -471,9 +471,9 @@
         <!-- Target Mobile Display -->
         <div style="background: #f8fafc; padding: 0.65rem 0.85rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color); margin-bottom: 1rem; display: flex; align-items: center; justify-content: space-between; font-size: 0.85rem;">
           <div style="color: var(--text-muted);">
-            Recipient Mobile: <strong id="simFarmerMobile" style="color: var(--text-main);">+91 98765 43210</strong>
+            <span data-i18n="recipientMobile">Recipient Mobile:</span> <strong id="simFarmerMobile" style="color: var(--text-main);">+91 98765 43210</strong>
           </div>
-          <span class="badge badge-green">Registered Farmer</span>
+          <span class="badge badge-green" data-i18n="registeredFarmerBadge">Registered Farmer</span>
         </div>
 
         <!-- Simulated Mobile Phone Screen Preview -->
@@ -491,9 +491,9 @@
               <div style="flex-grow: 1;">
                 <div style="font-size: 0.9rem; font-weight: 700; display: flex; align-items: center; gap: 0.3rem;">
                   <span>Kisan Mitra SIH</span>
-                  <span style="font-size: 0.7rem; background: #25d366; color: #075e54; padding: 0.1rem 0.3rem; border-radius: 3px;">✓ Official</span>
+                  <span style="font-size: 0.7rem; background: #25d366; color: #075e54; padding: 0.1rem 0.3rem; border-radius: 3px;" data-i18n="officialVerified">✓ Official</span>
                 </div>
-                <div style="font-size: 0.72rem; color: #e2e8f0;">Online • Gov Procurement Dept</div>
+                <div style="font-size: 0.72rem; color: #e2e8f0;" data-i18n="govProcDept">Online • Gov Procurement Dept</div>
               </div>
             </div>
 
@@ -504,13 +504,13 @@
               </div>
               <div>
                 <div style="font-size: 0.88rem; font-weight: 700;">GOV-MSP-KMP</div>
-                <div style="font-size: 0.7rem; color: #94a3b8;">Govt of India • SMS Service</div>
+                <div style="font-size: 0.7rem; color: #94a3b8;" data-i18n="smsServiceSub">Govt of India • SMS Service</div>
               </div>
             </div>
 
             <!-- WhatsApp Chat Body -->
             <div id="simWaBody" class="sim-chat-body-wa">
-              <div style="text-align: center; font-size: 0.7rem; color: #64748b; background: rgba(255,255,255,0.7); padding: 0.2rem 0.5rem; border-radius: 10px; align-self: center;">
+              <div style="text-align: center; font-size: 0.7rem; color: #64748b; background: rgba(255,255,255,0.7); padding: 0.2rem 0.5rem; border-radius: 10px; align-self: center;" data-i18n="todayBadge">
                 TODAY
               </div>
               <div class="bubble-wa">
@@ -540,7 +540,7 @@
 
             <!-- SMS Chat Body (Hidden by default) -->
             <div id="simSmsBody" class="sim-chat-body-sms" style="display: none;">
-              <div style="text-align: center; font-size: 0.7rem; color: #64748b; margin-bottom: 0.25rem;">
+              <div style="text-align: center; font-size: 0.7rem; color: #64748b; margin-bottom: 0.25rem;" data-i18n="standardSms">
                 Text Message • Standard SMS
               </div>
               <div class="bubble-sms">
@@ -548,7 +548,7 @@
                 <div id="simSmsMessageText" style="white-space: pre-line;">
                   [GOV-MSP-KMP] Kisan Mitra: Dear Ramesh Patel, your Wheat procurement (Token: TK-1042) is scheduled on 12 September 2026, 10:00 AM – 11:00 AM at Sanwer Procurement Centre. Carry Aadhaar & Land docs. Helpline: 1800-180-1551.
                 </div>
-                <div style="font-size: 0.7rem; color: #64748b; text-align: right; margin-top: 0.35rem;">
+                <div style="font-size: 0.7rem; color: #64748b; text-align: right; margin-top: 0.35rem;" data-i18n="deliveredJustNow">
                   Delivered • Just now
                 </div>
               </div>
@@ -560,7 +560,7 @@
         <!-- Simulation Delivery Status Tag -->
         <div style="margin-top: 1rem; display: flex; align-items: center; justify-content: space-between; font-size: 0.8rem; background: #f0fdf4; padding: 0.5rem 0.75rem; border-radius: var(--radius-sm); border: 1px solid #bbf7d0;">
           <span style="color: #166534; display: flex; align-items: center; gap: 0.35rem;">
-            <span>🟢</span> <strong>Gateway Status:</strong> <span id="simGatewayStatus">Delivered (Gov SMS Gateway)</span>
+            <span>🟢</span> <strong data-i18n="gatewayStatus">Gateway Status:</strong> <span id="simGatewayStatus">Delivered (Gov SMS Gateway)</span>
           </span>
           <span id="simLastSentTime" style="color: #64748b; font-size: 0.75rem;">Ready to trigger</span>
         </div>
@@ -568,12 +568,12 @@
         <!-- Modal Bottom Actions -->
         <div style="display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 1.25rem; flex-wrap: wrap;">
           <button id="btnCopySimMessage" class="btn btn-outline-primary btn-sm">
-            <span>📋</span> Copy Message
+            <span>📋</span> <span data-i18n="copyMessage">Copy Message</span>
           </button>
           <button id="btnTriggerReminderApi" class="btn btn-primary btn-sm" style="background: #059669; border-color: #047857; display: flex; align-items: center; gap: 0.35rem;">
-            <span>⚡</span> <span>Send Mock Reminder Now</span>
+            <span>⚡</span> <span data-i18n="sendMockReminderBtn">Send Mock Reminder Now</span>
           </button>
-          <button id="btnModalDone" class="btn btn-sm" style="background: #f1f5f9; color: var(--text-main); border: 1px solid var(--border-color);">
+          <button id="btnModalDone" class="btn btn-sm" style="background: #f1f5f9; color: var(--text-main); border: 1px solid var(--border-color);" data-i18n="close">
             Close
           </button>
         </div>
@@ -586,9 +586,9 @@
         <div style="display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 0.75rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.75rem;">
           <div>
             <h3 style="font-size: 1.2rem; font-weight: 700; color: var(--primary-dark); display: flex; align-items: center; gap: 0.5rem;">
-              <span>🌾</span> Fast-Track Digital QR Gate Pass
+              <span>🌾</span> <span data-i18n="qrGatePass">Fast-Track Digital QR Gate Pass</span>
             </h3>
-            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.2rem;">
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.2rem;" data-i18n="qrModalSubtitle">
               Transforms your digital token into an instant scannable gate pass for contactless verification.
             </p>
           </div>
@@ -598,10 +598,10 @@
         <!-- Modal Mode Switcher -->
         <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">
           <button id="qrTabPass" class="channel-tab-btn active">
-            <span>📱</span> Digital QR Gate Pass
+            <span>📱</span> <span data-i18n="digitalQrGatePassTab">Digital QR Gate Pass</span>
           </button>
           <button id="qrTabScanner" class="channel-tab-btn">
-            <span>🔬</span> Gate Scanner Simulator
+            <span>🔬</span> <span data-i18n="gateScannerSimulatorTab">Gate Scanner Simulator</span>
           </button>
         </div>
 
@@ -613,14 +613,14 @@
             <!-- Pass Header -->
             <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1.5px dashed #cbd5e1; padding-bottom: 0.75rem; margin-bottom: 1rem;">
               <div>
-                <div style="font-size: 1.05rem; font-weight: 800; color: var(--primary-dark);">
+                <div style="font-size: 1.05rem; font-weight: 800; color: var(--primary-dark);" data-i18n="mspProcGatePassTitle">
                   🌾 MSP AGRICULTURAL PROCUREMENT GATE PASS
                 </div>
-                <div style="font-size: 0.75rem; color: var(--text-muted);">
+                <div style="font-size: 0.75rem; color: var(--text-muted);" data-i18n="govIndiaDept">
                   Govt. of India • Department of Food & Public Distribution
                 </div>
               </div>
-              <span class="badge badge-green" id="modalQrStatus">Active & Valid</span>
+              <span class="badge badge-green" id="modalQrStatus" data-i18n="activeAndValid">Active & Valid</span>
             </div>
 
             <!-- QR Code and Token Highlighting Section -->
@@ -629,7 +629,7 @@
               <!-- Left: Scannable QR Code -->
               <div style="text-align: center; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: var(--radius-md); padding: 0.75rem;">
                 <img id="modalQrImage" src="" alt="Digital Token Scannable QR" class="qr-large-img" style="display: none; width: 170px; height: 170px; margin: 0 auto;">
-                <div id="modalQrLoading" style="width: 170px; height: 170px; margin: 0 auto; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: var(--text-muted);">
+                <div id="modalQrLoading" style="width: 170px; height: 170px; margin: 0 auto; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: var(--text-muted);" data-i18n="generatingQr">
                   ⏳ Generating QR...
                 </div>
                 <div style="font-size: 0.7rem; font-weight: 700; color: #166534; margin-top: 0.35rem; display: flex; align-items: center; justify-content: center; gap: 0.25rem;">
@@ -639,7 +639,7 @@
 
               <!-- Right: Key Gate Entry Identifiers -->
               <div>
-                <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;">
+                <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px;" data-i18n="digitalTokenCode">
                   Digital Token Code
                 </div>
                 <div id="modalQrToken" style="font-size: 1.6rem; font-weight: 900; color: var(--primary-dark); letter-spacing: 1px; margin-bottom: 0.5rem;">
@@ -647,13 +647,13 @@
                 </div>
 
                 <div style="display: flex; flex-direction: column; gap: 0.35rem; font-size: 0.85rem;">
-                  <div><span style="color: var(--text-muted);">Farmer:</span> <strong id="modalQrFarmer">Ramesh Patel</strong> (<span id="modalQrFarmerId" style="color: var(--text-muted);">FMR1001</span>)</div>
-                  <div><span style="color: var(--text-muted);">Crop / Qty:</span> <strong id="modalQrCrop">Wheat (18 Quintal)</strong></div>
-                  <div><span style="color: var(--text-muted);">Centre:</span> <strong id="modalQrCentre">Sanwer Procurement Centre</strong></div>
-                  <div><span style="color: var(--text-muted);">Date & Slot:</span> <strong id="modalQrSlot">12 Sep 2026 • 10:00 AM – 11:00 AM</strong></div>
+                  <div><span style="color: var(--text-muted);" data-i18n="farmerColon">Farmer:</span> <strong id="modalQrFarmer">Ramesh Patel</strong> (<span id="modalQrFarmerId" style="color: var(--text-muted);">FMR1001</span>)</div>
+                  <div><span style="color: var(--text-muted);" data-i18n="cropQtyColon">Crop / Qty:</span> <strong id="modalQrCrop">Wheat (18 Quintal)</strong></div>
+                  <div><span style="color: var(--text-muted);" data-i18n="centreColon">Centre:</span> <strong id="modalQrCentre">Sanwer Procurement Centre</strong></div>
+                  <div><span style="color: var(--text-muted);" data-i18n="dateSlotColon">Date & Slot:</span> <strong id="modalQrSlot">12 Sep 2026 • 10:00 AM – 11:00 AM</strong></div>
                 </div>
 
-                <div style="margin-top: 0.6rem; background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 6px; padding: 0.4rem 0.6rem; font-size: 0.75rem; color: #065f46; font-weight: 600;">
+                <div style="margin-top: 0.6rem; background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 6px; padding: 0.4rem 0.6rem; font-size: 0.75rem; color: #065f46; font-weight: 600;" id="modalFastTrackLaneBox">
                   ⚡ Fast-Track Lane: <strong>Lane 1 (Weighbridge Scale A)</strong>
                 </div>
               </div>
@@ -661,8 +661,8 @@
 
             <!-- Checklist Banner -->
             <div style="background: #f1f5f9; border-radius: var(--radius-sm); padding: 0.6rem 0.85rem; font-size: 0.76rem; color: var(--text-muted); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;">
-              <span>📋 <strong>Required at Gate:</strong> Aadhaar Card • Land Khasra • Bank Passbook</span>
-              <span class="badge badge-green">✓ Active Gate Pass</span>
+              <span data-i18n="requiredAtGate">📋 <strong>Required at Gate:</strong> Aadhaar Card • Land Khasra • Bank Passbook</span>
+              <span class="badge badge-green" data-i18n="activeGatePass">✓ Active Gate Pass</span>
             </div>
 
           </div>
@@ -670,14 +670,14 @@
           <!-- Actions Bar -->
           <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1.25rem; flex-wrap: wrap; gap: 0.5rem;">
             <button id="btnDownloadQrAction" class="btn btn-outline-primary btn-sm" style="display: flex; align-items: center; gap: 0.35rem;">
-              <span>📥</span> Download QR Pass (PNG)
+              <span>📥</span> <span data-i18n="downloadQrPassPng">Download QR Pass (PNG)</span>
             </button>
             <div style="display: flex; gap: 0.5rem;">
               <button id="btnPrintQrAction" class="btn btn-sm btn-secondary" style="display: flex; align-items: center; gap: 0.35rem;">
-                <span>🖨️</span> Print Pass
+                <span>🖨️</span> <span data-i18n="printPass">Print Pass</span>
               </button>
               <button id="btnSwitchToScanner" class="btn btn-primary btn-sm" style="display: flex; align-items: center; gap: 0.35rem;">
-                <span>🔬</span> Test Gate Scanner →
+                <span>🔬</span> <span data-i18n="testGateScannerArrow">Test Gate Scanner →</span>
               </button>
             </div>
           </div>
@@ -688,11 +688,11 @@
           <div style="background: #f8fafc; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1rem; margin-bottom: 1rem;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
               <div style="font-weight: 700; font-size: 0.92rem; color: var(--text-main); display: flex; align-items: center; gap: 0.35rem;">
-                <span>🏛️</span> Mandi Entrance Gate Scanner Terminal
+                <span>🏛️</span> <span data-i18n="mandiGateTerminal">Mandi Entrance Gate Scanner Terminal</span>
               </div>
-              <span class="badge badge-blue">Operator Mode</span>
+              <span class="badge badge-blue" data-i18n="operatorMode">Operator Mode</span>
             </div>
-            <p style="font-size: 0.8rem; color: var(--text-muted);">
+            <p style="font-size: 0.8rem; color: var(--text-muted);" data-i18n="scannerSimSubtitle">
               Simulate the procurement centre gatekeeper scanning the farmer's QR code to instantly verify registration and schedule.
             </p>
           </div>
@@ -700,7 +700,7 @@
           <!-- Scanner Viewfinder Box -->
           <div class="qr-scanner-sim-box">
             <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: #94a3b8; margin-bottom: 0.75rem;">
-              <span>CAMERA: HD GATE SCANNER #01</span>
+              <span data-i18n="cameraGateScanner">CAMERA: HD GATE SCANNER #01</span>
               <span id="scanLiveClock">10:00 AM</span>
             </div>
 
@@ -709,7 +709,7 @@
               <img id="scannerSampleQr" src="" alt="Target QR" style="width: 130px; height: 130px; opacity: 0.85; border-radius: 6px;">
             </div>
 
-            <div style="text-align: center; margin-top: 0.75rem; font-size: 0.8rem; color: #38bdf8; font-weight: 600;">
+            <div style="text-align: center; margin-top: 0.75rem; font-size: 0.8rem; color: #38bdf8; font-weight: 600;" data-i18n="alignQrCode">
               Align QR code inside frame for instant barcode decode
             </div>
           </div>
@@ -717,14 +717,14 @@
           <!-- Trigger Scan Button -->
           <div style="text-align: center; margin: 1rem 0;">
             <button id="btnPerformGateScan" class="btn btn-primary" style="background: #059669; border-color: #047857; width: 100%; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
-              <span>⚡</span> <span>SCAN & VERIFY TOKEN (TK-1042)</span>
+              <span>⚡</span> <span data-i18n="scanAndVerifyToken">SCAN & VERIFY TOKEN</span>
             </button>
           </div>
 
           <!-- Gate Verification Result Box -->
           <div id="gateScanResultBox" style="display: none; background: #ecfdf5; border: 1.5px solid #10b981; border-radius: var(--radius-md); padding: 1rem; margin-top: 1rem;">
             <div style="display: flex; align-items: center; gap: 0.5rem; color: #065f46; font-weight: 800; font-size: 1rem; margin-bottom: 0.5rem;">
-              <span>✅</span> <span id="gateScanResultTitle">ENTRY AUTHORIZED — FAST TRACK LANE 1</span>
+              <span>✅</span> <span id="gateScanResultTitle" data-i18n="entryAuthorized">ENTRY AUTHORIZED — FAST TRACK LANE 1</span>
             </div>
             
             <div style="font-size: 0.85rem; color: #065f46; display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; background: #ffffff; padding: 0.75rem; border-radius: 6px; border: 1px solid #a7f3d0;">
@@ -733,16 +733,16 @@
               <div><strong>Crop:</strong> <span id="resScanCrop">Wheat (18 Quintal)</span></div>
               <div><strong>Centre:</strong> <span id="resScanCentre">Sanwer Mandi</span></div>
               <div><strong>Slot Time:</strong> <span id="resScanSlot">10:00 AM – 11:00 AM</span></div>
-              <div><strong>Verification:</strong> <span class="badge badge-green">Passed</span></div>
+              <div><strong>Verification:</strong> <span class="badge badge-green" data-i18n="passedBadge">Passed</span></div>
             </div>
 
-            <div style="font-size: 0.75rem; color: #047857; margin-top: 0.5rem; font-weight: 600;">
+            <div style="font-size: 0.75rem; color: #047857; margin-top: 0.5rem; font-weight: 600;" id="resScanLogText">
               Proceeding directly to Weighbridge Scale A. Digital check-in logged at <span id="resScanTime"></span>.
             </div>
           </div>
 
           <div style="display: flex; justify-content: flex-end; margin-top: 1rem;">
-            <button id="btnBackToQrPass" class="btn btn-outline-primary btn-sm">
+            <button id="btnBackToQrPass" class="btn btn-outline-primary btn-sm" data-i18n="backToQrPass">
               ← Back to QR Gate Pass
             </button>
           </div>
@@ -758,7 +758,7 @@
           <div>
             <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.2rem;">
               <span id="modalCentreCongestionBadge" class="congestion-badge congestion-low">🟢 Low Traffic</span>
-              <span id="modalCentreStatusBadge" class="badge badge-green">🟢 Open</span>
+              <span id="modalCentreStatusBadge" class="badge badge-green" data-i18n="openStatus">🟢 Open</span>
             </div>
             <h3 id="modalCentreName" style="font-size: 1.25rem; font-weight: 700; color: var(--text-main);">
               Sanwer Procurement Centre
@@ -773,15 +773,15 @@
         <!-- Telemetry Stats Grid -->
         <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; margin-bottom: 1.25rem;">
           <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: var(--radius-sm); padding: 0.75rem; text-align: center;">
-            <div style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600;">EST. QUEUE WAIT</div>
+            <div style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600;" data-i18n="estQueueWait">EST. QUEUE WAIT</div>
             <div id="modalCentreWaitTime" style="font-size: 1.35rem; font-weight: 800; color: var(--primary-dark);">45 mins</div>
           </div>
           <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: var(--radius-sm); padding: 0.75rem; text-align: center;">
-            <div style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600;">TRACTORS IN LINE</div>
+            <div style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600;" data-i18n="tractorsInLine">TRACTORS IN LINE</div>
             <div id="modalCentreTractors" style="font-size: 1.35rem; font-weight: 800; color: var(--text-main);">14</div>
           </div>
           <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: var(--radius-sm); padding: 0.75rem; text-align: center;">
-            <div style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600;">WEIGHBRIDGE SCALES</div>
+            <div style="font-size: 0.72rem; color: var(--text-muted); font-weight: 600;" data-i18n="weighbridgeScales">WEIGHBRIDGE SCALES</div>
             <div id="modalCentreScales" style="font-size: 1.35rem; font-weight: 800; color: var(--text-main);">2 / 3 Active</div>
           </div>
         </div>
@@ -789,7 +789,7 @@
         <!-- Traffic Density Meter -->
         <div style="margin-bottom: 1.25rem;">
           <div style="display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 600; margin-bottom: 0.25rem;">
-            <span>Current Mandi Gate Load Density</span>
+            <span data-i18n="mandiGateDensity">Current Mandi Gate Load Density</span>
             <span id="modalCentreDensityText">58% Occupancy (Moderate)</span>
           </div>
           <div class="traffic-gauge-container" style="height: 10px;">
@@ -800,7 +800,7 @@
         <!-- Hourly Congestion Forecast Section -->
         <div style="margin-bottom: 1.25rem;">
           <div style="font-size: 0.85rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.4rem;">
-            <span>📈</span> Today's Hourly Traffic Curve & Optimal Slots
+            <span>📈</span> <span data-i18n="trafficCurveTitle">Today's Hourly Traffic Curve & Optimal Slots</span>
           </div>
           <div id="modalHourlyForecastGrid" style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.4rem;">
             <!-- Rendered by JS -->
@@ -809,20 +809,20 @@
 
         <!-- Smart Advisory Box -->
         <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: var(--radius-sm); padding: 0.75rem 1rem; margin-bottom: 1.25rem; font-size: 0.82rem; color: #166534;">
-          💡 <strong>Best Recommended Arrival Window:</strong>
+          💡 <strong data-i18n="bestArrivalWindow">Best Recommended Arrival Window:</strong>
           <span id="modalCentreBestTime" style="font-weight: 700;">02:00 PM – 04:00 PM (Minimal Wait)</span>
           <div style="margin-top: 0.25rem; font-size: 0.76rem; color: #15803d;">
-            ⚠️ <strong>Peak Arrival Hours:</strong> <span id="modalCentrePeakHours">11:00 AM – 01:30 PM</span> (Expect highest queue density).
+            ⚠️ <strong data-i18n="peakArrivalHours">Peak Arrival Hours:</strong> <span id="modalCentrePeakHours">11:00 AM – 01:30 PM</span> (<span data-i18n="expectHighestQueue">Expect highest queue density</span>).
           </div>
         </div>
 
         <!-- Footer Actions -->
         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
           <button id="btnSetAsPreferredModal" class="btn btn-outline-primary btn-sm">
-            📌 Set as Preferred Mandi
+            <span>📌</span> <span data-i18n="setAsPreferredMandi">Set as Preferred Mandi</span>
           </button>
           <div style="display: flex; gap: 0.5rem;">
-            <a href="schedule.html" class="btn btn-primary btn-sm">
+            <a href="schedule.html" class="btn btn-primary btn-sm" data-i18n="bookAppointmentSlot">
               📅 Book Appointment Slot →
             </a>
           </div>
