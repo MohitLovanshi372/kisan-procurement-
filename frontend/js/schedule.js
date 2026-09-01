@@ -54,7 +54,12 @@ function renderScheduleTable(items) {
         </span>
       </td>
       <td>
-        <a href="procurement.html" class="btn btn-sm btn-secondary">View Details</a>
+        <div style="display: flex; gap: 0.35rem; flex-wrap: wrap;">
+          <a href="procurement.html" class="btn btn-sm btn-secondary">View Details</a>
+          <button class="btn btn-sm btn-outline-primary" onclick="simulateInstantReminder('${escapeHtml(item.scheduleDate || "12 September 2026")}', '${escapeHtml(item.startTime || "10:00 AM")}')" style="display: inline-flex; align-items: center; gap: 0.25rem;">
+            <span>📲</span> Reminder
+          </button>
+        </div>
       </td>
     </tr>
   `).join("");
@@ -83,6 +88,27 @@ function filterSchedule(status) {
   } else {
     const filtered = schedulesData.filter(s => s.procurementStatus === status);
     renderScheduleTable(filtered);
+  }
+}
+
+async function simulateInstantReminder(date, time) {
+  const user = getUser();
+  showToast("Dispatching mock SMS & WhatsApp reminder...", "info");
+  try {
+    const res = await apiFetch("/api/notifications/simulate-reminder", {
+      method: "POST",
+      body: JSON.stringify({
+        channel: "both",
+        mobile: user ? user.mobile : "9876543210"
+      })
+    });
+    if (res.success) {
+      showToast(`📲 Reminder for ${date} (${time}) simulated on +91 ${user ? user.mobile : "9876543210"}!`, "success");
+    } else {
+      showToast(res.message || "Unable to send reminder simulation", "error");
+    }
+  } catch (err) {
+    showToast("Simulation error", "error");
   }
 }
 

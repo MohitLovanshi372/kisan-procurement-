@@ -28,6 +28,7 @@ app.use(express.static(frontendPath));
 // API Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/farmers", farmerRoutes);
+app.use("/api/farmer", farmerRoutes);
 app.use("/api/procurement", procurementRoutes);
 app.use("/api/centres", centreRoutes);
 app.use("/api/notifications", notificationRoutes);

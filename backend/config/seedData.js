@@ -19,7 +19,7 @@ const seedInitialData = async () => {
     const farmerPassword = await bcrypt.hash("123456", salt);
     const adminPassword = await bcrypt.hash("admin123", salt);
 
-    // 1. Create Centres
+    // 1. Create Centres with real-time congestion metrics
     const centresData = [
       {
         name: "Sanwer Procurement Centre",
@@ -31,7 +31,15 @@ const seedInitialData = async () => {
         scheduledFarmers: 62,
         completedFarmers: 38,
         waitingFarmers: 18,
-        estimatedWait: "45 minutes"
+        estimatedWait: "45 minutes",
+        congestionLevel: "Moderate",
+        congestionScore: 58,
+        queueTractors: 14,
+        activeWeighbridges: 2,
+        totalWeighbridges: 3,
+        trend: "Stable",
+        bestTimeToVisit: "02:00 PM – 04:00 PM",
+        peakHours: "11:00 AM – 01:30 PM"
       },
       {
         name: "Indore Central Mandi",
@@ -40,10 +48,18 @@ const seedInitialData = async () => {
         location: "Laxmibai Nagar Mandi, Indore",
         workingHours: "08:30 AM – 06:00 PM",
         status: "Open",
-        scheduledFarmers: 74,
-        completedFarmers: 51,
-        waitingFarmers: 12,
-        estimatedWait: "25 minutes"
+        scheduledFarmers: 96,
+        completedFarmers: 58,
+        waitingFarmers: 34,
+        estimatedWait: "1 hr 15 mins",
+        congestionLevel: "Heavy",
+        congestionScore: 88,
+        queueTractors: 28,
+        activeWeighbridges: 4,
+        totalWeighbridges: 4,
+        trend: "Rising",
+        bestTimeToVisit: "03:30 PM – 05:30 PM",
+        peakHours: "10:00 AM – 02:00 PM"
       },
       {
         name: "Depalpur Krishi Upaj Mandi",
@@ -53,9 +69,77 @@ const seedInitialData = async () => {
         workingHours: "09:00 AM – 05:00 PM",
         status: "Open",
         scheduledFarmers: 43,
-        completedFarmers: 29,
+        completedFarmers: 35,
+        waitingFarmers: 6,
+        estimatedWait: "15 minutes",
+        congestionLevel: "Low Traffic",
+        congestionScore: 22,
+        queueTractors: 4,
+        activeWeighbridges: 2,
+        totalWeighbridges: 2,
+        trend: "Easing",
+        bestTimeToVisit: "10:00 AM – 03:00 PM",
+        peakHours: "12:00 PM – 01:00 PM"
+      },
+      {
+        name: "Mhow Kisan Samriddhi Mandi",
+        district: "Indore",
+        state: "Madhya Pradesh",
+        location: "Mhow-Pithampur Bypass, Indore",
+        workingHours: "09:00 AM – 05:30 PM",
+        status: "Open",
+        scheduledFarmers: 52,
+        completedFarmers: 41,
         waitingFarmers: 8,
-        estimatedWait: "15 minutes"
+        estimatedWait: "20 minutes",
+        congestionLevel: "Low Traffic",
+        congestionScore: 28,
+        queueTractors: 6,
+        activeWeighbridges: 2,
+        totalWeighbridges: 3,
+        trend: "Stable",
+        bestTimeToVisit: "11:00 AM – 03:00 PM",
+        peakHours: "09:30 AM – 11:00 AM"
+      },
+      {
+        name: "Ujjain APMC Procurement Hub",
+        district: "Ujjain",
+        state: "Madhya Pradesh",
+        location: "Agar Road Krishi Parisar, Ujjain",
+        workingHours: "08:00 AM – 06:30 PM",
+        status: "Open",
+        scheduledFarmers: 110,
+        completedFarmers: 65,
+        waitingFarmers: 42,
+        estimatedWait: "1 hr 30 mins",
+        congestionLevel: "Heavy",
+        congestionScore: 92,
+        queueTractors: 35,
+        activeWeighbridges: 3,
+        totalWeighbridges: 5,
+        trend: "Rising",
+        bestTimeToVisit: "04:00 PM – 06:00 PM",
+        peakHours: "10:30 AM – 02:30 PM"
+      },
+      {
+        name: "Dewas Agro Procurement Complex",
+        district: "Dewas",
+        state: "Madhya Pradesh",
+        location: "Bhopal Bypass Road, Dewas",
+        workingHours: "09:00 AM – 05:00 PM",
+        status: "Open",
+        scheduledFarmers: 68,
+        completedFarmers: 48,
+        waitingFarmers: 16,
+        estimatedWait: "35 minutes",
+        congestionLevel: "Moderate",
+        congestionScore: 52,
+        queueTractors: 12,
+        activeWeighbridges: 3,
+        totalWeighbridges: 4,
+        trend: "Easing",
+        bestTimeToVisit: "01:30 PM – 04:00 PM",
+        peakHours: "11:00 AM – 01:00 PM"
       }
     ];
 

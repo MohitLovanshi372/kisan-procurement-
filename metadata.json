@@ -1,6 +1,6 @@
 {
   "name": "Kisan Procurement Mitra",
-  "description": "A farmer-centric procurement assistance platform for SIH26032 with schedule, token, centre status, demo queue tracking, and payment status.",
+  "description": "A farmer-centric procurement assistance platform for SIH26032 with digital token QR code generator for fast-track gate entry, schedule, centre status, queue tracking, and payment settlement.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

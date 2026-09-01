@@ -12,6 +12,15 @@ const centreSchema = new mongoose.Schema({
   completedFarmers: { type: Number, default: 0 },
   waitingFarmers: { type: Number, default: 0 },
   estimatedWait: { type: String, default: "30 minutes" },
+  congestionLevel: { type: String, enum: ["Low Traffic", "Moderate", "Heavy"], default: "Moderate" },
+  congestionScore: { type: Number, default: 50 }, // 0 - 100 percentage
+  queueTractors: { type: Number, default: 10 },
+  activeWeighbridges: { type: Number, default: 2 },
+  totalWeighbridges: { type: Number, default: 3 },
+  trend: { type: String, enum: ["Easing", "Stable", "Rising"], default: "Stable" },
+  bestTimeToVisit: { type: String, default: "02:00 PM – 04:00 PM" },
+  peakHours: { type: String, default: "11:00 AM – 01:30 PM" },
+  lastUpdated: { type: Date, default: Date.now },
   createdAt: { type: Date, default: Date.now }
 });
 

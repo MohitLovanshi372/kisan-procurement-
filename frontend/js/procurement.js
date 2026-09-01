@@ -56,6 +56,22 @@ async function loadProcurementDetails() {
       tokStatus.className = "badge badge-green";
     }
 
+    // Fetch and populate scannable QR Code on the slip
+    try {
+      const qrRes = await apiFetch("/api/procurement/qr-code");
+      const tokQrImage = document.getElementById("tokQrImage");
+      const tokQrLoading = document.getElementById("tokQrLoading");
+      if (qrRes.success && qrRes.data && qrRes.data.qrDataUrl) {
+        if (tokQrImage) {
+          tokQrImage.src = qrRes.data.qrDataUrl;
+          tokQrImage.style.display = "block";
+        }
+        if (tokQrLoading) tokQrLoading.style.display = "none";
+      }
+    } catch (qrErr) {
+      console.warn("Slip QR load warning:", qrErr);
+    }
+
     // 2. Populate Procurement Status Section
     const psCrop = document.getElementById("psCrop");
     const psExpQty = document.getElementById("psExpQty");

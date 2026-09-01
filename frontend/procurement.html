@@ -79,11 +79,27 @@
           <span class="badge badge-green" id="tokStatus">Active Token</span>
         </div>
 
-        <div style="text-align: center; margin: 1.25rem 0;">
-          <div style="font-size: 0.85rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase;">
-            Authorized Gate Pass Token
+        <div style="display: flex; align-items: center; justify-content: space-around; margin: 1.25rem 0; flex-wrap: wrap; gap: 1rem; background: #f8fafc; padding: 1rem; border-radius: var(--radius-md); border: 1px solid #e2e8f0;">
+          <div style="text-align: center;">
+            <div style="font-size: 0.85rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase;">
+              Authorized Gate Pass Token
+            </div>
+            <div class="token-badge-large" id="tokNumber">TK-1042</div>
+            <div style="font-size: 0.75rem; color: #166534; font-weight: 700; margin-top: 0.25rem;">
+              ⚡ Fast-Track Weighbridge Entry
+            </div>
           </div>
-          <div class="token-badge-large" id="tokNumber">TK-1042</div>
+
+          <!-- Printable & Scannable QR Pass -->
+          <div style="text-align: center;">
+            <img id="tokQrImage" src="" alt="Digital Token Scannable QR Code" style="width: 120px; height: 120px; border: 1px solid #cbd5e1; border-radius: 6px; padding: 4px; background: #ffffff; display: none;">
+            <div id="tokQrLoading" style="width: 120px; height: 120px; display: flex; align-items: center; justify-content: center; color: var(--text-muted); font-size: 1.2rem;">
+              ⏳ QR
+            </div>
+            <div style="font-size: 0.72rem; font-weight: 700; color: var(--primary-dark); margin-top: 0.25rem;">
+              Scan at Mandi Gate
+            </div>
+          </div>
         </div>
 
         <div class="token-detail-grid">
