@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard — Kisan Procurement Mitra</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Top Navigation Header -->
+  <header class="site-header">
+    <div class="header-container">
+      <a href="admin.html" class="brand-logo">
+        <span class="brand-icon">🌾</span>
+        <div>
+          <div class="brand-title">
+            <span data-i18n="brandTitle">Kisan Procurement Mitra</span>
+            <span class="brand-tag" data-i18n="adminPortal">Admin Portal</span>
+          </div>
+          <div class="brand-subtitle" data-i18n="mandiOfficerOps">Mandi Officer Operations</div>
+        </div>
+      </a>
+
+      <div class="header-actions">
+        <button id="langSwitchBtn" class="lang-btn">हिंदी</button>
+        <span class="badge badge-green" style="background: #e0f2fe; color: #0369a1; border-color: #bae6fd;" data-i18n="authOfficerBadge">
+          👮‍♂️ Authorized Mandi Officer
+        </span>
+        <button id="headerLogoutBtn" class="btn-logout" data-i18n="logout">Logout</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-content">
+    
+    <div class="page-header">
+      <div class="page-title-group">
+        <h1 data-i18n="adminOpsHeader">Mandi Administrative Operations</h1>
+        <p class="page-subtitle" data-i18n="adminOpsSubtitle">Manage procurement progress, weighment acceptance, DBT payments, and broadcast notifications.</p>
+      </div>
+      <div>
+        <span class="badge badge-green" data-i18n="liveDbConnection">🟢 Live MongoDB Connection</span>
+      </div>
+    </div>
+
+    <!-- 4 Top Statistics Cards -->
+    <div class="stat-grid-4">
+      <div class="stat-card stat-blue">
+        <div class="stat-header">
+          <span data-i18n="totalRegFarmers">👥 Total Registered Farmers</span>
+        </div>
+        <div class="stat-value" id="admTotalFarmers">1,248</div>
+        <div class="stat-meta" data-i18n="indoreDivision">Indore Division</div>
+      </div>
+
+      <div class="stat-card stat-green">
+        <div class="stat-header">
+          <span data-i18n="todayScheduleStat">📅 Today's Schedule</span>
+        </div>
+        <div class="stat-value" id="admTodaySchedule">86</div>
+        <div class="stat-meta" data-i18n="allocatedTimeSlots">Allocated Time Slots</div>
+      </div>
+
+      <div class="stat-card stat-purple">
+        <div class="stat-header">
+          <span data-i18n="procurementCompletedStat">🌾 Procurement Completed</span>
+        </div>
+        <div class="stat-value" id="admProcCompleted">52</div>
+        <div class="stat-meta" data-i18n="weighedVerified">Weighed & Verified</div>
+      </div>
+
+      <div class="stat-card stat-amber">
+        <div class="stat-header">
+          <span data-i18n="pendingPaymentsStat">💰 Pending Payments</span>
+        </div>
+        <div class="stat-value" id="admPendingPayments">17</div>
+        <div class="stat-meta" data-i18n="awaitingDbtSettlement">Awaiting DBT Settlement</div>
+      </div>
+    </div>
+
+    <!-- Centre Status Table Section -->
+    <section class="card">
+      <div class="card-header">
+        <div class="card-title">
+          <span>🏛️</span> <span data-i18n="centreStatusOverview">Procurement Centre Status Overview</span>
+        </div>
+        <span class="demo-tag" data-i18n="demoCentreData">Demo Centre Data</span>
+      </div>
+
+      <div class="table-responsive">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th data-i18n="procurementCentreTh">Procurement Centre</th>
+              <th data-i18n="todayScheduledTh">Today Scheduled</th>
+              <th data-i18n="completedTh">Completed</th>
+              <th data-i18n="waitingInQueueTh">Waiting in Queue</th>
+              <th data-i18n="mandiStatusTh">Mandi Status</th>
+            </tr>
+          </thead>
+          <tbody id="adminCentresTableBody">
+            <!-- Dynamic centre rows -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Farmers Management & Procurement Update Section -->
+    <section class="card">
+      <div class="card-header" style="flex-wrap: wrap; gap: 0.75rem;">
+        <div class="card-title">
+          <span>📋</span> <span data-i18n="farmerManagementTitle">Farmer Procurement & Payment Management</span>
+        </div>
+        <div style="width: 280px;">
+          <input type="text" id="adminFarmerSearch" class="form-input" placeholder="🔍 Search Farmer ID, Name, Village..." data-i18n-placeholder="searchFarmerPlaceholder" style="padding: 0.45rem 0.75rem; font-size: 0.85rem;">
+        </div>
+      </div>
+
+      <div id="adminFarmersLoading" style="padding: 1.5rem; text-align: center; color: var(--text-muted);" data-i18n="loadingFarmers">
+        Loading registered farmers...
+      </div>
+
+      <div class="table-responsive">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th data-i18n="farmerId">Farmer ID</th>
+              <th data-i18n="farmerNameMobileTh">Farmer Name & Mobile</th>
+              <th data-i18n="villageDistrictTh">Village & District</th>
+              <th data-i18n="crop">Crop</th>
+              <th data-i18n="centre">Centre</th>
+              <th data-i18n="procurementStatus">Procurement Status</th>
+              <th data-i18n="paymentStatus">Payment Status</th>
+              <th data-i18n="action">Action</th>
+            </tr>
+          </thead>
+          <tbody id="adminFarmersTableBody">
+            <!-- Dynamic farmer rows -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Admin Broadcast Notification Form -->
+    <section class="card">
+      <div class="card-header">
+        <div class="card-title">
+          <span>📢</span> <span data-i18n="sendFarmerAdvisoryTitle">Send Farmer Notification / Advisory</span>
+        </div>
+        <span class="badge badge-blue" data-i18n="instantPush">Instant Push</span>
+      </div>
+
+      <form id="adminSendNotifForm">
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label" for="notifTitle" data-i18n="notifTitleLabel">Notification Title *</label>
+            <input type="text" id="notifTitle" class="form-input" placeholder="e.g. Sanwer Mandi Weather Advisory" data-i18n-placeholder="notifTitlePlaceholder" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="notifType" data-i18n="notifTypeLabel">Notification Type</label>
+            <select id="notifType" class="form-select">
+              <option value="General" data-i18n="generalAdvisoryOpt">General Advisory</option>
+              <option value="Schedule" data-i18n="scheduleUpdateOpt">Schedule Update</option>
+              <option value="Token" data-i18n="tokenNotifOpt">Token Notification</option>
+              <option value="Procurement" data-i18n="procStatusOpt">Procurement Status</option>
+              <option value="Payment" data-i18n="paymentSettlementOpt">Payment Settlement</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label" for="notifFarmerId" data-i18n="targetFarmerLabel">Target Farmer (Optional: leave blank for all)</label>
+            <input type="text" id="notifFarmerId" class="form-input" placeholder="e.g. FMR1001 or all" data-i18n-placeholder="targetFarmerPlaceholder">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="notifMessage" data-i18n="messageContentLabel">Message Content *</label>
+            <input type="text" id="notifMessage" class="form-input" placeholder="Enter message text for farmers" data-i18n-placeholder="messageContentPlaceholder" required>
+          </div>
+        </div>
+
+        <div style="text-align: right;">
+          <button type="submit" class="btn btn-primary btn-sm" data-i18n="sendNotifBtn">
+            📤 Send Notification to Farmers
+          </button>
+        </div>
+      </form>
+    </section>
+
+  </main>
+
+  <!-- Update Status Modal -->
+  <div class="modal-overlay" id="adminStatusModal">
+    <div class="modal-content">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--border-color);">
+        <div>
+          <h2 style="font-size: 1.2rem; font-weight: 700;" data-i18n="updateProcPayTitle">Update Procurement & Payment</h2>
+          <div style="font-size: 0.85rem; color: var(--text-muted);">
+            <span data-i18n="farmerLabel">Farmer</span>: <strong id="modalFarmerName" style="color: var(--primary-dark);">Ramesh Patel</strong> <span id="modalFarmerId"></span>
+          </div>
+        </div>
+        <button id="closeAdminModalBtn" style="background: transparent; border: none; font-size: 1.3rem; cursor: pointer;">✕</button>
+      </div>
+
+      <form id="adminUpdateStatusForm">
+        <div class="form-group">
+          <label class="form-label" for="adminProcStatus" data-i18n="procurementStatus">Procurement Status</label>
+          <select id="adminProcStatus" class="form-select">
+            <option value="Scheduled" data-i18n="optScheduled">Scheduled (स्लॉट निर्धारित)</option>
+            <option value="Arrived" data-i18n="optArrived">Arrived (मंडी में उपस्थित)</option>
+            <option value="Procurement Completed" data-i18n="optProcCompleted">Procurement Completed (तुलाई पूर्ण)</option>
+            <option value="Cancelled" data-i18n="optCancelled">Cancelled (रद्द)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="adminPaymentStatus" data-i18n="paymentStatus">Payment Status</label>
+          <select id="adminPaymentStatus" class="form-select">
+            <option value="Pending" data-i18n="optPending">Pending (लंबित)</option>
+            <option value="Processing" data-i18n="optProcessing">Processing (प्रक्रियाधीन / बैंक सत्यापन)</option>
+            <option value="Paid" data-i18n="optPaid">Paid (भुगतान सफल - DBT Transfer)</option>
+          </select>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label" for="adminReceivedQty" data-i18n="receivedQuantity">Received Quantity</label>
+            <input type="text" id="adminReceivedQty" class="form-input" value="18 Quintal">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="adminAmount" data-i18n="settlementAmount">Settlement Amount (₹)</label>
+            <input type="number" id="adminAmount" class="form-input" value="45000">
+          </div>
+        </div>
+
+        <div style="background: #f8fafc; padding: 0.75rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color); font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1rem;" data-i18n="updateNoticeText">
+          ℹ️ Updating status automatically generates an alert notification for the farmer and updates their dashboard in real-time.
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 0.75rem;">
+          <button type="submit" class="btn btn-primary" data-i18n="saveChangesDb">Save Changes to Database</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div><strong data-i18n="brandTitle">Kisan Procurement Mitra</strong> • <span data-i18n="adminMandiFooter">Mandi Procurement Administration</span></div>
+    <div class="footer-sub-note" data-i18n="footerText">Department of Food & Civil Supplies</div>
+  </footer>
+
+  <script src="js/api.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>

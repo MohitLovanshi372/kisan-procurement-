@@ -1,0 +1,6 @@
+{
+  "name": "Kisan Procurement Mitra",
+  "description": "A farmer-centric MSP procurement assistance platform with digital token QR code generator for fast-track gate entry, schedule, live centre congestion tracking, queue telemetry, and payment settlement.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

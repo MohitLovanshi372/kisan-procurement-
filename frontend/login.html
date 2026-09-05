@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login — Kisan Procurement Mitra</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="header-container">
+      <a href="index.html" class="brand-logo">
+        <span class="brand-icon">🌾</span>
+        <div>
+          <div class="brand-title" data-i18n="brandTitle">Kisan Procurement Mitra</div>
+          <div class="brand-subtitle" data-i18n="farmerPortal">Farmer Portal</div>
+        </div>
+      </a>
+      <div class="header-actions">
+        <button id="langSwitchBtn" class="lang-btn">हिंदी</button>
+        <a href="register.html" class="btn btn-secondary btn-sm" data-i18n="register">Register</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <div class="auth-card-container">
+      <div style="text-align: center; margin-bottom: 1.5rem;">
+        <div style="font-size: 2.2rem; margin-bottom: 0.25rem;">🔐</div>
+        <h1 style="font-size: 1.4rem; font-weight: 700;" data-i18n="accountLogin">Account Login</h1>
+        <p style="color: var(--text-muted); font-size: 0.85rem;" data-i18n="loginWithMobile">Login with your registered mobile number</p>
+      </div>
+
+      <form id="loginForm">
+        <div class="form-group">
+          <label class="form-label" for="mobile" data-i18n="mobileInputLabel">Mobile Number</label>
+          <input type="tel" id="mobile" class="form-input" placeholder="e.g. 9876543210" data-i18n-placeholder="mobilePlaceholder" required maxlength="10">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="password" data-i18n="passwordInputLabel">Password</label>
+          <input type="password" id="password" class="form-input" placeholder="Enter your password" data-i18n-placeholder="passwordPlaceholder" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block" style="margin-top: 0.5rem;" data-i18n="secureLoginBtn">
+          Secure Login →
+        </button>
+      </form>
+
+      <!-- 1-Click Evaluation Buttons -->
+      <div class="quick-demo-box">
+        <div style="font-weight: 700; margin-bottom: 0.5rem; color: var(--primary-dark);" data-i18n="quickDemoLogins">
+          ⚡ Quick Demo Logins:
+        </div>
+        <div style="display: flex; gap: 0.5rem; flex-direction: column;">
+          <button id="fillFarmerDemoBtn" type="button" class="btn btn-sm btn-secondary" style="justify-content: flex-start;" data-i18n="farmerDemoBtnText">
+            👨‍🌾 Farmer Demo: Ramesh Patel (9876543210 / 123456)
+          </button>
+          <button id="fillAdminDemoBtn" type="button" class="btn btn-sm btn-secondary" style="justify-content: flex-start;" data-i18n="adminDemoBtnText">
+            👮‍♂️ Admin Demo: Mandi Officer (9999999999 / admin123)
+          </button>
+        </div>
+      </div>
+
+      <div style="text-align: center; margin-top: 1.25rem; font-size: 0.88rem; color: var(--text-muted);">
+        <span data-i18n="newFarmerPrompt">New farmer?</span> <a href="register.html" style="color: var(--primary); font-weight: 600; text-decoration: none;" data-i18n="registerForProcurement">Register for Procurement</a>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div><strong data-i18n="brandTitle">Kisan Procurement Mitra</strong> • <span data-i18n="footerText">Department of Food & Civil Supplies</span></div>
+  </footer>
+
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+</body>
+</html>

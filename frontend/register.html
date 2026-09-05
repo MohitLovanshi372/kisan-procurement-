@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Farmer Registration — Kisan Procurement Mitra</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="header-container">
+      <a href="index.html" class="brand-logo">
+        <span class="brand-icon">🌾</span>
+        <div>
+          <div class="brand-title" data-i18n="brandTitle">Kisan Procurement Mitra</div>
+          <div class="brand-subtitle" data-i18n="farmerPortal">Farmer Portal</div>
+        </div>
+      </a>
+      <div class="header-actions">
+        <button id="langSwitchBtn" class="lang-btn">हिंदी</button>
+        <a href="login.html" class="btn btn-outline-primary btn-sm" data-i18n="login">Farmer Login</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <div class="auth-card-container" style="max-width: 640px;">
+      <div style="text-align: center; margin-bottom: 1.5rem;">
+        <div style="font-size: 2.2rem; margin-bottom: 0.25rem;">📝</div>
+        <h1 style="font-size: 1.4rem; font-weight: 700;" data-i18n="farmerRegistrationTitle">Farmer Registration</h1>
+        <p style="color: var(--text-muted); font-size: 0.85rem;" data-i18n="registerSubtitle">Register to generate procurement token and schedule slot</p>
+      </div>
+
+      <div style="margin-bottom: 1rem; text-align: right;">
+        <button type="button" id="fillRegisterDemoBtn" class="btn btn-sm btn-secondary" data-i18n="autoFillDemoBtn">
+          ⚡ Auto-fill Sample Farmer Data
+        </button>
+      </div>
+
+      <form id="registerForm">
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label" for="name" data-i18n="fullNameLabel">Full Name *</label>
+            <input type="text" id="name" class="form-input" placeholder="e.g. Ramesh Patel" data-i18n-placeholder="fullNamePlaceholder" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="mobile" data-i18n="mobileInputLabel">Mobile Number *</label>
+            <input type="tel" id="mobile" class="form-input" placeholder="e.g. 9876543210" data-i18n-placeholder="mobilePlaceholder" required maxlength="10">
+          </div>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label" for="password" data-i18n="passwordInputLabel">Password *</label>
+            <input type="password" id="password" class="form-input" placeholder="Enter your password" data-i18n-placeholder="passwordPlaceholder" required minlength="4">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="farmerId" data-i18n="farmerIdOptionalLabel">Farmer ID (Optional)</label>
+            <input type="text" id="farmerId" class="form-input" placeholder="e.g. FMR1001" data-i18n-placeholder="farmerIdPlaceholder">
+          </div>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label" for="village" data-i18n="villageLabel">Village *</label>
+            <input type="text" id="village" class="form-input" placeholder="e.g. Sanwer" data-i18n-placeholder="villagePlaceholder" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="district" data-i18n="districtLabel">District *</label>
+            <input type="text" id="district" class="form-input" placeholder="e.g. Indore" data-i18n-placeholder="districtPlaceholder" required>
+          </div>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label" for="state" data-i18n="stateLabel">State *</label>
+            <input type="text" id="state" class="form-input" value="Madhya Pradesh" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="crop" data-i18n="cropLabel">Crop *</label>
+            <select id="crop" class="form-select" required>
+              <option value="Wheat" data-i18n="wheatCrop">Wheat (गेहूँ)</option>
+              <option value="Soybean" data-i18n="soybeanCrop">Soybean (सोयाबीन)</option>
+              <option value="Gram (Chana)" data-i18n="gramCrop">Gram / Chana (चना)</option>
+              <option value="Paddy (Dhan)" data-i18n="paddyCrop">Paddy / Dhan (धान)</option>
+              <option value="Maize" data-i18n="maizeCrop">Maize (मक्का)</option>
+              <option value="Mustard" data-i18n="mustardCrop">Mustard (सरसों)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label" for="landArea" data-i18n="landAreaLabel">Land Area *</label>
+            <input type="text" id="landArea" class="form-input" placeholder="e.g. 4.5 Acres" data-i18n-placeholder="landAreaPlaceholder" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="preferredCentre" data-i18n="preferredCentreLabel">Preferred Mandi Centre *</label>
+            <select id="preferredCentre" class="form-select" required>
+              <option value="Sanwer Procurement Centre">Sanwer Procurement Centre (Indore)</option>
+              <option value="Indore Central Mandi">Indore Central Mandi (Laxmibai Nagar)</option>
+              <option value="Depalpur Krishi Upaj Mandi">Depalpur Krishi Upaj Mandi</option>
+            </select>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block" style="margin-top: 1rem; font-size: 1rem;" data-i18n="completeRegBtn">
+          Complete Registration & Generate Token →
+        </button>
+      </form>
+
+      <div style="text-align: center; margin-top: 1.25rem; font-size: 0.88rem; color: var(--text-muted);">
+        <span data-i18n="alreadyRegistered">Already registered?</span> <a href="login.html" style="color: var(--primary); font-weight: 600; text-decoration: none;" data-i18n="loginToDashboard">Login to Dashboard</a>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div><strong data-i18n="brandTitle">Kisan Procurement Mitra</strong> • <span data-i18n="footerText">Department of Food & Civil Supplies</span></div>
+  </footer>
+
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+</body>
+</html>
