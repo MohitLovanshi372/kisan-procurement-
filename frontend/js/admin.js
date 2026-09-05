@@ -1,5 +1,5 @@
 /**
- * Kisan Procurement Mitra - Admin Dashboard Handler
+ * Mandisathi - Admin Dashboard Handler
  */
 
 let allFarmersData = [];

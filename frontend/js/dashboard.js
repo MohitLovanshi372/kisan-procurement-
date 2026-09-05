@@ -1,5 +1,5 @@
 /**
- * Kisan Procurement Mitra - Farmer Dashboard Handler
+ * Mandisathi - Farmer Dashboard Handler
  */
 
 let currentProcurement = null;
@@ -318,7 +318,7 @@ function updateSimulatorPreview() {
 
   if (currentSimulatorLang === "en") {
     if (waTextEl) {
-      waTextEl.innerHTML = `🌾 <strong>Kisan Procurement Mitra</strong><br><br>` +
+      waTextEl.innerHTML = `🌾 <strong>Mandisathi</strong><br><br>` +
         `Namaste <strong>${escapeHtml(user.name)}</strong> ji,<br><br>` +
         `Here is your scheduled procurement appointment reminder:<br>` +
         `📅 <strong>Date:</strong> ${escapeHtml(date)}<br>` +
@@ -332,7 +332,7 @@ function updateSimulatorPreview() {
     }
 
     if (smsTextEl) {
-      smsTextEl.textContent = `[GOV-MSP-KMP] Kisan Mitra: Dear ${user.name}, your ${crop} procurement (Token: ${token}) is scheduled on ${date}, ${timeSlot} at ${centreName}. Carry Aadhaar & Land docs. Helpline: 1800-180-1551.`;
+      smsTextEl.textContent = `[GOV-MSP-KMP] Mandisathi: Dear ${user.name}, your ${crop} procurement (Token: ${token}) is scheduled on ${date}, ${timeSlot} at ${centreName}. Carry Aadhaar & Land docs. Helpline: 1800-180-1551.`;
     }
   } else {
     // Hindi Version
@@ -715,7 +715,7 @@ function downloadQrCodeImage() {
     const token = currentQrData.tokenNumber || "Token";
     const link = document.createElement("a");
     link.href = currentQrData.qrDataUrl;
-    link.download = `Kisan_Mitra_QR_Pass_${token}.png`;
+    link.download = `Mandisathi_QR_Pass_${token}.png`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);

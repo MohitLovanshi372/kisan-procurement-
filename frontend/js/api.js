@@ -1,5 +1,5 @@
 /**
- * Kisan Procurement Mitra - API & Common Helper Utilities
+ * Mandisathi - API & Common Helper Utilities
  */
 
 const API_BASE = "";
@@ -116,7 +116,7 @@ function showToast(message, type = "info") {
 const translations = {
   en: {
     // Brand & Navigation
-    brandTitle: "Kisan Procurement Mitra",
+    brandTitle: "Mandisathi",
     brandTagMsp: "MSP Portal",
     brandTagAdmin: "Admin Portal",
     brandSubtitle: "Simple • Transparent • Farmer First",
@@ -138,7 +138,7 @@ const translations = {
     // Landing Hero & Features
     mspTag: "🌾 Direct Minimum Support Price (MSP) Portal",
     heroTitle: "Your Procurement. Your Schedule. Clearly.",
-    heroSubtitle: "Kisan Procurement Mitra helps farmers view their procurement schedule, token, centre information, live queue estimates and payment status in one simple, transparent interface.",
+    heroSubtitle: "Mandisathi helps farmers view their procurement schedule, token, centre information, live queue estimates and payment status in one simple, transparent interface.",
     quickDemoTitle: "⚡ Instant Demo Credentials (Evaluation)",
     oneClickReady: "One-Click Ready",
     farmerDemoLabel: "Farmer (Ramesh Patel):",
@@ -367,7 +367,7 @@ const translations = {
     lblCrop: "PRIMARY CROP / मुख्य फसल",
     lblLandArea: "LAND AREA / भूमि का रकबा",
     lblPreferredCentre: "PREFERRED CENTRE / उपार्जन केंद्र",
-    registeredOnPortal: "Registered on Kisan Procurement Mitra Portal",
+    registeredOnPortal: "Registered on Mandisathi Portal",
     verifiedFarmerAccount: "✓ Verified Farmer Account",
     editProfileModalTitle: "Edit Farmer Profile",
     saveChanges: "Save Changes",

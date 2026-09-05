@@ -38,7 +38,7 @@ app.use("/api/admin", adminRoutes);
 app.get("/api/health", (req, res) => {
   res.json({
     status: "ok",
-    app: "Kisan Procurement Mitra",
+    app: "Mandisathi",
     version: "1.0.0",
     service: "MSP Direct Procurement Portal",
     time: new Date().toISOString()
@@ -56,7 +56,7 @@ async function start() {
   await seedInitialData();
 
   app.listen(PORT, "0.0.0.0", () => {
-    console.log(`🌾 Kisan Procurement Mitra running on http://0.0.0.0:${PORT}`);
+    console.log(`🌾 Mandisathi running on http://0.0.0.0:${PORT}`);
     console.log(`📌 MSP Procurement & Token Portal server ready`);
   });
 }

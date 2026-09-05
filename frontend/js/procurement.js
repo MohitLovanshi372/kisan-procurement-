@@ -1,5 +1,5 @@
 /**
- * Kisan Procurement Mitra - Procurement & Payment Status Handler
+ * Mandisathi - Procurement & Payment Status Handler
  */
 
 let cachedProcurementData = null;

@@ -71,7 +71,7 @@ router.post("/register", async (req, res) => {
     // Auto-create welcome notification
     await Notification.create({
       farmerId: newFarmer.farmerId,
-      title: "Welcome to Kisan Procurement Mitra",
+      title: "Welcome to Mandisathi",
       message: `Registration successful! Your Farmer ID is ${newFarmer.farmerId} and initial token is ${tokenNumber}.`,
       type: "General"
     });

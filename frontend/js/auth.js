@@ -1,5 +1,5 @@
 /**
- * Kisan Procurement Mitra - Authentication Handlers (Login & Register)
+ * Mandisathi - Authentication Handlers (Login & Register)
  */
 
 document.addEventListener("DOMContentLoaded", () => {

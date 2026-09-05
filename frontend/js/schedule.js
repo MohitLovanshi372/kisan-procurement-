@@ -1,5 +1,5 @@
 /**
- * Kisan Procurement Mitra - Schedule Page Handler
+ * Mandisathi - Schedule Page Handler
  */
 
 document.addEventListener("DOMContentLoaded", async () => {

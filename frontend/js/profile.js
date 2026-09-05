@@ -1,5 +1,5 @@
 /**
- * Kisan Procurement Mitra - Farmer Profile Handler
+ * Mandisathi - Farmer Profile Handler
  */
 
 document.addEventListener("DOMContentLoaded", async () => {

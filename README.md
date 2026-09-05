@@ -1,4 +1,4 @@
-# Kisan Procurement Mitra — SIH26032 Prototype
+# Mandisathi — SIH26032 Prototype
 PROTOTYPE LINK
 https://kisan-procurement.onrender.com/
 > **Smart India Hackathon (SIH26032)** — Farmer Procurement Assistance Platform  
@@ -8,7 +8,7 @@ https://kisan-procurement.onrender.com/
 
 ## 1. Project Overview & Philosophy
 
-**Kisan Procurement Mitra** is a student-built prototype developed for **Smart India Hackathon Problem Statement SIH26032**. 
+**Mandisathi** is a student-built prototype developed for **Smart India Hackathon Problem Statement SIH26032**. 
 
 It provides an intuitive, accessible, and transparent digital interface for farmers to manage their agricultural procurement lifecycle:
 - **Procurement Schedule:** Clarity on designated dates and time slots to prevent mandi congestion.

@@ -1,5 +1,5 @@
 /**
- * Kisan Procurement Mitra - Notifications Page Handler
+ * Mandisathi - Notifications Page Handler
  */
 
 let cachedNotifs = null;

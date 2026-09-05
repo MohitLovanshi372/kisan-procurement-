@@ -74,10 +74,10 @@ router.post("/simulate-reminder", protect, async (req, res) => {
     const crop = activeProc ? activeProc.crop : (farmer ? farmer.crop : "Wheat");
 
     // Compose SMS and WhatsApp templates in English and Hindi
-    const smsEn = `[GOV-MSP-KMP] Kisan Mitra: Dear ${farmerName}, your ${crop} procurement (Token: ${tokenNumber}) is scheduled on ${scheduleDate}, ${timeSlot} at ${centreName}. Carry Aadhaar & Land docs. Helpline: 1800-180-1551.`;
+    const smsEn = `[GOV-MSP-KMP] Mandisathi: Dear ${farmerName}, your ${crop} procurement (Token: ${tokenNumber}) is scheduled on ${scheduleDate}, ${timeSlot} at ${centreName}. Carry Aadhaar & Land docs. Helpline: 1800-180-1551.`;
     const smsHi = `[GOV-MSP-KMP] किसान मित्र: प्रिय ${farmerName}, आपकी ${crop} खरीद (टोकन: ${tokenNumber}) ${scheduleDate}, ${timeSlot} पर ${centreName} में निर्धारित है। कृपया आधार कार्ड एवं खसरा साथ लाएं।`;
 
-    const whatsappEn = `🌾 *Kisan Procurement Mitra*\n\n` +
+    const whatsappEn = `🌾 *Mandisathi*\n\n` +
       `Namaste *${farmerName}* ji,\n\n` +
       `Here is your scheduled procurement appointment reminder:\n` +
       `📅 *Date:* ${scheduleDate}\n` +
