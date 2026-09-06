@@ -16,7 +16,7 @@ It provides an intuitive, accessible, and transparent digital interface for farm
 - **Centre Status & Queue Insights:** Real-time visibility into queue depth and estimated waiting time.
 - **Procurement & Payment Tracking:** Step-by-step verification from crop arrival to DBT bank payment settlement.
 - **Bilingual Interface:** English + Hindi (हिंदी) language toggle for maximum farmer accessibility.
-- **Mandi Officer / Admin Portal:** Dedicated dashboard to update weighing status, settle payments, and broadcast advisory notifications.
+- **Mandi Officer / Procurement Centre:** Dedicated dashboard to update weighing status, settle payments, and broadcast advisory notifications.
 
 > ℹ️ **Prototype Disclaimer:** This prototype is presented as a farmer-centric interface layer designed to integrate with authorized government procurement systems (such as e-Uparjan, Food Corporation of India, and State Civil Supplies Corporations), subject to actual API/data availability.
 
@@ -96,7 +96,7 @@ It provides an intuitive, accessible, and transparent digital interface for farm
 - `PUT /api/notifications/:id/read` — Mark notification as read
 - `PUT /api/notifications/read-all` — Mark all notifications as read
 
-### Admin Portal (`/api/admin`)
+### Procurement Centre (`/api/admin`)
 - `GET /api/admin/dashboard` — Get mandi aggregate stats & centre queue overviews
 - `GET /api/admin/farmers` — List all farmers and procurement records
 - `PUT /api/admin/procurement/:id` — Update weighing / payment status in database

@@ -118,7 +118,8 @@ const translations = {
     // Brand & Navigation
     brandTitle: "Mandisathi",
     brandTagMsp: "MSP Portal",
-    brandTagAdmin: "Admin Portal",
+    brandTagAdmin: "Procurement Centre",
+    adminPortal: "Procurement Centre",
     brandSubtitle: "Simple • Transparent • Farmer First",
     farmerPortal: "Farmer Portal",
     mandiOfficerOps: "Mandi Officer Operations",
@@ -132,7 +133,7 @@ const translations = {
     login: "Farmer Login",
     register: "Register",
     registerNewFarmer: "Register New Farmer",
-    adminLogin: "Admin Portal",
+    adminLogin: "Procurement Centre",
     authorizedOfficer: "Authorized Mandi Officer",
 
     // Landing Hero & Features
@@ -436,7 +437,7 @@ const translations = {
     paddyCrop: "Paddy / Dhan",
     maizeCrop: "Maize",
     mustardCrop: "Mustard",
-    
+
     // Additional UI & Telemetry Keys
     estQueueWait: "EST. QUEUE WAIT",
     tractorsInLine: "TRACTORS IN LINE",
@@ -485,7 +486,8 @@ const translations = {
     // Brand & Navigation
     brandTitle: "किसान खरीद मित्र",
     brandTagMsp: "एमएसपी पोर्टल",
-    brandTagAdmin: "एडमिन पोर्टल",
+    brandTagAdmin: "प्रोक्योरमेंट सेंटर",
+    adminPortal: "प्रोक्योरमेंट सेंटर",
     brandSubtitle: "सरल • पारदर्शी • किसान हित सर्वोपरि",
     farmerPortal: "किसान पोर्टल",
     mandiOfficerOps: "मंडी अधिकारी संचालन",
@@ -499,7 +501,7 @@ const translations = {
     login: "किसान लॉगिन",
     register: "पंजीकरण",
     registerNewFarmer: "नया किसान पंजीकरण",
-    adminLogin: "एडमिन पोर्टल",
+    adminLogin: "प्रोक्योरमेंट सेंटर",
     authorizedOfficer: "अधिकृत मंडी अधिकारी",
 
     // Landing Hero & Features
@@ -874,7 +876,7 @@ function setLanguage(lang) {
 
 function applyTranslations(lang = getLanguage()) {
   const dict = translations[lang] || translations.en;
-  
+
   // Set html document lang
   document.documentElement.lang = lang;
 
