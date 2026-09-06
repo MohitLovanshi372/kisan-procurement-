@@ -89,7 +89,7 @@ router.post("/simulate-reminder", protect, async (req, res) => {
       `💡 *Arrival Advisory:* Please arrive promptly during your designated slot for smooth queue processing.\n` +
       `_Toll-free Kisan Helpline: 1800-180-1551_`;
 
-    const whatsappHi = `🌾 *किसान खरीद मित्र*\n\n` +
+    const whatsappHi = `🌾 *Mandisathi*\n\n` +
       `नमस्ते *${farmerName}* जी,\n\n` +
       `आपकी निर्धारित कृषि उपज खरीद का अनुस्मारक:\n` +
       `📅 *दिनांक:* ${scheduleDate}\n` +

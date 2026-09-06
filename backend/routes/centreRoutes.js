@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Centre = require("../models/Centre");
+const { emitToAll } = require("../socket");
 
 // Helper to determine congestion level from metrics if not explicitly set
 function calculateCongestion(centre) {
@@ -237,6 +238,16 @@ router.post("/live-status/refresh", async (req, res) => {
         c.trend = delta > 0 ? "Rising" : delta < 0 ? "Easing" : "Stable";
         c.lastUpdated = new Date();
       }
+
+      // Real-time broadcast via Socket.IO
+      emitToAll("queue-update", {
+        centres,
+        timestamp: new Date().toISOString()
+      });
+      emitToAll("centre:telemetry_updated", {
+        centres,
+        timestamp: new Date().toISOString()
+      });
     }
 
     res.json({

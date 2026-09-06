@@ -1,0 +1,365 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" width="1920" height="1080">
+  <defs>
+    <!-- Sunset Sky Gradients -->
+    <linearGradient id="sunsetSky" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1e1b4b" />
+      <stop offset="20%" stop-color="#312e81" />
+      <stop offset="45%" stop-color="#7c2d12" />
+      <stop offset="65%" stop-color="#ea580c" />
+      <stop offset="82%" stop-color="#f97316" />
+      <stop offset="92%" stop-color="#fbbf24" />
+      <stop offset="100%" stop-color="#fef08a" />
+    </linearGradient>
+
+    <!-- Warm Glowing Setting Sun -->
+    <radialGradient id="sunGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="1" />
+      <stop offset="15%" stop-color="#fffbeb" stop-opacity="0.95" />
+      <stop offset="35%" stop-color="#fef08a" stop-opacity="0.8" />
+      <stop offset="60%" stop-color="#f59e0b" stop-opacity="0.5" />
+      <stop offset="85%" stop-color="#ea580c" stop-opacity="0.2" />
+      <stop offset="100%" stop-color="#ea580c" stop-opacity="0" />
+    </radialGradient>
+
+    <radialGradient id="sunDisc" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="65%" stop-color="#fffbeb" />
+      <stop offset="85%" stop-color="#fde047" />
+      <stop offset="100%" stop-color="#f59e0b" />
+    </radialGradient>
+
+    <!-- Distant Sunset Hills -->
+    <linearGradient id="hillsFar" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#831843" stop-opacity="0.7" />
+      <stop offset="100%" stop-color="#b45309" stop-opacity="0.85" />
+    </linearGradient>
+
+    <linearGradient id="hillsMid" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#581c87" stop-opacity="0.75" />
+      <stop offset="60%" stop-color="#78350f" stop-opacity="0.85" />
+      <stop offset="100%" stop-color="#92400e" stop-opacity="0.95" />
+    </linearGradient>
+
+    <!-- Golden Wheat Fields Gradients -->
+    <linearGradient id="wheatFieldFar" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ca8a04" />
+      <stop offset="50%" stop-color="#a16207" />
+      <stop offset="100%" stop-color="#854d0e" />
+    </linearGradient>
+
+    <linearGradient id="wheatFieldMid" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#eab308" />
+      <stop offset="40%" stop-color="#ca8a04" />
+      <stop offset="100%" stop-color="#713f12" />
+    </linearGradient>
+
+    <linearGradient id="wheatFieldFore" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#facc15" />
+      <stop offset="35%" stop-color="#eab308" />
+      <stop offset="70%" stop-color="#b45309" />
+      <stop offset="100%" stop-color="#451a03" />
+    </linearGradient>
+
+    <!-- Mandi Complex Materials -->
+    <linearGradient id="procCenterRoof" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#1e293b" />
+      <stop offset="50%" stop-color="#334155" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+
+    <linearGradient id="siloMetal" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#fdba74" />
+      <stop offset="35%" stop-color="#fed7aa" />
+      <stop offset="70%" stop-color="#ea580c" />
+      <stop offset="100%" stop-color="#9a3412" />
+    </linearGradient>
+
+    <linearGradient id="weighbridgeGlow" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" />
+      <stop offset="100%" stop-color="#0369a1" />
+    </linearGradient>
+
+    <linearGradient id="grainBags" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fcd34d" />
+      <stop offset="50%" stop-color="#d97706" />
+      <stop offset="100%" stop-color="#78350f" />
+    </linearGradient>
+
+    <!-- Farmer Shading in Sunset Silhouette / Warm Rim -->
+    <linearGradient id="farmerKurta" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fed7aa" />
+      <stop offset="30%" stop-color="#fdba74" />
+      <stop offset="70%" stop-color="#c2410c" />
+      <stop offset="100%" stop-color="#431407" />
+    </linearGradient>
+
+    <linearGradient id="farmerTurban" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fff" />
+      <stop offset="40%" stop-color="#ffedd5" />
+      <stop offset="80%" stop-color="#ea580c" />
+      <stop offset="100%" stop-color="#7c2d12" />
+    </linearGradient>
+
+    <filter id="glowGold" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="8" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- 1. Deep Sunset Sky -->
+  <rect width="1920" height="1080" fill="url(#sunsetSky)" />
+
+  <!-- 2. Setting Sun & Atmospheric Glow Rays -->
+  <!-- Sun halo -->
+  <circle cx="820" cy="510" r="380" fill="url(#sunGlow)" />
+  <circle cx="820" cy="510" r="220" fill="url(#sunGlow)" />
+  <!-- Sun disc dipping just behind the mandi horizon -->
+  <circle cx="820" cy="510" r="75" fill="url(#sunDisc)" />
+
+  <!-- Golden Sunset Light Beams across the sky -->
+  <g opacity="0.18">
+    <polygon points="820,510 0,0 280,0" fill="#fef08a" />
+    <polygon points="820,510 400,0 750,0" fill="#fef08a" />
+    <polygon points="820,510 900,0 1300,0" fill="#fef08a" />
+    <polygon points="820,510 1450,0 1920,50" fill="#fef08a" />
+    <polygon points="820,510 1920,200 1920,500" fill="#fef08a" />
+    <polygon points="820,510 0,250 0,480" fill="#fef08a" />
+  </g>
+
+  <!-- 3. Distant Mountain Silhouettes at Dusk -->
+  <path d="M0,520 Q280,480 620,515 T1250,505 T1920,515 L1920,620 L0,620 Z" fill="url(#hillsFar)" />
+  <path d="M0,545 Q360,520 780,540 T1520,535 T1920,540 L1920,650 L0,650 Z" fill="url(#hillsMid)" />
+
+  <!-- Birds returning home at sunset -->
+  <g fill="#451a03" opacity="0.65">
+    <path d="M520,380 Q528,373 536,380 Q544,373 552,380 Q544,376 536,382 Q528,376 520,380 Z" />
+    <path d="M565,360 Q572,354 579,360 Q586,354 593,360 Q586,357 579,362 Q572,357 565,360 Z" />
+    <path d="M490,405 Q496,400 502,405 Q508,400 514,405 Q508,402 502,407 Q496,402 490,405 Z" />
+    <path d="M620,390 Q625,385 630,390 Q635,385 640,390 Q635,387 630,392 Q625,387 620,390 Z" />
+  </g>
+
+  <!-- 4. Mandi Sathi Procurement Centre Complex (Midground) -->
+  <g id="mandiProcurementCentre">
+    <!-- Modern Grain Silos at Sunset -->
+    <rect x="1060" y="380" width="85" height="180" rx="4" fill="url(#siloMetal)" />
+    <ellipse cx="1102" cy="380" rx="42" ry="16" fill="#fcd34d" />
+    <path d="M1060,380 L1102,325 L1145,380 Z" fill="#b45309" />
+    <line x1="1102" y1="325" x2="1102" y2="310" stroke="#fcd34d" stroke-width="2" />
+    <!-- Silo ladder & catwalk -->
+    <line x1="1080" y1="380" x2="1080" y2="560" stroke="#78350f" stroke-width="2" />
+    <line x1="1090" y1="380" x2="1090" y2="560" stroke="#78350f" stroke-width="2" />
+
+    <!-- Second Silo -->
+    <rect x="1160" y="405" width="75" height="155" rx="4" fill="url(#siloMetal)" />
+    <ellipse cx="1197" cy="405" rx="37" ry="14" fill="#fcd34d" />
+    <path d="M1160,405 L1197,355 L1235,405 Z" fill="#b45309" />
+
+    <!-- Main Mandi Sathi Covered Shed (Procurement & Weighing Yard) -->
+    <!-- Pillars -->
+    <rect x="1270" y="450" width="12" height="120" fill="#334155" />
+    <rect x="1380" y="450" width="12" height="120" fill="#334155" />
+    <rect x="1500" y="450" width="12" height="120" fill="#334155" />
+    <rect x="1620" y="450" width="12" height="120" fill="#334155" />
+    <rect x="1740" y="450" width="12" height="120" fill="#334155" />
+
+    <!-- Overhang Truss Roof -->
+    <polygon points="1240,450 1770,450 1760,425 1250,425" fill="url(#procCenterRoof)" />
+    <polygon points="1245,425 1765,425 1740,405 1270,405" fill="#475569" />
+
+    <!-- Mandi Sathi Procurement Centre Board -->
+    <rect x="1320" y="415" width="370" height="28" rx="4" fill="#0f172a" stroke="#f59e0b" stroke-width="1.5" />
+    <text x="1505" y="434" font-family="'Segoe UI', 'Roboto', sans-serif" font-weight="900" font-size="14" fill="#fef08a" text-anchor="middle" letter-spacing="2">मंडी साथी • उपार्जन केंद्र (MANDI SATHI)</text>
+
+    <!-- Weighbridge Cabin & Electronic Display (धर्मकांटा) -->
+    <rect x="1285" y="490" width="85" height="75" rx="3" fill="#1e293b" />
+    <rect x="1295" y="498" width="65" height="35" rx="2" fill="#0284c7" opacity="0.85" />
+    <text x="1327" y="515" font-family="monospace" font-weight="bold" font-size="10" fill="#e0f2fe" text-anchor="middle">धर्मकांटा #01</text>
+    <text x="1327" y="527" font-family="monospace" font-weight="bold" font-size="11" fill="#4ade80" text-anchor="middle">54.20 QTL</text>
+
+    <!-- Weighbridge Platform for Tractors & Trucks -->
+    <polygon points="1260,565 1420,565 1400,580 1240,580" fill="#64748b" stroke="#f59e0b" stroke-width="1" />
+    <line x1="1260" y1="565" x2="1420" y2="565" stroke="#facc15" stroke-width="2" stroke-dasharray="8,6" />
+
+    <!-- Stacks of Harvested Wheat Burlap Bags (उपज बोरियाँ) -->
+    <g id="stackedGrainBags">
+      <rect x="1440" y="530" width="36" height="15" rx="3" fill="url(#grainBags)" />
+      <rect x="1478" y="530" width="36" height="15" rx="3" fill="url(#grainBags)" />
+      <rect x="1516" y="530" width="36" height="15" rx="3" fill="url(#grainBags)" />
+      <rect x="1455" y="514" width="36" height="15" rx="3" fill="url(#grainBags)" />
+      <rect x="1495" y="514" width="36" height="15" rx="3" fill="url(#grainBags)" />
+      <rect x="1475" y="498" width="36" height="15" rx="3" fill="url(#grainBags)" />
+      <!-- Stencil mark on bags -->
+      <circle cx="1493" cy="505" r="4" fill="#78350f" opacity="0.6" />
+      <circle cx="1473" cy="521" r="4" fill="#78350f" opacity="0.6" />
+    </g>
+
+    <!-- Tractor with Trolley Unloading Wheat Harvest -->
+    <g id="tractorTrolley" transform="translate(940, 500)">
+      <!-- Trolley loaded with golden wheat -->
+      <rect x="0" y="30" width="85" height="35" rx="2" fill="#0284c7" />
+      <!-- Golden wheat mound spilling out -->
+      <path d="M2,30 Q42,10 83,30 Z" fill="#facc15" />
+      <!-- Trolley wheels -->
+      <circle cx="20" cy="72" r="16" fill="#1e293b" />
+      <circle cx="20" cy="72" r="9" fill="#94a3b8" />
+      <circle cx="65" cy="72" r="16" fill="#1e293b" />
+      <circle cx="65" cy="72" r="9" fill="#94a3b8" />
+
+      <!-- Tractor Body (Red/Green classic Indian tractor) -->
+      <path d="M88,48 L108,48 L108,25 L125,25 L145,40 L145,65 L88,65 Z" fill="#dc2626" />
+      <!-- Tractor Exhaust / Silencer -->
+      <rect x="135" y="15" width="4" height="25" fill="#334155" />
+      <ellipse cx="137" cy="15" rx="4" ry="2" fill="#475569" />
+      <!-- Tractor steering & seat -->
+      <line x1="114" y1="28" x2="120" y2="38" stroke="#0f172a" stroke-width="3" />
+      <!-- Big rear wheel -->
+      <circle cx="98" cy="62" r="22" fill="#0f172a" />
+      <circle cx="98" cy="62" r="14" fill="#e2e8f0" stroke="#dc2626" stroke-width="2" />
+      <!-- Small front wheel -->
+      <circle cx="140" cy="70" r="12" fill="#0f172a" />
+      <circle cx="140" cy="70" r="7" fill="#e2e8f0" />
+    </g>
+
+    <!-- Indian Flag hoisted at Mandi Sathi Centre -->
+    <g transform="translate(1760, 370)">
+      <line x1="0" y1="0" x2="0" y2="85" stroke="#94a3b8" stroke-width="3" />
+      <rect x="0" y="0" width="30" height="6" fill="#ff9933" />
+      <rect x="0" y="6" width="30" height="6" fill="#ffffff" />
+      <circle cx="15" cy="9" r="2.5" stroke="#000088" stroke-width="0.6" fill="none" />
+      <rect x="0" y="12" width="30" height="6" fill="#138808" />
+    </g>
+  </g>
+
+  <!-- 5. Golden Wheat Fields (Ripe Harvest Waves in Sunset) -->
+  <!-- Far Field Ridge -->
+  <path d="M0,560 Q420,530 890,565 T1920,560 L1920,700 L0,700 Z" fill="url(#wheatFieldFar)" />
+
+  <!-- Mid Wheat Field with Crop Furrows & Golden Sunset Sheen -->
+  <path d="M0,630 Q350,590 740,635 T1450,625 T1920,640 L1920,840 L0,840 Z" fill="url(#wheatFieldMid)" />
+  
+  <!-- Subtle wheat furrows / wind patterns catching sunset light -->
+  <g stroke="#fef08a" stroke-width="1.5" opacity="0.45">
+    <path d="M40,650 Q280,630 520,660 T1100,650" fill="none" />
+    <path d="M120,680 Q380,650 720,690 T1350,670" fill="none" />
+    <path d="M80,720 Q420,680 840,730 T1600,700" fill="none" />
+    <path d="M220,760 Q600,720 1020,770 T1800,740" fill="none" />
+  </g>
+
+  <!-- Foreground Rolling Golden Wheat Field -->
+  <path d="M0,740 Q400,700 860,750 T1920,730 L1920,1080 L0,1080 Z" fill="url(#wheatFieldFore)" />
+
+  <!-- 6. Detailed Golden Wheat Ears & Stalks in Crisp Foreground (Wheat Rise) -->
+  <g id="foregroundWheatEars" stroke="#78350f" stroke-width="1.5" fill="#facc15">
+    <!-- Wheat Ear 1 -->
+    <path d="M180,1080 Q185,920 190,840 Q192,800 175,760" stroke="#ca8a04" stroke-width="3" fill="none" />
+    <g transform="translate(175,760) rotate(-18)">
+      <ellipse cx="0" cy="0" rx="7" ry="16" fill="#fef08a" stroke="#ca8a04" />
+      <ellipse cx="-6" cy="-14" rx="6" ry="14" fill="#fde047" stroke="#b45309" />
+      <ellipse cx="6" cy="-14" rx="6" ry="14" fill="#fde047" stroke="#b45309" />
+      <ellipse cx="-6" cy="-32" rx="5" ry="13" fill="#facc15" stroke="#b45309" />
+      <ellipse cx="6" cy="-32" rx="5" ry="13" fill="#facc15" stroke="#b45309" />
+      <ellipse cx="0" cy="-48" rx="4" ry="12" fill="#fbbf24" stroke="#b45309" />
+      <!-- Golden Awns / Beards of Wheat -->
+      <line x1="-6" y1="-14" x2="-22" y2="-40" stroke="#fef08a" stroke-width="1.2" />
+      <line x1="6" y1="-14" x2="22" y2="-40" stroke="#fef08a" stroke-width="1.2" />
+      <line x1="-6" y1="-32" x2="-26" y2="-65" stroke="#fef08a" stroke-width="1.2" />
+      <line x1="6" y1="-32" x2="26" y2="-65" stroke="#fef08a" stroke-width="1.2" />
+      <line x1="0" y1="-48" x2="0" y2="-85" stroke="#fef08a" stroke-width="1.5" />
+    </g>
+
+    <!-- Wheat Ear 2 -->
+    <path d="M240,1080 Q235,930 220,830 Q215,790 230,730" stroke="#ca8a04" stroke-width="3" fill="none" />
+    <g transform="translate(230,730) rotate(12)">
+      <ellipse cx="0" cy="0" rx="7" ry="16" fill="#fef08a" stroke="#ca8a04" />
+      <ellipse cx="-6" cy="-14" rx="6" ry="14" fill="#fde047" stroke="#b45309" />
+      <ellipse cx="6" cy="-14" rx="6" ry="14" fill="#fde047" stroke="#b45309" />
+      <ellipse cx="-6" cy="-32" rx="5" ry="13" fill="#facc15" stroke="#b45309" />
+      <ellipse cx="6" cy="-32" rx="5" ry="13" fill="#facc15" stroke="#b45309" />
+      <ellipse cx="0" cy="-48" rx="4" ry="12" fill="#fbbf24" stroke="#b45309" />
+      <line x1="-6" y1="-14" x2="-22" y2="-40" stroke="#fef08a" stroke-width="1.2" />
+      <line x1="6" y1="-14" x2="22" y2="-40" stroke="#fef08a" stroke-width="1.2" />
+      <line x1="-6" y1="-32" x2="-26" y2="-65" stroke="#fef08a" stroke-width="1.2" />
+      <line x1="6" y1="-32" x2="26" y2="-65" stroke="#fef08a" stroke-width="1.2" />
+      <line x1="0" y1="-48" x2="0" y2="-85" stroke="#fef08a" stroke-width="1.5" />
+    </g>
+
+    <!-- Wheat Ear 3 (Closer, taller) -->
+    <path d="M310,1080 Q320,910 330,810 Q335,760 320,695" stroke="#ca8a04" stroke-width="3.5" fill="none" />
+    <g transform="translate(320,695) rotate(-10)">
+      <ellipse cx="0" cy="0" rx="8" ry="18" fill="#fef08a" stroke="#ca8a04" />
+      <ellipse cx="-7" cy="-16" rx="7" ry="16" fill="#fde047" stroke="#b45309" />
+      <ellipse cx="7" cy="-16" rx="7" ry="16" fill="#fde047" stroke="#b45309" />
+      <ellipse cx="-7" cy="-36" rx="6" ry="14" fill="#facc15" stroke="#b45309" />
+      <ellipse cx="7" cy="-36" rx="6" ry="14" fill="#facc15" stroke="#b45309" />
+      <ellipse cx="0" cy="-55" rx="5" ry="14" fill="#fbbf24" stroke="#b45309" />
+      <line x1="-7" y1="-16" x2="-28" y2="-45" stroke="#fef08a" stroke-width="1.4" />
+      <line x1="7" y1="-16" x2="28" y2="-45" stroke="#fef08a" stroke-width="1.4" />
+      <line x1="-7" y1="-36" x2="-32" y2="-75" stroke="#fef08a" stroke-width="1.4" />
+      <line x1="7" y1="-36" x2="32" y2="-75" stroke="#fef08a" stroke-width="1.4" />
+      <line x1="0" y1="-55" x2="0" y2="-100" stroke="#fef08a" stroke-width="1.8" />
+    </g>
+
+    <!-- Right Side Wheat Ears Framing -->
+    <path d="M1720,1080 Q1710,910 1695,810 Q1690,760 1705,710" stroke="#ca8a04" stroke-width="3" fill="none" />
+    <g transform="translate(1705,710) rotate(15)">
+      <ellipse cx="0" cy="0" rx="7" ry="16" fill="#fef08a" stroke="#ca8a04" />
+      <ellipse cx="-6" cy="-14" rx="6" ry="14" fill="#fde047" stroke="#b45309" />
+      <ellipse cx="6" cy="-14" rx="6" ry="14" fill="#fde047" stroke="#b45309" />
+      <ellipse cx="-6" cy="-32" rx="5" ry="13" fill="#facc15" stroke="#b45309" />
+      <ellipse cx="6" cy="-32" rx="5" ry="13" fill="#facc15" stroke="#b45309" />
+      <ellipse cx="0" cy="-48" rx="4" ry="12" fill="#fbbf24" stroke="#b45309" />
+      <line x1="-6" y1="-14" x2="-22" y2="-40" stroke="#fef08a" stroke-width="1.2" />
+      <line x1="6" y1="-14" x2="22" y2="-40" stroke="#fef08a" stroke-width="1.2" />
+      <line x1="-6" y1="-32" x2="-26" y2="-65" stroke="#fef08a" stroke-width="1.2" />
+      <line x1="6" y1="-32" x2="26" y2="-65" stroke="#fef08a" stroke-width="1.2" />
+      <line x1="0" y1="-48" x2="0" y2="-85" stroke="#fef08a" stroke-width="1.5" />
+    </g>
+  </g>
+
+  <!-- 7. Indian Farmer in Foreground Looking Out over Mandi Sathi Procurement Centre -->
+  <g id="farmerSilhouette" transform="translate(560, 610)">
+    <!-- Shadow on ground -->
+    <ellipse cx="50" cy="420" rx="140" ry="22" fill="#1c1917" opacity="0.6" />
+
+    <!-- Legs / Dhoti -->
+    <path d="M10,290 L25,415 L50,415 L45,290 Z" fill="#78350f" />
+    <path d="M55,290 L65,415 L90,415 L80,290 Z" fill="#9a3412" />
+
+    <!-- Traditional Kurta with sunset rim light -->
+    <path d="M-10,130 C-20,180 -15,280 -5,310 L105,310 C115,280 120,180 110,130 Z" fill="url(#farmerKurta)" />
+    <!-- Gamchha / Cotton stole draped on shoulder -->
+    <path d="M8,125 C2,170 0,220 5,260 L28,260 C25,220 25,170 32,125 Z" fill="#ea580c" />
+
+    <!-- Head & Neck -->
+    <ellipse cx="50" cy="98" rx="22" ry="26" fill="#c2410c" />
+    
+    <!-- Profile Nose & Mustache facing right toward the Mandi -->
+    <path d="M68,95 L77,100 L68,106 Z" fill="#9a3412" />
+    <path d="M68,105 Q78,109 82,107 Q75,114 68,111 Z" fill="#451a03" />
+
+    <!-- Traditional Pagri / Turban catching golden sunset glow -->
+    <path d="M26,92 C24,65 38,48 55,48 C72,48 84,65 82,92 C78,102 30,102 26,92 Z" fill="url(#farmerTurban)" />
+    <path d="M32,70 C42,58 68,58 78,70 C84,78 78,86 68,88 C50,90 32,84 32,70 Z" fill="#f97316" />
+    <!-- Turban tail flap behind -->
+    <path d="M26,80 C18,95 15,120 18,145 L26,140 C24,120 26,95 30,80 Z" fill="#ea580c" />
+
+    <!-- Farmer's hand holding a golden stalk of wheat -->
+    <path d="M102,185 Q125,180 145,170 Q135,160 118,170 Z" fill="#c2410c" />
+    <!-- Wheat stalk in hand -->
+    <line x1="120" y1="210" x2="155" y2="135" stroke="#ca8a04" stroke-width="2.5" />
+    <ellipse cx="160" cy="125" rx="6" ry="14" fill="#fef08a" stroke="#b45309" transform="rotate(25 160 125)" />
+    <line x1="160" y1="125" x2="175" y2="95" stroke="#fef08a" stroke-width="1.5" />
+  </g>
+
+  <!-- 8. Subtle Golden Glow Vignette at Bottom for UI Legibility -->
+  <linearGradient id="bottomVignette" x1="0%" y1="0%" x2="0%" y2="100%">
+    <stop offset="0%" stop-color="#000000" stop-opacity="0" />
+    <stop offset="60%" stop-color="#000000" stop-opacity="0.15" />
+    <stop offset="100%" stop-color="#000000" stop-opacity="0.45" />
+  </linearGradient>
+  <rect y="750" width="1920" height="330" fill="url(#bottomVignette)" />
+</svg>

@@ -5,6 +5,7 @@ const Procurement = require("../models/Procurement");
 const Centre = require("../models/Centre");
 const Farmer = require("../models/Farmer");
 const { protect } = require("../middleware/authMiddleware");
+const { emitToFarmer, emitToAdmin } = require("../socket");
 
 // GET /api/procurement/qr-code
 // Generates a high-resolution QR code image and encoded gate pass payload from the digital token
@@ -128,6 +129,13 @@ router.post("/verify-qr", protect, async (req, res) => {
         message: `Token ${searchToken} not found in procurement registry.`
       });
     }
+
+    // Emit real-time verification notification to farmer and admin dashboard via Socket.io
+    emitToFarmer(procurement.farmerId, "gate:entry_verified", {
+      tokenNumber: procurement.tokenNumber,
+      centre: procurement.centreId,
+      time: new Date().toISOString()
+    });
 
     res.json({
       success: true,
@@ -294,6 +302,20 @@ router.put("/:id", protect, async (req, res) => {
     if (!updated) {
       return res.status(404).json({ success: false, message: "Procurement record not found" });
     }
+
+    // Real-time broadcast via Socket.IO
+    const updatePayload = {
+      procurementId: updated._id,
+      farmerId: updated.farmerId,
+      tokenNumber: updated.tokenNumber,
+      procurementStatus: updated.procurementStatus,
+      paymentStatus: updated.paymentStatus,
+      amount: updated.amount,
+      receivedQuantity: updated.receivedQuantity,
+      updatedAt: new Date().toISOString()
+    };
+    emitToFarmer(updated.farmerId, "token:status_changed", updatePayload);
+    emitToFarmer(updated.farmerId, "procurement-update", updatePayload);
 
     res.json({
       success: true,

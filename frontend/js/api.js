@@ -73,13 +73,18 @@ async function apiFetch(endpoint, options = {}) {
       headers
     });
 
-    const data = await response.json();
+    let data;
+    try {
+      data = await response.json();
+    } catch (parseErr) {
+      data = { success: response.ok, message: response.statusText || "Request processed" };
+    }
 
-    if (response.status === 401) {
-      // Token expired or unauthorized
+    if (response.status === 401 && !endpoint.includes("/api/auth/")) {
+      // Token expired or unauthorized on protected routes
       localStorage.removeItem(TOKEN_KEY);
       localStorage.removeItem(USER_KEY);
-      if (!window.location.pathname.endsWith("login.html") && !window.location.pathname.endsWith("index.html")) {
+      if (!window.location.pathname.includes("login.html") && !window.location.pathname.includes("index.html") && !window.location.pathname.includes("about.html") && !window.location.pathname.includes("register.html")) {
         window.location.href = "login.html";
       }
     }
@@ -135,6 +140,9 @@ const translations = {
     registerNewFarmer: "Register New Farmer",
     adminLogin: "Procurement Centre",
     authorizedOfficer: "Authorized Mandi Officer",
+    navAbout: "About",
+    navHome: "Home",
+    backToHome: "← Back to Home",
 
     // Landing Hero & Features
     mspTag: "🌾 Direct Minimum Support Price (MSP) Portal",
@@ -480,11 +488,65 @@ const translations = {
     assignedCentre: "Assigned Centre",
     risingTrend: "↗ Rising",
     easingTrend: "↘ Easing",
-    stableTrend: "→ Stable"
+    stableTrend: "→ Stable",
+
+    // SIH Closing Section
+    sihProblemHeading: "The Problem We Address",
+    sihProblemContent: "Farmers often face long waiting times, lack of information about procurement schedules, and uncertainty about procurement and payment status.",
+    sihMissionHeading: "Our Mission",
+    sihMissionContent: "To make the agricultural procurement journey simple, transparent and organized by giving farmers easy access to schedules, digital tokens, queue information and procurement status.",
+    sihSolutionHeading: "Our Solution",
+    sihSolutionContent: "Mandisathi is a farmer-centric digital platform that brings procurement scheduling, digital token generation, queue information, procurement tracking and payment status into one simple workflow.",
+    sihImpactHeading: "Our Impact",
+    sihImpact1: "Reduced Waiting Time",
+    sihImpact2: "Better Visit Planning",
+    sihImpact3: "Procurement Status Visibility",
+    sihImpact4: "Transparent Payment Information",
+    sihImpact5: "Simple Farmer-Friendly Workflow",
+    sihLangSupport: "Hindi + English Support",
+    techSectionHeading: "Technologies Used & Problem-Solution Architecture",
+    techSectionSubtitle: "Every technology in Mandisathi is engineered to solve a specific, high-friction pain point faced by farmers and procurement centers during the MSP season.",
+    labelProblem: "Problem Addressed",
+    labelSolution: "Solution Provided",
+    techRoleBackend: "Backend REST Microservice",
+    tech1Problem: "Manual paper slips, fragmented records, and system crashes during high-volume harvest arrivals across state mandi centers.",
+    tech1Solution: "Asynchronous non-blocking event loop handles thousands of concurrent farmer requests, instant token booking, and synchronized center status in milliseconds.",
+    techRoleRealtime: "Bi-Directional Real-Time Engine",
+    tech2Problem: "Farmers waiting 8–14 hours at mandi gates with no visibility into queue movement, causing severe physical congestion and tractor jams.",
+    tech2Solution: "Live event streaming (queue-update, token:status_changed) broadcasts real-time token numbers, estimated wait countdowns, and turn notifications directly to phones.",
+    techRoleSecurity: "Gate Pass & Anti-Fraud Verification",
+    tech3Problem: "Middleman impersonation, duplicate paper slip forgeries, and slow manual handwriting entry at weighbridge checkpoints.",
+    tech3Solution: "Instant cryptographic dynamic QR codes allow rapid 3-second contactless scan at gate, weighing scale, and quality lab, blocking unauthorized middleman access.",
+    techRoleDatabase: "Audit Trail & Transaction Ledger",
+    tech4Problem: "Lost procurement slips, weight manipulation disputes, and lack of verifiable audit history between procurement agencies and farmers.",
+    tech4Solution: "Atomic multi-model data schemas maintain unalterable timestamps for every workflow transition (Booked → Weighed → Inspected → Settled) with complete transparency.",
+    techRoleI18n: "Bilingual Accessibility (हिन्दी/English)",
+    tech5Problem: "Complex English-only portals and confusing bureaucratic terms create an insurmountable digital barrier for grassroots rural farmers.",
+    tech5Solution: "Zero-latency bilingual switching with simplified agricultural terminology, clear iconography, and voice-assisted readiness designed for rural smartphone users.",
+    techRolePayment: "Zero-Commission Payment Pipeline",
+    tech6Problem: "Middlemen charging unauthorized commissions (आढ़त), distress selling below MSP rates, and delayed unverified payments.",
+    tech6Solution: "Guaranteed formula enforcing official MSP benchmarks (₹2,275/Qtl) directly calculating payout amounts with bank account validation and transaction UTR tracking.",
+    techRoleUi: "Accessible Responsive Web Design",
+    tech7Problem: "Heavy desktop software that fails on slow 2G/3G rural networks and is difficult to use under direct outdoor sunlight on fields.",
+    tech7Solution: "Ultra-fast glassmorphic stylesheet with high-contrast sunlight readability, 48px touch targets for rugged fingers, and minimal data consumption.",
+    sihTeamHeading: "Team Binary Bridge",
+    sihTeamTagline: "Bridging Code with Real World",
+    roleBackend: "Backend Developer",
+    roleFrontend: "Frontend Developer",
+    roleFullStack: "Full Stack Developer",
+    roleUiUx: "UI/UX",
+    roleDbApi: "Database & API",
+    roleResearch: "Research Team",
+    sihCtaHeading: "Making Procurement Simpler for Every Farmer",
+    sihCtaSubtext: "Simple • Transparent • Farmer First",
+    explorePlatformBtn: "Explore Platform",
+    viewPrototypeBtn: "View Prototype",
+    sihFooterBrand: "Mandisathi",
+    sihFooterTeam: "Team Binary Bridge"
   },
   hi: {
     // Brand & Navigation
-    brandTitle: "किसान खरीद मित्र",
+    brandTitle: "Mandisathi",
     brandTagMsp: "एमएसपी पोर्टल",
     brandTagAdmin: "प्रोक्योरमेंट सेंटर",
     adminPortal: "प्रोक्योरमेंट सेंटर",
@@ -503,11 +565,14 @@ const translations = {
     registerNewFarmer: "नया किसान पंजीकरण",
     adminLogin: "प्रोक्योरमेंट सेंटर",
     authorizedOfficer: "अधिकृत मंडी अधिकारी",
+    navAbout: "हमारे बारे में (About)",
+    navHome: "होम",
+    backToHome: "← मुख्य पृष्ठ पर लौटें",
 
     // Landing Hero & Features
     mspTag: "🌾 प्रत्यक्ष न्यूनतम समर्थन मूल्य (MSP) उपार्जन पोर्टल",
     heroTitle: "आपकी फसल खरीदी। आपका समय। पारदर्शी व्यवस्था।",
-    heroSubtitle: "किसान खरीद मित्र किसानों को अपनी उपज उपार्जन समय-सारणी, टोकन, केंद्र की जानकारी, लाइव कतार स्थिति और भुगतान ट्रैकिंग एक ही पारदर्शी मंच पर प्रदान करता है।",
+    heroSubtitle: "Mandisathi किसानों को अपनी उपज उपार्जन समय-सारणी, टोकन, केंद्र की जानकारी, लाइव कतार स्थिति और भुगतान ट्रैकिंग एक ही पारदर्शी मंच पर प्रदान करता है।",
     quickDemoTitle: "⚡ त्वरित डेमो लॉगिन क्रेडेंशियल्स",
     oneClickReady: "एक क्लिक में तैयार",
     farmerDemoLabel: "किसान (रमेश पटेल):",
@@ -736,7 +801,7 @@ const translations = {
     lblCrop: "मुख्य फसल",
     lblLandArea: "भूमि का रकबा",
     lblPreferredCentre: "पसंदीदा उपार्जन केंद्र",
-    registeredOnPortal: "किसान खरीद मित्र पोर्टल पर पंजीकृत",
+    registeredOnPortal: "Mandisathi पोर्टल पर पंजीकृत",
     verifiedFarmerAccount: "✓ सत्यापित किसान खाता",
     editProfileModalTitle: "किसान प्रोफ़ाइल संपादित करें",
     saveChanges: "परिवर्तन सहेजें",
@@ -848,7 +913,61 @@ const translations = {
     assignedCentre: "आवंटित केंद्र",
     risingTrend: "↗ बढ़ रहा है",
     easingTrend: "↘ घट रहा है",
-    stableTrend: "→ स्थिर"
+    stableTrend: "→ स्थिर",
+
+    // SIH Closing Section
+    sihProblemHeading: "हम जिस समस्या का समाधान करते हैं",
+    sihProblemContent: "किसानों को अक्सर लंबी प्रतीक्षा अवधि, उपार्जन अनुसूची की जानकारी का अभाव, तथा उपार्जन एवं भुगतान स्थिति को लेकर अनिश्चितता का सामना करना पड़ता है।",
+    sihMissionHeading: "हमारा उद्देश्य",
+    sihMissionContent: "किसानों को समय-सारणी, डिजिटल टोकन, कतार की जानकारी और उपार्जन स्थिति तक आसान पहुंच प्रदान करके कृषि उपार्जन प्रक्रिया को सरल, पारदर्शी और व्यवस्थित बनाना।",
+    sihSolutionHeading: "हमारा समाधान",
+    sihSolutionContent: "Mandisathi एक किसान-केंद्रित डिजिटल प्लेटफ़ॉर्म है जो उपार्जन शेड्यूलिंग, डिजिटल टोकन जनरेशन, कतार जानकारी, उपार्जन ट्रैकिंग और भुगतान स्थिति को एक सरल कार्यप्रवाह में लाता है।",
+    sihImpactHeading: "हमारा प्रभाव",
+    sihImpact1: "प्रतीक्षा समय में कमी",
+    sihImpact2: "बेहतर यात्रा नियोजन",
+    sihImpact3: "उपार्जन स्थिति की स्पष्टता",
+    sihImpact4: "पारदर्शी भुगतान जानकारी",
+    sihImpact5: "सरल किसान-अनुकूल प्रक्रिया",
+    sihLangSupport: "हिंदी + अंग्रेजी भाषा समर्थन",
+    techSectionHeading: "उपयोग की गई तकनीकें एवं समस्या-समाधान रूपरेखा",
+    techSectionSubtitle: "मंदीसाथी में उपयोग की गई प्रत्येक तकनीक उपार्जन (MSP) सीजन के दौरान किसानों और उपार्जन केंद्रों द्वारा झेली जाने वाली वास्तविक समस्याओं का समाधान करती है।",
+    labelProblem: "समस्या (Problem)",
+    labelSolution: "प्रदत्त समाधान (Solution)",
+    techRoleBackend: "बैकएंड रेस्ट माइक्रो-सर्विस (Backend REST Service)",
+    tech1Problem: "कागजी पर्चियों का बिखरना, रिकॉर्ड का खोना और भारी आवक के समय पारंपरिक सरकारी पोर्टलों का धीमा पड़ना व क्रैश होना।",
+    tech1Solution: "असिंक्रोनस नॉन-ब्लॉकिंग इवेंट लूप एक साथ हजारों किसानों के टोकन स्लॉट बुकिंग और उपार्जन केंद्र डेटा को मिलीसेकंड में प्रोसेस करता है।",
+    techRoleRealtime: "लाइव बाई-डायरेक्शनल रियल-टाइम इंजन",
+    tech2Problem: "मंडी गेट पर किसानों का 8-14 घंटे धूप में कतार में भटकना और नंबर कब आएगा इसकी कोई पूर्व जानकारी न होना।",
+    tech2Solution: "लाइव वेबसॉकेट ब्रॉडकास्ट (queue-update) किसान के फोन पर सीधा लाइव टोकन नंबर, अनुमानित प्रतीक्षा समय और तुरंत टर्न अलर्ट भेजता है।",
+    techRoleSecurity: "गेट पास एवं धोखाधड़ी-रोधी सत्यापन",
+    tech3Problem: "बिचौलियों द्वारा जाली टोकन पर्चियां बनाना, एक ही किसान के नाम पर फर्जी तुलाई और तौल कांटे पर समय की बर्बादी।",
+    tech3Solution: "क्रिप्टोग्राफिक डायनामिक क्यूआर कोड से मात्र 3 सेकंड में गेट, तौल कांटे और गुणवत्ता लैब पर कॉन्टैक्टलेस स्कैन व पुख्ता सत्यापन होता है।",
+    techRoleDatabase: "ऑडिट ट्रेल एवं सुरक्षित ट्रांजेक्शन लेजर",
+    tech4Problem: "तौल की रसीदें फटने या खोने से किसानों और उपार्जन अधिकारियों के बीच वजन व कटौतियों पर विवाद।",
+    tech4Solution: "अपरिवर्तनीय (Immutable) टाइमस्टैम्प्ड डेटा स्कीमा उपार्जन के हर चरण (टोकन → वजन → गुणवत्ता → भुगतान) का पारदर्शी डिजिटल रिकॉर्ड रखता है।",
+    techRoleI18n: "ग्रामीण सुगम्यता (हिन्दी / English)",
+    tech5Problem: "कठिन अंग्रेजी भाषा और जटिल सरकारी पोर्टल होने के कारण ग्रामीण किसानों का तकनीकी पहुंच से वंचित रह जाना।",
+    tech5Solution: "एक-क्लिक में सरल हिन्दी अनुवाद, स्पष्ट कृषि आइकन और रंग-कोडेड स्टेटस (हरा/पीला/नीला) जिससे कम पढ़े-लिखे किसान भी आसानी से समझ सकें।",
+    techRolePayment: "सीधा एमएसपी भुगतान एवं डीबीटी ट्रैकिंग",
+    tech6Problem: "आढ़तियों द्वारा कमीशन काटना, एमएसपी से कम दाम पर मजबूरी में फसल बिकना और खाते में पैसे आने की अनिश्चितता।",
+    tech6Solution: "सरकारी निर्धारित समर्थन मूल्य (₹2,275/क्विंटल) से सीधे गणना, बिचौलियों की शून्य कटौती, बैंक खाता सत्यापन और लाइव यूटीआर (UTR) ट्रैकिंग।",
+    techRoleUi: "मोबाइल-प्रथम रिस्पॉन्सिव वेब डिज़ाइन",
+    tech7Problem: "भारी डेस्कटॉप सॉफ्टवेयर जो धीमे 2G/3G नेटवर्क पर नहीं चलते और खेत में धूप के समय स्क्रीन पर दिखाई नहीं देते।",
+    tech7Solution: "हल्का ग्लासमोर्फिक मोबाइल-फर्स्ट लेआउट, धूप में स्पष्ट दिखने वाला हाई-कंट्रास्ट, बड़े 48px टच बटन और न्यूनतम डेटा खपत।",
+    sihTeamHeading: "Team Binary Bridge",
+    sihTeamTagline: "Bridging Code with Real World",
+    roleBackend: "बैकएंड डेवलपर (Backend Developer)",
+    roleFrontend: "फ्रंटएंड डेवलपर (Frontend Developer)",
+    roleFullStack: "Full Stack Developer",
+    roleUiUx: "UI/UX",
+    roleDbApi: "Database & API",
+    roleResearch: "Research Team",
+    sihCtaHeading: "हर किसान के लिए उपार्जन को सुगम बनाना",
+    sihCtaSubtext: "सरल • पारदर्शी • किसान हित सर्वोपरि",
+    explorePlatformBtn: "प्लेटफ़ॉर्म देखें",
+    viewPrototypeBtn: "प्रोटोटाइप देखें",
+    sihFooterBrand: "Mandisathi",
+    sihFooterTeam: "Team Binary Bridge"
   }
 };
 
@@ -996,6 +1115,148 @@ function initCommonUI() {
   }
 
   applyTranslations(getLanguage());
+
+  // Initialize real-time Socket.io connection for queue and procurement updates
+  initSocketClient();
 }
+
+// ==================== Real-Time Socket.io Client Setup ====================
+let appSocket = null;
+
+function initSocketClient() {
+  if (appSocket && appSocket.connected) {
+    return appSocket;
+  }
+
+  const connect = () => {
+    if (typeof io === "undefined") {
+      console.warn("Socket.io client library not loaded yet.");
+      return null;
+    }
+
+    try {
+      appSocket = io({
+        transports: ["websocket", "polling"],
+        reconnection: true,
+        reconnectionAttempts: 15,
+        reconnectionDelay: 2000
+      });
+
+      appSocket.on("connect", () => {
+        console.log("⚡ [Mandisathi Socket.io] Connected with id:", appSocket.id);
+        const user = getUser();
+        if (user && user.farmerId) {
+          appSocket.emit("join:farmer", { farmerId: user.farmerId });
+        }
+        if (user && user.preferredCentre) {
+          appSocket.emit("join:centre", { centreId: user.preferredCentre });
+        }
+        if (user && user.role === "admin") {
+          appSocket.emit("join:admin");
+        }
+      });
+
+      // Listen for 'queue-update' events
+      appSocket.on("queue-update", (data) => {
+        console.log("📊 [Socket.io] Real-time queue-update received:", data);
+        window.dispatchEvent(new CustomEvent("queue-update", { detail: data }));
+      });
+
+      // Listen for 'procurement-update'
+      appSocket.on("procurement-update", (data) => {
+        console.log("📦 [Socket.io] Real-time procurement-update received:", data);
+        window.dispatchEvent(new CustomEvent("procurement-update", { detail: data }));
+      });
+
+      // Listen for 'token:status_changed'
+      appSocket.on("token:status_changed", (data) => {
+        console.log("🏷️ [Socket.io] Real-time token:status_changed:", data);
+        window.dispatchEvent(new CustomEvent("token:status_changed", { detail: data }));
+        window.dispatchEvent(new CustomEvent("procurement-update", { detail: data }));
+      });
+
+      // Listen for 'notification:new'
+      appSocket.on("notification:new", (data) => {
+        console.log("🔔 [Socket.io] New notification:", data);
+        window.dispatchEvent(new CustomEvent("notification:new", { detail: data }));
+        const badge = document.getElementById("headerNotifBadge");
+        if (badge) {
+          const count = parseInt(badge.textContent || "0", 10) + 1;
+          badge.textContent = count;
+          badge.style.display = "inline-block";
+        }
+      });
+
+      // Listen for 'logo-updated'
+      appSocket.on("logo-updated", (data) => {
+        console.log("🎨 [Socket.io] Logo updated real-time:", data);
+        const t = (data && data.timestamp) || Date.now();
+        document.querySelectorAll(".brand-icon-img, img[src*='logo.png']").forEach((img) => {
+          img.src = `img/logo.png?v=${t}`;
+        });
+        const fav = document.querySelector('link[rel="icon"]');
+        if (fav) fav.href = `img/logo.png?v=${t}`;
+      });
+
+      return appSocket;
+    } catch (err) {
+      console.warn("Socket connection failed:", err);
+      return null;
+    }
+  };
+
+  if (typeof io !== "undefined") {
+    return connect();
+  } else {
+    // Dynamically inject socket.io.min.js if not included in page HTML
+    const script = document.createElement("script");
+    script.src = "js/socket.io.min.js";
+    script.onload = () => connect();
+    script.onerror = () => {
+      const fallback = document.createElement("script");
+      fallback.src = "/socket.io/socket.io.js";
+      fallback.onload = () => connect();
+      document.head.appendChild(fallback);
+    };
+    document.head.appendChild(script);
+  }
+}
+
+window.getSocket = () => appSocket;
+window.initSocketClient = initSocketClient;
+
+// Helper to update portal logo directly
+window.uploadPortalLogo = async function (fileOrBase64OrUrl) {
+  try {
+    let body = {};
+    if (typeof fileOrBase64OrUrl === "string") {
+      if (fileOrBase64OrUrl.startsWith("http://") || fileOrBase64OrUrl.startsWith("https://")) {
+        body.imageUrl = fileOrBase64OrUrl;
+      } else {
+        body.imageBase64 = fileOrBase64OrUrl;
+      }
+    } else if (fileOrBase64OrUrl instanceof File || fileOrBase64OrUrl instanceof Blob) {
+      const b64 = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(fileOrBase64OrUrl);
+      });
+      body.imageBase64 = b64;
+    }
+
+    const res = await fetch("/api/system/upload-logo", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || "Failed to upload logo");
+    return data;
+  } catch (err) {
+    console.error("uploadPortalLogo failed:", err);
+    throw err;
+  }
+};
 
 document.addEventListener("DOMContentLoaded", initCommonUI);

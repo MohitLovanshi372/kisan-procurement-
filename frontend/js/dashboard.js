@@ -19,11 +19,73 @@ document.addEventListener("DOMContentLoaded", async () => {
   setupSimulatorEventListeners();
   setupQrEventListeners();
   setupLiveCentresEventListeners();
+  setupSocketListeners();
   await loadDashboardData();
   await loadDashboardQrCode();
   await loadCentresLiveStatus();
   startAutoRefreshInterval();
 });
+
+function setupSocketListeners() {
+  // Listen for real-time 'queue-update' events from Socket.io
+  window.addEventListener("queue-update", (e) => {
+    const data = e.detail;
+    if (!data) return;
+
+    if (data.centres && Array.isArray(data.centres) && data.centres.length > 0) {
+      liveCentresList = data.centres;
+      renderCentresGrid();
+
+      const user = getUser();
+      const preferred = user?.preferredCentre || currentCentre?.name || "Sanwer Procurement Centre";
+      const matched = data.centres.find(c => c.name === preferred || c._id === preferred) || data.centres[0];
+
+      if (matched) {
+        currentCentre = matched;
+        const centreFarmersAhead = document.getElementById("centreFarmersAhead");
+        const centreWaitTime = document.getElementById("centreWaitTime");
+        const centreStatusBadge = document.getElementById("centreStatusBadge");
+
+        if (centreFarmersAhead) {
+          centreFarmersAhead.textContent = matched.waitingFarmers !== undefined ? matched.waitingFarmers : 18;
+          centreFarmersAhead.style.transition = "transform 0.3s, color 0.3s";
+          centreFarmersAhead.style.color = "#16a34a";
+          centreFarmersAhead.style.transform = "scale(1.15)";
+          setTimeout(() => {
+            centreFarmersAhead.style.color = "";
+            centreFarmersAhead.style.transform = "scale(1)";
+          }, 600);
+        }
+
+        if (centreWaitTime) {
+          centreWaitTime.textContent = matched.estimatedWait ? `~${matched.estimatedWait}` : "~45 minutes";
+        }
+
+        if (centreStatusBadge) {
+          const statusVal = matched.status || "Open";
+          centreStatusBadge.textContent = statusVal === "Open" ? t("openStatus", "Open") : t("closedStatus", "Closed");
+          centreStatusBadge.className = `badge ${statusVal === 'Open' ? 'badge-green' : 'badge-amber'}`;
+        }
+      }
+    }
+
+    const lastUpdatedEl = document.getElementById("centresLastUpdated");
+    if (lastUpdatedEl) {
+      const timeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+      lastUpdatedEl.innerHTML = `<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#22c55e;margin-right:4px;"></span>Live: ${timeStr}`;
+    }
+  });
+
+  // Listen for real-time 'procurement-update' events from Socket.io
+  window.addEventListener("procurement-update", (e) => {
+    const data = e.detail;
+    if (!data) return;
+    const user = getUser();
+    if (!data.farmerId || (user && (data.farmerId === user.farmerId || data.farmerId === user.id))) {
+      loadDashboardData();
+    }
+  });
+}
 
 // Re-render dynamic elements on language change
 window.addEventListener("languageChanged", () => {
@@ -337,7 +399,7 @@ function updateSimulatorPreview() {
   } else {
     // Hindi Version
     if (waTextEl) {
-      waTextEl.innerHTML = `🌾 <strong>किसान खरीद मित्र</strong><br><br>` +
+      waTextEl.innerHTML = `🌾 <strong>Mandisathi</strong><br><br>` +
         `नमस्ते <strong>${escapeHtml(user.name)}</strong> जी,<br><br>` +
         `आपकी निर्धारित कृषि उपज खरीद का अनुस्मारक:<br>` +
         `📅 <strong>दिनांक:</strong> ${escapeHtml(date)}<br>` +
@@ -351,7 +413,7 @@ function updateSimulatorPreview() {
     }
 
     if (smsTextEl) {
-      smsTextEl.textContent = `[GOV-MSP-KMP] किसान मित्र: प्रिय ${user.name}, आपकी ${crop} खरीद (टोकन: ${token}) ${date}, ${timeSlot} पर ${centreName} में निर्धारित है। कृपया आधार कार्ड एवं खसरा साथ लाएं।`;
+      smsTextEl.textContent = `[GOV-MSP-MND] Mandisathi: प्रिय ${user.name}, आपकी ${crop} खरीद (टोकन: ${token}) ${date}, ${timeSlot} पर ${centreName} में निर्धारित है। कृपया आधार कार्ड एवं खसरा साथ लाएं।`;
     }
   }
 }

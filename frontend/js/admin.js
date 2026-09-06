@@ -20,6 +20,19 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 function setupAdminListeners() {
+  // Socket.io real-time queue and procurement updates
+  window.addEventListener("queue-update", (e) => {
+    const data = e.detail;
+    if (data && data.centres) {
+      renderAdminCentres(data.centres);
+    }
+  });
+
+  window.addEventListener("procurement-update", () => {
+    loadAdminDashboard();
+    loadAdminFarmers();
+  });
+
   // Search input filtering
   const searchInput = document.getElementById("adminFarmerSearch");
   if (searchInput) {

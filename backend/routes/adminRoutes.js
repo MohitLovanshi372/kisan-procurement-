@@ -5,6 +5,7 @@ const Procurement = require("../models/Procurement");
 const Centre = require("../models/Centre");
 const Notification = require("../models/Notification");
 const { protect, adminOnly } = require("../middleware/authMiddleware");
+const { emitToFarmer, emitToAll, emitToAdmin } = require("../socket");
 
 // GET /api/admin/dashboard
 router.get("/dashboard", protect, adminOnly, async (req, res) => {
@@ -136,9 +137,10 @@ router.put("/procurement/:id", protect, adminOnly, async (req, res) => {
 
     // Auto-create notification for farmer on status change
     const targetFarmerId = proc ? proc.farmerId : farmerId;
+    let createdNotif = null;
     if (targetFarmerId) {
       if (procurementStatus === "Procurement Completed") {
-        await Notification.create({
+        createdNotif = await Notification.create({
           farmerId: targetFarmerId,
           title: "Procurement Completed",
           message: `Your ${proc.crop || "crop"} procurement of ${proc.receivedQuantity || "18 Quintal"} has been recorded at ${proc.centreId || "the centre"}.`,
@@ -147,21 +149,58 @@ router.put("/procurement/:id", protect, adminOnly, async (req, res) => {
       }
 
       if (paymentStatus === "Paid") {
-        await Notification.create({
+        createdNotif = await Notification.create({
           farmerId: targetFarmerId,
           title: "Payment Processed",
           message: `Payment of ₹${(proc.amount || 45000).toLocaleString("en-IN")} has been credited. Transaction ID: ${proc.transactionId || "PAY-20260918-1001"}.`,
           type: "Payment"
         });
       } else if (paymentStatus === "Processing") {
-        await Notification.create({
+        createdNotif = await Notification.create({
           farmerId: targetFarmerId,
           title: "Payment Update",
           message: `Your payment of ₹${(proc.amount || 45000).toLocaleString("en-IN")} is currently under verification and bank processing.`,
           type: "Payment"
         });
       }
+
+      const updatePayload = {
+        farmerId: targetFarmerId,
+        procurementId: proc._id,
+        tokenNumber: proc.tokenNumber,
+        procurementStatus: proc.procurementStatus,
+        paymentStatus: proc.paymentStatus,
+        amount: proc.amount,
+        receivedQuantity: proc.receivedQuantity,
+        paymentDate: proc.paymentDate,
+        transactionId: proc.transactionId,
+        updatedAt: new Date().toISOString()
+      };
+
+      // Real-time broadcast to farmer via Socket.IO
+      emitToFarmer(targetFarmerId, "token:status_changed", updatePayload);
+      emitToFarmer(targetFarmerId, "procurement-update", updatePayload);
+      emitToAll("procurement-update", updatePayload);
+
+      if (procurementStatus === "Procurement Completed") {
+        const CentreModel = require("../models/Centre");
+        CentreModel.find().then(centres => {
+          emitToAll("queue-update", { centres, timestamp: new Date().toISOString() });
+        }).catch(() => {});
+      }
+
+      if (createdNotif) {
+        emitToFarmer(targetFarmerId, "notification:new", createdNotif);
+      }
     }
+
+    // Also broadcast to admin room so admin counters update
+    emitToAdmin("admin:procurement_updated", {
+      farmerId: targetFarmerId,
+      procurementId: proc._id,
+      procurementStatus: proc.procurementStatus,
+      paymentStatus: proc.paymentStatus
+    });
 
     res.json({
       success: true,
@@ -190,6 +229,13 @@ router.post("/notifications", protect, adminOnly, async (req, res) => {
       type: type || "General",
       isRead: false
     });
+
+    // Real-time broadcast to farmer or all
+    if (farmerId && farmerId !== "all") {
+      emitToFarmer(farmerId, "notification:new", notif);
+    } else {
+      emitToAll("notification:new", notif);
+    }
 
     res.status(201).json({
       success: true,

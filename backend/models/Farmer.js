@@ -31,6 +31,14 @@ const Farmer = {
   async findOne(query) {
     if (this.isMongoose()) return await MongooseFarmer.findOne(query);
     return inMemoryDB.farmers.find(f => {
+      if (query.$or && Array.isArray(query.$or)) {
+        return query.$or.some(subQuery => {
+          for (const k in subQuery) {
+            if (f[k] !== subQuery[k]) return false;
+          }
+          return true;
+        });
+      }
       for (const key in query) {
         if (f[key] !== query[key]) return false;
       }
