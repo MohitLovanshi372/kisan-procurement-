@@ -1,110 +1,259 @@
 /**
- * Mandisathi - Meta WhatsApp Cloud API Webhook & Routes
- * Implements:
- *  - GET /webhook: Meta webhook verification (hub.mode, hub.verify_token, hub.challenge)
- *  - POST /webhook: Incoming message handler from Meta WhatsApp Cloud API
- *  - GET /status: Non-sensitive integration status
+ * MandiSathi - Meta WhatsApp Cloud API Webhook & Routes
+ *
+ * GET  /webhook  -> Meta webhook verification
+ * POST /webhook  -> Incoming WhatsApp messages/statuses
+ * GET  /status   -> WhatsApp integration status
  */
 
 const express = require("express");
 const router = express.Router();
+
 const {
   isMetaConfigured,
   processIncomingMetaMessage
 } = require("../services/metaWhatsAppService");
+
 const WhatsAppMessage = require("../models/WhatsAppMessage");
 
-/**
- * GET /webhook (Meta Webhook Verification)
- * Called by Meta when configuring webhook in WhatsApp Cloud API App Dashboard
- */
+/* =========================================================
+   META WHATSAPP WEBHOOK VERIFICATION
+   ========================================================= */
+
 router.get("/webhook", (req, res) => {
   const mode = req.query["hub.mode"];
   const token = req.query["hub.verify_token"];
   const challenge = req.query["hub.challenge"];
 
-  const expectedToken = process.env.WHATSAPP_VERIFY_TOKEN || "mandisathi_meta_verify_token_2026";
+  // IMPORTANT:
+  // Verify token comes ONLY from Render Environment Variables.
+  const expectedToken = process.env.WHATSAPP_VERIFY_TOKEN;
 
-  console.log(`[Meta Webhook GET] Verification request received. Mode: ${mode}, Token matched: ${token === expectedToken}`);
+  const tokenMatched =
+    Boolean(token) &&
+    Boolean(expectedToken) &&
+    token === expectedToken;
 
-  if (mode === "subscribe" && token && token === expectedToken) {
-    console.log("✅ Meta Webhook successfully verified! Returning hub.challenge");
+  // SAFE DEBUG LOG
+  // Never print the actual token.
+  console.log("[Meta Webhook GET] Verification request:", {
+    mode: mode || null,
+    challengeReceived: Boolean(challenge),
+
+    receivedTokenSet: Boolean(token),
+    receivedTokenLength: token ? token.length : 0,
+
+    configuredTokenSet: Boolean(expectedToken),
+    configuredTokenLength: expectedToken
+      ? expectedToken.length
+      : 0,
+
+    tokenMatched
+  });
+
+  // Meta verification
+  if (
+    mode === "subscribe" &&
+    tokenMatched &&
+    challenge
+  ) {
+    console.log("========================================");
+    console.log("✅ META WEBHOOK VERIFIED SUCCESSFULLY");
+    console.log("========================================");
+
     return res.status(200).send(challenge);
-  } else {
-    console.warn("❌ Meta Webhook verification failed. Token mismatch or missing subscribe mode.");
-    return res.status(403).send("Verification token mismatch");
   }
+
+  console.log("========================================");
+  console.log("❌ META WEBHOOK VERIFICATION FAILED");
+  console.log("========================================");
+
+  return res
+    .status(403)
+    .send("Verification token mismatch");
 });
 
-/**
- * POST /webhook (Meta Incoming Messages & Statuses)
- * Receives messages and message status updates from Meta WhatsApp Cloud API
- */
+
+/* =========================================================
+   META WHATSAPP INCOMING WEBHOOK
+   ========================================================= */
+
 router.post("/webhook", async (req, res) => {
   try {
-    // 1. Immediately return HTTP 200 to Meta to acknowledge receipt and prevent timeout retries
+    /*
+      IMPORTANT:
+      Immediately acknowledge Meta with HTTP 200.
+    */
+
     res.status(200).send("EVENT_RECEIVED");
 
     const body = req.body;
-    if (!body || body.object !== "whatsapp_business_account") {
+
+    if (
+      !body ||
+      body.object !== "whatsapp_business_account"
+    ) {
+      console.log(
+        "[Meta Webhook POST] Ignored non-WhatsApp event"
+      );
       return;
     }
 
-    const entries = body.entry || [];
+    const entries = Array.isArray(body.entry)
+      ? body.entry
+      : [];
+
     for (const entry of entries) {
-      const changes = entry.changes || [];
+      const changes = Array.isArray(entry.changes)
+        ? entry.changes
+        : [];
+
       for (const change of changes) {
         const value = change.value;
-        if (!value) continue;
 
-        // A. Handle incoming user messages
-        if (value.messages && Array.isArray(value.messages)) {
+        if (!value) {
+          continue;
+        }
+
+        /* -----------------------------------------------
+           INCOMING USER MESSAGES
+           ----------------------------------------------- */
+
+        if (
+          Array.isArray(value.messages) &&
+          value.messages.length > 0
+        ) {
           for (const msg of value.messages) {
-            await processIncomingMetaMessage(msg).catch(err => {
-              console.error("[Meta Webhook Processing Error]:", err);
-            });
+            try {
+              await processIncomingMetaMessage(msg);
+
+              console.log(
+                "[Meta Webhook] Incoming message processed:",
+                msg.id || "unknown"
+              );
+            } catch (error) {
+              console.error(
+                "[Meta Webhook Processing Error]:",
+                error
+              );
+            }
           }
         }
 
-        // B. Handle delivery & read status callbacks from Meta
-        if (value.statuses && Array.isArray(value.statuses)) {
-          for (const st of value.statuses) {
-            const messageId = st.id;
-            const status = st.status; // sent, delivered, read, failed
-            if (messageId && status) {
-              await WhatsAppMessage.findByIdAndUpdate(messageId, { status }).catch(() => {});
+        /* -----------------------------------------------
+           MESSAGE STATUS UPDATES
+           sent / delivered / read / failed
+           ----------------------------------------------- */
+
+        if (
+          Array.isArray(value.statuses) &&
+          value.statuses.length > 0
+        ) {
+          for (const statusObject of value.statuses) {
+            const messageId = statusObject.id;
+            const status = statusObject.status;
+
+            if (!messageId || !status) {
+              continue;
+            }
+
+            try {
+              await WhatsAppMessage.findByIdAndUpdate(
+                messageId,
+                {
+                  status: status
+                }
+              );
+
+              console.log(
+                `[Meta Webhook] Message ${messageId} status: ${status}`
+              );
+            } catch (error) {
+              console.error(
+                "[Meta Webhook Status Update Error]:",
+                error
+              );
             }
           }
         }
       }
     }
   } catch (error) {
-    console.error("[Meta Webhook POST Handler Error]:", error);
-    // Even on error, response has been returned or can be terminated safely
-    if (!res.headersSent) {
-      res.status(200).send("EVENT_RECEIVED");
-    }
+    console.error(
+      "[Meta Webhook POST Handler Error]:",
+      error
+    );
+
+    /*
+      Meta already received 200 above.
+      Do not send another response.
+    */
   }
 });
 
-/**
- * GET /api/whatsapp/status
- * Public status endpoint showing Meta Cloud API status without exposing secrets
- */
-router.get("/status", (req, res) => {
-  const isConfigured = isMetaConfigured();
-  const phoneId = process.env.WHATSAPP_PHONE_NUMBER_ID;
+
+/* =========================================================
+   WHATSAPP STATUS
+   ========================================================= */
+
+const getWhatsAppStatus = (req, res) => {
+  const configured = isMetaConfigured();
+
+  const phoneId =
+    process.env.WHATSAPP_PHONE_NUMBER_ID;
+
+  const apiVersion =
+    process.env.WHATSAPP_API_VERSION;
+
+  const verifyToken =
+    process.env.WHATSAPP_VERIFY_TOKEN;
 
   res.json({
     status: "ok",
-    service: "Meta WhatsApp Cloud API (Graph API)",
-    configured: isConfigured,
-    phoneNumberId: phoneId ? `${phoneId.slice(0, 4)}...${phoneId.slice(-4)}` : "Not Configured",
-    apiVersion: process.env.WHATSAPP_API_VERSION || "v22.0",
-    verifyTokenSet: !!process.env.WHATSAPP_VERIFY_TOKEN,
-    webhookPaths: ["/webhook", "/api/whatsapp/webhook"],
-    freeTierNotice: "Meta WhatsApp Cloud API includes 1,000 free service (user-initiated) conversations per month."
+
+    service:
+      "Meta WhatsApp Cloud API (Graph API)",
+
+    configured,
+
+    phoneNumberId: phoneId
+      ? `${phoneId.slice(0, 4)}...${phoneId.slice(-4)}`
+      : "Not Configured",
+
+    apiVersion:
+      apiVersion || "Not Configured",
+
+    verifyTokenSet:
+      Boolean(verifyToken),
+
+    webhookUrl:
+      "https://kisan-procurement.onrender.com/webhook",
+
+    message:
+      "Meta WhatsApp Cloud API integration is configured securely."
   });
-});
+};
+
+
+/* =========================================================
+   STATUS ROUTES
+   ========================================================= */
+
+// /api/whatsapp/status
+router.get(
+  "/api/whatsapp/status",
+  getWhatsAppStatus
+);
+
+// /status
+router.get(
+  "/status",
+  getWhatsAppStatus
+);
+
+
+/* =========================================================
+   EXPORT
+   ========================================================= */
 
 module.exports = router;

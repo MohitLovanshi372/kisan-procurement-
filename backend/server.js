@@ -35,8 +35,8 @@ const frontendPath = path.join(__dirname, "..", "frontend");
 app.use(express.static(frontendPath));
 
 // API Routes
-app.use("/", whatsappRoutes); // Mounts GET /webhook and POST /webhook directly for Meta WhatsApp Cloud API
-app.use("/api/whatsapp", whatsappRoutes);
+app.use("/", whatsappRoutes);
+
 app.use("/api/auth", authRoutes);
 app.use("/api/farmers", farmerRoutes);
 app.use("/api/farmer", farmerRoutes);
@@ -44,7 +44,6 @@ app.use("/api/procurement", procurementRoutes);
 app.use("/api/centres", centreRoutes);
 app.use("/api/notifications", notificationRoutes);
 app.use("/api/admin", adminRoutes);
-app.use("/api/whatsapp", whatsappRoutes);
 
 // Health check API
 app.get("/api/health", (req, res) => {
