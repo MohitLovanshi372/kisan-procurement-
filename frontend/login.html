@@ -15,10 +15,7 @@
         <span class="brand-icon">
           <img src="img/logo.png" alt="Mandisathi" class="brand-icon-img" onerror="this.style.display='none'; this.parentElement.innerText='🌾';">
         </span>
-        <div>
-          <div class="brand-title" data-i18n="brandTitle">Mandisathi</div>
-          <div class="brand-subtitle" data-i18n="farmerPortal">Farmer Portal</div>
-        </div>
+        <span class="brand-title" data-i18n="brandTitle">Mandisathi</span>
       </a>
       <div class="header-actions">
         <button id="langSwitchBtn" class="lang-btn">हिंदी</button>
@@ -30,8 +27,8 @@
   <main class="main-content">
     <div class="auth-card-container">
       <div style="text-align: center; margin-bottom: 1.5rem;">
-        <div style="font-size: 2.2rem; margin-bottom: 0.25rem;">🔐</div>
-        <h1 style="font-size: 1.4rem; font-weight: 700;" data-i18n="accountLogin">Account Login</h1>
+        <div style="font-size: 2.2rem; margin-bottom: 0.25rem;">🌾</div>
+        <h1 style="font-size: 1.4rem; font-weight: 700;" data-i18n="farmerLoginTitle">Farmer Login</h1>
         <p style="color: var(--text-muted); font-size: 0.85rem;" data-i18n="loginWithMobile">Login with your registered mobile number</p>
       </div>
 
@@ -47,27 +44,30 @@
         </div>
 
         <button type="submit" class="btn btn-primary btn-block" style="margin-top: 0.5rem;" data-i18n="secureLoginBtn">
-          Secure Login →
+          Secure Farmer Login →
         </button>
       </form>
 
-      <!-- 1-Click Evaluation Buttons -->
+      <!-- 1-Click Evaluation Button (Farmer Only) -->
       <div class="quick-demo-box">
         <div style="font-weight: 700; margin-bottom: 0.5rem; color: var(--primary-dark);" data-i18n="quickDemoLogins">
-          ⚡ Quick Demo Logins:
+          ⚡ Quick Demo Login:
         </div>
-        <div style="display: flex; gap: 0.5rem; flex-direction: column;">
-          <button id="fillFarmerDemoBtn" type="button" class="btn btn-sm btn-secondary" style="justify-content: flex-start;" data-i18n="farmerDemoBtnText">
-            👨‍🌾 Farmer Demo: Ramesh Patel (9876543210 / 123456)
-          </button>
-          <button id="fillAdminDemoBtn" type="button" class="btn btn-sm btn-secondary" style="justify-content: flex-start;" data-i18n="adminDemoBtnText">
-            👮‍♂️ Admin Demo: Mandi Officer (9999999999 / admin123)
+        <div>
+          <button id="fillFarmerDemoBtn" type="button" class="btn btn-sm btn-secondary btn-block" style="justify-content: center;" data-i18n="farmerDemoBtnText">
+            👨‍🌾 Fill Farmer Demo: Ramesh Patel (9876543210 / 123456)
           </button>
         </div>
       </div>
 
-      <div style="text-align: center; margin-top: 1.25rem; font-size: 0.88rem; color: var(--text-muted);">
-        <span data-i18n="newFarmerPrompt">New farmer?</span> <a href="register.html" style="color: var(--primary); font-weight: 600; text-decoration: none;" data-i18n="registerForProcurement">Register for Procurement</a>
+      <div style="text-align: center; margin-top: 1.25rem; font-size: 0.88rem; color: var(--text-muted); display: flex; flex-direction: column; gap: 0.6rem;">
+        <div>
+          <span data-i18n="newFarmerPrompt">New farmer?</span> <a href="register.html" style="color: var(--primary); font-weight: 600; text-decoration: none;" data-i18n="registerForProcurement">Register for Procurement</a>
+        </div>
+        <div style="border-top: 1px solid var(--border-color); padding-top: 0.75rem;">
+          <span style="font-size: 0.82rem; color: var(--text-muted);" data-i18n="officerPromptText">Mandi Officer or Staff?</span> 
+          <a href="admin-login.html" style="color: #0369a1; font-weight: 600; text-decoration: none; font-size: 0.82rem;" data-i18n="officerLoginLinkText">Procurement Centre Login →</a>
+        </div>
       </div>
     </div>
   </main>

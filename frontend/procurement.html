@@ -16,10 +16,7 @@
         <span class="brand-icon">
           <img src="img/logo.png" alt="Mandisathi" class="brand-icon-img" onerror="this.style.display='none'; this.parentElement.innerText='🌾';">
         </span>
-        <div>
-          <div class="brand-title" data-i18n="brandTitle">Mandisathi</div>
-          <div class="brand-subtitle" data-i18n="farmerPortal">Farmer Portal</div>
-        </div>
+        <span class="brand-title" data-i18n="brandTitle">Mandisathi</span>
       </a>
 
       <button id="hamburgerBtn" class="hamburger-btn" aria-label="Toggle Navigation">☰</button>
@@ -205,6 +202,14 @@
             <div style="display: flex; justify-content: space-between; border-bottom: 1px solid #f1f5f9; padding-bottom: 0.4rem;">
               <span style="color: var(--text-muted);" data-i18n="procurementStatus">Procurement:</span>
               <strong id="payProcStatus">Completed</strong>
+            </div>
+            <div style="display: flex; justify-content: space-between; border-bottom: 1px solid #f1f5f9; padding-bottom: 0.4rem;">
+              <span style="color: var(--text-muted);" data-i18n="dbtBeneficiaryBank">DBT Crediting Bank:</span>
+              <strong id="payBankInfo">State Bank of India (•••• 1928)</strong>
+            </div>
+            <div style="display: flex; justify-content: space-between; border-bottom: 1px solid #f1f5f9; padding-bottom: 0.4rem;">
+              <span style="color: var(--text-muted);" data-i18n="dbtAadhaarStatus">Aadhaar DBT Seeding:</span>
+              <span class="badge badge-green" style="font-size: 0.72rem;" id="payAadhaarSeeded">✓ Verified Seeded</span>
             </div>
             <div style="display: flex; justify-content: space-between; border-bottom: 1px solid #f1f5f9; padding-bottom: 0.4rem;">
               <span style="color: var(--text-muted);" data-i18n="settlementDate">Settlement Date:</span>

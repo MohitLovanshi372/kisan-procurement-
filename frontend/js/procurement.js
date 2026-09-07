@@ -127,6 +127,20 @@ function renderProcurementDetails(data) {
   const payStatus = document.getElementById("payStatus");
   const payDate = document.getElementById("payDate");
   const payTxId = document.getElementById("payTxId");
+  const payBankInfo = document.getElementById("payBankInfo");
+  const payAadhaarSeeded = document.getElementById("payAadhaarSeeded");
+
+  const farmerInfo = data.farmer || getUser() || {};
+  if (payBankInfo) {
+    const bank = farmerInfo.bankName || "State Bank of India";
+    const acc = farmerInfo.accountNumber || "30982451928";
+    const last4 = String(acc).slice(-4);
+    payBankInfo.textContent = `${bank} (•••• ${last4})`;
+  }
+
+  if (payAadhaarSeeded) {
+    payAadhaarSeeded.textContent = farmerInfo.dbtStatus ? `✓ ${farmerInfo.dbtStatus}` : "✓ Verified Seeded";
+  }
 
   const amountVal = procurement.amount || 45000;
   if (payAmount) payAmount.textContent = `₹${amountVal.toLocaleString("en-IN")}`;

@@ -293,6 +293,17 @@ function setupSimulatorEventListeners() {
     triggerBtn.addEventListener("click", triggerReminderSimulation);
   }
 
+  const openWaBotBtn = document.getElementById("btnOpenWaBotModal");
+  if (openWaBotBtn) {
+    openWaBotBtn.addEventListener("click", () => {
+      const modal = document.getElementById("reminderModal");
+      if (modal) modal.classList.remove("active");
+      if (window.openWhatsAppBot) {
+        window.openWhatsAppBot();
+      }
+    });
+  }
+
   const copyBtn = document.getElementById("btnCopySimMessage");
   if (copyBtn) {
     copyBtn.addEventListener("click", copySimulatorText);
@@ -438,9 +449,23 @@ async function triggerReminderSimulation() {
       })
     });
 
+    // Also trigger Twilio WhatsApp notification endpoint if channel is whatsapp
+    if (currentSimulatorChannel === "whatsapp") {
+      fetch("/api/whatsapp/send-notification", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          mobile: user ? user.mobile : "9876543210",
+          type: "reminder",
+          tokenNumber: currentProcurement ? currentProcurement.tokenNumber : "TK-1042",
+          farmerName: user ? user.name : "Kisan Mitra"
+        })
+      }).catch(e => console.log("Twilio dispatch note:", e));
+    }
+
     if (res.success) {
-      const channelLabel = currentSimulatorChannel === "sms" ? "SMS" : "WhatsApp";
-      showToast(`📲 Mock ${channelLabel} reminder sent to +91 ${user ? user.mobile : "9876543210"}!`, "success");
+      const channelLabel = currentSimulatorChannel === "sms" ? "SMS" : "WhatsApp (Twilio)";
+      showToast(`📲 ${channelLabel} reminder sent to +91 ${user ? user.mobile : "9876543210"}!`, "success");
 
       if (lastSentEl) {
         lastSentEl.textContent = `Dispatched just now (${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })})`;

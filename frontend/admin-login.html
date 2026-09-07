@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Procurement Centre Login — Mandisathi</title>
+  <link rel="icon" type="image/png" href="img/logo.png">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="header-container">
+      <a href="index.html" class="brand-logo">
+        <span class="brand-icon">
+          <img src="img/logo.png" alt="Mandisathi" class="brand-icon-img" onerror="this.style.display='none'; this.parentElement.innerText='🌾';">
+        </span>
+        <span class="brand-title" data-i18n="brandTitle">Mandisathi</span>
+      </a>
+      <div class="header-actions">
+        <button id="langSwitchBtn" class="lang-btn">हिंदी</button>
+        <a href="login.html" class="btn btn-outline-primary btn-sm" data-i18n="farmerLoginPortal">Farmer Login</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <div class="auth-card-container" style="border-top: 4px solid var(--secondary);">
+      <div style="text-align: center; margin-bottom: 1.5rem;">
+        <div style="font-size: 2.2rem; margin-bottom: 0.25rem;">🏛️</div>
+        <h1 style="font-size: 1.4rem; font-weight: 700;" data-i18n="adminLoginTitle">Procurement Centre Login</h1>
+        <p style="color: var(--text-muted); font-size: 0.85rem;" data-i18n="adminLoginSubtitle">Authorized Mandi Officers and Administrative Staff only</p>
+      </div>
+
+      <form id="adminLoginForm">
+        <div class="form-group">
+          <label class="form-label" for="adminMobile" data-i18n="officerMobileLabel">Officer Mobile / Staff ID</label>
+          <input type="tel" id="adminMobile" class="form-input" placeholder="e.g. 9999999999" required maxlength="10">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="adminPassword" data-i18n="passwordInputLabel">Security Password</label>
+          <input type="password" id="adminPassword" class="form-input" placeholder="Enter officer password" required>
+        </div>
+
+        <button type="submit" class="btn btn-secondary btn-block" style="margin-top: 0.5rem;" data-i18n="adminLoginBtn">
+          Secure Officer Login →
+        </button>
+      </form>
+
+      <!-- 1-Click Admin Demo Button (Only Officer Demo) -->
+      <div class="quick-demo-box">
+        <div style="font-weight: 700; margin-bottom: 0.5rem; color: #1e40af;" data-i18n="adminDemoTitle">
+          ⚡ Quick Officer Demo Login:
+        </div>
+        <div>
+          <button id="fillAdminDemoBtn" type="button" class="btn btn-sm btn-secondary btn-block" style="justify-content: center;" data-i18n="adminDemoBtnText">
+            👮‍♂️ Fill Officer Demo: Mandi Officer (9999999999 / admin123)
+          </button>
+        </div>
+      </div>
+
+      <div style="text-align: center; margin-top: 1.25rem; font-size: 0.88rem; color: var(--text-muted); border-top: 1px solid var(--border-color); padding-top: 0.75rem;">
+        <span data-i18n="farmerPromptText">Are you a Farmer?</span> 
+        <a href="login.html" style="color: var(--primary); font-weight: 600; text-decoration: none;" data-i18n="farmerLoginLinkText">Farmer Login Portal →</a>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div><strong data-i18n="brandTitle">Mandisathi</strong> • <span data-i18n="footerText">Department of Food & Civil Supplies</span></div>
+  </footer>
+
+  <script src="js/socket.io.min.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+</body>
+</html>

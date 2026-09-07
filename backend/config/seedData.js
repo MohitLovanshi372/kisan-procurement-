@@ -174,6 +174,14 @@ const seedInitialData = async () => {
       crop: "Wheat",
       landArea: "4.5 Acres",
       preferredCentre: "Sanwer Procurement Centre",
+      aadharNumber: "789456124589",
+      isAadharLinked: true,
+      bankName: "State Bank of India",
+      accountNumber: "30982451928",
+      ifscCode: "SBIN0001234",
+      accountHolderName: "Ramesh Patel",
+      branchName: "Sanwer Branch (Indore)",
+      dbtStatus: "Active (Aadhaar Seeded)",
       role: "farmer"
     });
 

@@ -11,6 +11,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   setupAdminListeners();
   await loadAdminDashboard();
   await loadAdminFarmers();
+  await loadAdminWhatsAppMessages();
 
   window.addEventListener("languageChanged", () => {
     if (allFarmersData && allFarmersData.length > 0) {
@@ -118,6 +119,84 @@ function setupAdminListeners() {
       } else {
         showToast(res.message || t("failedDispatchNotif"), "error");
       }
+    });
+  }
+
+  // Meta WhatsApp Message Dispatch Form
+  const waForm = document.getElementById("adminSendWhatsAppForm");
+  if (waForm) {
+    // Quick template buttons
+    document.querySelectorAll(".wa-template-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const tpl = btn.getAttribute("data-template");
+        const msgBox = document.getElementById("adminWaMessage");
+        if (msgBox && tpl) {
+          msgBox.value = tpl;
+          msgBox.focus();
+        }
+      });
+    });
+
+    waForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const mobileInput = document.getElementById("adminWaMobile");
+      const messageInput = document.getElementById("adminWaMessage");
+      const submitBtn = document.getElementById("adminWaSendBtn");
+      const statusMsg = document.getElementById("waSendStatusMsg");
+
+      const mobile = mobileInput.value.trim();
+      const message = messageInput.value.trim();
+
+      if (!mobile || !message) {
+        showToast("Please provide mobile number and message", "error");
+        return;
+      }
+
+      submitBtn.disabled = true;
+      if (statusMsg) {
+        statusMsg.textContent = "Sending via Meta WhatsApp Cloud API...";
+        statusMsg.style.color = "var(--primary)";
+      }
+
+      try {
+        const res = await apiFetch("/api/admin/whatsapp/send", {
+          method: "POST",
+          body: JSON.stringify({ mobile, message })
+        });
+
+        submitBtn.disabled = false;
+
+        if (res.success) {
+          showToast("WhatsApp message sent successfully via Meta Cloud API!", "success");
+          if (statusMsg) {
+            statusMsg.textContent = "✅ Message dispatched to WhatsApp!";
+            statusMsg.style.color = "var(--primary-dark)";
+          }
+          messageInput.value = "";
+          await loadAdminWhatsAppMessages();
+        } else {
+          showToast(res.message || "Could not dispatch WhatsApp message", "error");
+          if (statusMsg) {
+            statusMsg.textContent = res.message || "Failed to send";
+            statusMsg.style.color = "var(--danger)";
+          }
+          await loadAdminWhatsAppMessages();
+        }
+      } catch (err) {
+        submitBtn.disabled = false;
+        showToast("Error communicating with WhatsApp service", "error");
+      }
+    });
+  }
+
+  // Refresh WhatsApp history button
+  const refreshWaBtn = document.getElementById("refreshWaHistoryBtn");
+  if (refreshWaBtn) {
+    refreshWaBtn.addEventListener("click", async () => {
+      refreshWaBtn.disabled = true;
+      await loadAdminWhatsAppMessages();
+      refreshWaBtn.disabled = false;
+      showToast("WhatsApp message history updated", "info");
     });
   }
 }
@@ -266,3 +345,88 @@ function escapeHtml(str) {
   if (!str) return "";
   return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
+
+async function loadAdminWhatsAppMessages() {
+  const tbody = document.getElementById("adminWaMessagesTableBody");
+  if (!tbody) return;
+
+  try {
+    const res = await apiFetch("/api/admin/whatsapp/messages");
+    if (res.success && Array.isArray(res.data)) {
+      renderAdminWhatsAppMessages(res.data);
+    } else {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="5" style="text-align: center; color: var(--text-muted); padding: 1.5rem;">
+            No WhatsApp messages recorded yet.
+          </td>
+        </tr>
+      `;
+    }
+  } catch (err) {
+    console.error("Admin load WhatsApp messages error:", err);
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="5" style="text-align: center; color: var(--danger); padding: 1.5rem;">
+          Unable to load WhatsApp message history.
+        </td>
+      </tr>
+    `;
+  }
+}
+
+function renderAdminWhatsAppMessages(messages) {
+  const tbody = document.getElementById("adminWaMessagesTableBody");
+  if (!tbody) return;
+
+  if (!messages || messages.length === 0) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="5" style="text-align: center; color: var(--text-muted); padding: 1.5rem;">
+          No WhatsApp messages logged yet. When messages arrive via Meta Webhook or are sent via Admin panel, they will appear here.
+        </td>
+      </tr>
+    `;
+    return;
+  }
+
+  tbody.innerHTML = messages.map(msg => {
+    const isIncoming = msg.direction === "incoming";
+    const dirBadge = isIncoming
+      ? `<span class="badge badge-green">📥 Incoming</span>`
+      : `<span class="badge badge-blue">📤 Outgoing</span>`;
+
+    let statusBadge = `<span class="badge badge-gray">${escapeHtml(msg.status || "logged")}</span>`;
+    if (msg.status === "sent" || msg.status === "delivered" || msg.status === "read") {
+      statusBadge = `<span class="badge badge-green">${escapeHtml(msg.status)}</span>`;
+    } else if (msg.status === "failed") {
+      statusBadge = `<span class="badge badge-red">Failed</span>`;
+    } else if (msg.status === "received") {
+      statusBadge = `<span class="badge badge-blue">Received</span>`;
+    } else if (msg.status === "pending") {
+      statusBadge = `<span class="badge badge-amber">Pending</span>`;
+    }
+
+    const dateStr = msg.timestamp
+      ? new Date(msg.timestamp).toLocaleString("en-IN", {
+          day: "2-digit",
+          month: "short",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: true
+        })
+      : "Just now";
+
+    return `
+      <tr>
+        <td><strong>+${escapeHtml(String(msg.phoneNumber).replace(/\D/g, ""))}</strong></td>
+        <td>${dirBadge}</td>
+        <td style="max-width: 320px; word-break: break-word; font-family: monospace; font-size: 0.82rem;">${escapeHtml(msg.message)}</td>
+        <td>${statusBadge}</td>
+        <td style="font-size: 0.78rem; color: var(--text-muted);">${escapeHtml(dateStr)}</td>
+      </tr>
+    `;
+  }).join("");
+}
+

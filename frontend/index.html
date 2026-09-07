@@ -18,13 +18,7 @@
         <span class="brand-icon">
           <img src="img/logo.png" alt="Mandisathi" class="brand-icon-img" onerror="this.style.display='none'; this.parentElement.innerText='🌾';">
         </span>
-        <div>
-          <div class="brand-title">
-            <span data-i18n="brandTitle">Mandisathi</span>
-            <span class="brand-tag" data-i18n="brandTagMsp">MSP Portal</span>
-          </div>
-          <div class="brand-subtitle" data-i18n="brandSubtitle">Simple • Transparent • Farmer First</div>
-        </div>
+        <span class="brand-title" data-i18n="brandTitle">Mandisathi</span>
       </a>
 
       <div class="header-actions">
@@ -57,7 +51,7 @@
         <a href="register.html" class="btn btn-secondary" style="padding: 0.75rem 2rem; font-size: 1rem;">
           📝 <span data-i18n="registerNewFarmer">Register New Farmer</span>
         </a>
-        <a href="login.html" class="btn btn-outline-primary" style="padding: 0.75rem 1.5rem; font-size: 0.95rem;">
+        <a href="admin-login.html" class="btn btn-outline-primary" style="padding: 0.75rem 1.5rem; font-size: 0.95rem;">
           ⚙️ <span data-i18n="adminLogin">Procurement Centre</span>
         </a>
       </div>
@@ -72,13 +66,19 @@
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; font-size: 0.85rem;">
           <div
             style="background: #fff; padding: 0.6rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
-            <strong data-i18n="farmerDemoLabel">Farmer (Ramesh Patel):</strong><br>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.2rem;">
+              <strong data-i18n="farmerDemoLabel">Farmer (Ramesh Patel):</strong>
+              <a href="login.html" style="font-size: 0.75rem; font-weight: 600; color: var(--primary); text-decoration: none;">Login →</a>
+            </div>
             <span data-i18n="mobileLabel">Mobile:</span> <code>9876543210</code><br>
             <span data-i18n="passwordLabel">Password:</span> <code>123456</code>
           </div>
           <div
             style="background: #fff; padding: 0.6rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
-            <strong data-i18n="adminDemoLabel">Admin (Mandi Officer):</strong><br>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.2rem;">
+              <strong data-i18n="adminDemoLabel">Admin (Mandi Officer):</strong>
+              <a href="admin-login.html" style="font-size: 0.75rem; font-weight: 600; color: var(--primary); text-decoration: none;">Login →</a>
+            </div>
             <span data-i18n="mobileLabel">Mobile:</span> <code>9999999999</code><br>
             <span data-i18n="passwordLabel">Password:</span> <code>admin123</code>
           </div>
@@ -198,6 +198,7 @@
 
   <script src="js/socket.io.min.js"></script>
   <script src="js/api.js"></script>
+  <script src="js/whatsapp-widget.js"></script>
 </body>
 
 </html>

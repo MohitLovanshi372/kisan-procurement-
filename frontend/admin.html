@@ -18,13 +18,7 @@
         <span class="brand-icon">
           <img src="img/logo.png" alt="Mandisathi" class="brand-icon-img" onerror="this.style.display='none'; this.parentElement.innerText='🌾';">
         </span>
-        <div>
-          <div class="brand-title">
-            <span data-i18n="brandTitle">Mandisathi</span>
-            <span class="brand-tag" data-i18n="adminPortal">Procurement Centre</span>
-          </div>
-          <div class="brand-subtitle" data-i18n="mandiOfficerOps">Mandi Officer Operations</div>
-        </div>
+        <span class="brand-title" data-i18n="brandTitle">Mandisathi</span>
       </a>
 
       <div class="header-actions">
@@ -202,6 +196,92 @@
           </button>
         </div>
       </form>
+    </section>
+
+    <!-- Admin Meta WhatsApp Cloud API Notification Panel -->
+    <section class="card" id="adminWhatsAppCard">
+      <div class="card-header">
+        <div class="card-title">
+          <span>💬</span> <span>Meta WhatsApp Cloud Notification Panel</span>
+        </div>
+        <span class="badge badge-green">Official Meta API</span>
+      </div>
+
+      <div style="background: var(--surface-light); border: 1px solid var(--border-color); border-radius: 8px; padding: 0.75rem 1rem; margin-bottom: 1rem; font-size: 0.85rem; color: var(--text-muted); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;">
+        <div>
+          <strong>Webhook Verification URL:</strong> <code style="background: rgba(0,0,0,0.05); padding: 2px 6px; border-radius: 4px;">GET /webhook</code> &bull;
+          <strong>Verify Token:</strong> <code style="background: rgba(0,0,0,0.05); padding: 2px 6px; border-radius: 4px;">mandisathi_meta_verify_token_2026</code>
+        </div>
+        <div style="font-size: 0.75rem; color: var(--text-muted);">
+          1,000 free service conversations/month included by Meta
+        </div>
+      </div>
+
+      <form id="adminSendWhatsAppForm">
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label" for="adminWaMobile">Farmer Mobile Number *</label>
+            <input type="text" id="adminWaMobile" class="form-input" placeholder="e.g. 9876543210 or 919876543210" required>
+            <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem;">
+              Auto-formats to international E.164 (+91). Real WhatsApp dispatch via Meta Cloud API.
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Quick Message Templates</label>
+            <div style="display: flex; gap: 0.4rem; flex-wrap: wrap; margin-top: 0.25rem;">
+              <button type="button" class="btn btn-outline-primary btn-sm wa-template-btn" data-template="Token TK-1042 ready. Please visit Sanwer Centre on 12 Sep, 10:00 AM.">🎫 Token Ready</button>
+              <button type="button" class="btn btn-outline-primary btn-sm wa-template-btn" data-template="Gate Entry confirmed. Please drive to Weighbridge #1 for unloading.">🚛 Gate Verified</button>
+              <button type="button" class="btn btn-outline-primary btn-sm wa-template-btn" data-template="Payment of Rs 45,000 credited to bank via DBT. Txn: DBT-2026-MP-982104.">💰 DBT Credited</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="adminWaMessage">Message *</label>
+          <textarea id="adminWaMessage" class="form-input" rows="3" placeholder="Enter message text to send via WhatsApp..." required></textarea>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+          <div id="waSendStatusMsg" style="font-size: 0.85rem; font-weight: 500;"></div>
+          <button type="submit" id="adminWaSendBtn" class="btn btn-primary btn-sm">
+            📲 Send WhatsApp Message
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <!-- Admin WhatsApp Messages Log Section -->
+    <section class="card" id="adminWhatsAppHistoryCard">
+      <div class="card-header">
+        <div class="card-title">
+          <span>📜</span> <span>WhatsApp Messages History</span>
+        </div>
+        <button type="button" id="refreshWaHistoryBtn" class="btn btn-outline-primary btn-sm">
+          🔄 Refresh History
+        </button>
+      </div>
+
+      <div class="table-responsive" style="max-height: 380px; overflow-y: auto;">
+        <table class="table" style="font-size: 0.85rem;">
+          <thead>
+            <tr>
+              <th style="width: 140px;">Phone</th>
+              <th style="width: 100px;">Direction</th>
+              <th>Message</th>
+              <th style="width: 110px;">Status</th>
+              <th style="width: 160px;">Date/Time</th>
+            </tr>
+          </thead>
+          <tbody id="adminWaMessagesTableBody">
+            <tr>
+              <td colspan="5" style="text-align: center; color: var(--text-muted); padding: 1.5rem;">
+                Loading WhatsApp message records...
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </section>
 
   </main>

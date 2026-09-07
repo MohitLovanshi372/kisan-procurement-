@@ -6,6 +6,7 @@ const inMemoryDB = {
   centres: [],
   procurements: [],
   notifications: [],
+  whatsAppMessages: [],
   isUsingMemory: false
 };
 

@@ -4,8 +4,10 @@ const Farmer = require("../models/Farmer");
 const Procurement = require("../models/Procurement");
 const Centre = require("../models/Centre");
 const Notification = require("../models/Notification");
+const WhatsAppMessage = require("../models/WhatsAppMessage");
 const { protect, adminOnly } = require("../middleware/authMiddleware");
 const { emitToFarmer, emitToAll, emitToAdmin } = require("../socket");
+const { sendWhatsAppMessage, sendWhatsAppNotification } = require("../services/metaWhatsAppService");
 
 // GET /api/admin/dashboard
 router.get("/dashboard", protect, adminOnly, async (req, res) => {
@@ -192,6 +194,28 @@ router.put("/procurement/:id", protect, adminOnly, async (req, res) => {
       if (createdNotif) {
         emitToFarmer(targetFarmerId, "notification:new", createdNotif);
       }
+
+      // Send automatic WhatsApp notification to farmer if mobile number is available
+      try {
+        const farmerRecord = await Farmer.findOne({ farmerId: targetFarmerId });
+        if (farmerRecord && farmerRecord.mobile) {
+          let alertMsg = "";
+          if (paymentStatus === "Paid") {
+            alertMsg = `🌾 *MandiSathi DBT Payment Alert*\nNamaste ${farmerRecord.name} ji!\nYour MSP payment of ₹${Number(proc.amount || 45000).toLocaleString("en-IN")} has been processed successfully via DBT.\nTxn ID: ${proc.transactionId || 'DBT-2026-MP-982104'}\nReply *4* on WhatsApp anytime to view payment details.`;
+          } else if (procurementStatus === "Procurement Completed") {
+            alertMsg = `🌾 *MandiSathi Procurement Complete*\nNamaste ${farmerRecord.name} ji!\nYour crop weighment of ${proc.receivedQuantity || '18 Quintal'} at ${proc.centreId || 'Centre'} is completed.\nReply *3* on WhatsApp to check stage.`;
+          } else if (procurementStatus === "Arrived") {
+            alertMsg = `🌾 *MandiSathi Gate Entry Verified*\nNamaste ${farmerRecord.name} ji!\nYour arrival for Token ${proc.tokenNumber} is recorded. Please proceed to Weighbridge.`;
+          }
+          if (alertMsg) {
+            sendWhatsAppNotification(farmerRecord.mobile, alertMsg).catch(err => {
+              console.warn("Notice: Non-blocking WhatsApp alert notice:", err.message);
+            });
+          }
+        }
+      } catch (waErr) {
+        console.warn("Notice: Error preparing automatic WhatsApp alert:", waErr.message);
+      }
     }
 
     // Also broadcast to admin room so admin counters update
@@ -245,6 +269,71 @@ router.post("/notifications", protect, adminOnly, async (req, res) => {
   } catch (error) {
     console.error("Admin notification create error:", error);
     res.status(500).json({ success: false, message: "Failed to create notification" });
+  }
+});
+
+/**
+ * POST /api/admin/whatsapp/send
+ * Protected admin route to dispatch real WhatsApp messages to farmers
+ */
+router.post("/whatsapp/send", protect, adminOnly, async (req, res) => {
+  try {
+    const { mobile, phoneNumber, message } = req.body;
+    const targetPhone = mobile || phoneNumber;
+
+    if (!targetPhone || !message || !message.trim()) {
+      return res.status(400).json({
+        success: false,
+        message: "Farmer mobile number and message text are required"
+      });
+    }
+
+    // Clean phone validation (Indian or international)
+    const digitsOnly = String(targetPhone).replace(/\D/g, "");
+    if (digitsOnly.length < 10) {
+      return res.status(400).json({
+        success: false,
+        message: "Please enter a valid 10-digit mobile number"
+      });
+    }
+
+    const result = await sendWhatsAppMessage(targetPhone, message.trim());
+
+    if (result.success) {
+      return res.json({
+        success: true,
+        message: "WhatsApp message dispatched successfully to farmer via Meta Cloud API",
+        messageId: result.messageId,
+        data: result.data
+      });
+    } else {
+      return res.status(200).json({
+        success: false,
+        message: result.error || "Could not dispatch WhatsApp message",
+        simulatedNotice: result.simulatedNotice,
+        hint: "Configure WHATSAPP_PHONE_NUMBER_ID and WHATSAPP_ACCESS_TOKEN in .env for live WhatsApp delivery"
+      });
+    }
+  } catch (error) {
+    console.error("Admin WhatsApp send error:", error);
+    res.status(500).json({ success: false, message: "Failed to send WhatsApp message" });
+  }
+});
+
+/**
+ * GET /api/admin/whatsapp/messages
+ * Protected admin route to fetch WhatsApp message history from MongoDB / In-Memory DB
+ */
+router.get("/whatsapp/messages", protect, adminOnly, async (req, res) => {
+  try {
+    const messages = await WhatsAppMessage.find();
+    res.json({
+      success: true,
+      data: messages
+    });
+  } catch (error) {
+    console.error("Admin WhatsApp message history error:", error);
+    res.status(500).json({ success: false, message: "Failed to retrieve WhatsApp message history" });
   }
 });
 

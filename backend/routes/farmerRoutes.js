@@ -24,6 +24,14 @@ router.get("/profile", protect, async (req, res) => {
         crop: farmer.crop,
         landArea: farmer.landArea,
         preferredCentre: farmer.preferredCentre,
+        aadharNumber: farmer.aadharNumber || "",
+        isAadharLinked: farmer.isAadharLinked !== false,
+        bankName: farmer.bankName || "",
+        accountNumber: farmer.accountNumber || "",
+        ifscCode: farmer.ifscCode || "",
+        accountHolderName: farmer.accountHolderName || farmer.name || "",
+        branchName: farmer.branchName || "",
+        dbtStatus: farmer.dbtStatus || "Active (Aadhaar Seeded)",
         role: farmer.role,
         createdAt: farmer.createdAt
       }
@@ -37,7 +45,25 @@ router.get("/profile", protect, async (req, res) => {
 // PUT /api/farmers/profile
 router.put("/profile", protect, async (req, res) => {
   try {
-    const { name, village, district, state, crop, landArea, preferredCentre } = req.body;
+    const {
+      name,
+      village,
+      district,
+      state,
+      crop,
+      landArea,
+      preferredCentre,
+      aadharNumber,
+      bankName,
+      accountNumber,
+      ifscCode,
+      accountHolderName,
+      branchName
+    } = req.body;
+
+    const cleanAccount = accountNumber ? accountNumber.replace(/[^0-9]/g, "") : undefined;
+    const cleanIfsc = ifscCode ? ifscCode.trim().toUpperCase() : undefined;
+    const cleanAadhar = aadharNumber ? aadharNumber.replace(/[^0-9]/g, "") : undefined;
 
     const updatedFarmer = await Farmer.findByIdAndUpdate(
       req.user.id,
@@ -48,7 +74,14 @@ router.put("/profile", protect, async (req, res) => {
         ...(state && { state }),
         ...(crop && { crop }),
         ...(landArea && { landArea }),
-        ...(preferredCentre && { preferredCentre })
+        ...(preferredCentre && { preferredCentre }),
+        ...(cleanAadhar && { aadharNumber: cleanAadhar }),
+        ...(bankName && { bankName }),
+        ...(cleanAccount && { accountNumber: cleanAccount }),
+        ...(cleanIfsc && { ifscCode: cleanIfsc }),
+        ...(accountHolderName && { accountHolderName }),
+        ...(branchName && { branchName }),
+        dbtStatus: "Active (Aadhaar Seeded)"
       },
       { new: true }
     );
@@ -71,6 +104,14 @@ router.put("/profile", protect, async (req, res) => {
         crop: updatedFarmer.crop,
         landArea: updatedFarmer.landArea,
         preferredCentre: updatedFarmer.preferredCentre,
+        aadharNumber: updatedFarmer.aadharNumber || "",
+        isAadharLinked: updatedFarmer.isAadharLinked !== false,
+        bankName: updatedFarmer.bankName || "",
+        accountNumber: updatedFarmer.accountNumber || "",
+        ifscCode: updatedFarmer.ifscCode || "",
+        accountHolderName: updatedFarmer.accountHolderName || updatedFarmer.name || "",
+        branchName: updatedFarmer.branchName || "",
+        dbtStatus: updatedFarmer.dbtStatus || "Active (Aadhaar Seeded)",
         role: updatedFarmer.role
       }
     });

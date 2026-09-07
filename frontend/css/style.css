@@ -18,19 +18,19 @@
   --danger: #ef4444;
   --danger-bg: rgba(254, 226, 226, 0.9);
 
-  --bg-page: linear-gradient(135deg, #f4fbf8 0%, #eef6ff 42%, #f8f7ff 100%);
-  --bg-card: rgba(255, 255, 255, 0.6);
+  --bg-page: #f8fafc;
+  --bg-card: #ffffff;
   --text-main: #122033;
   --text-muted: #5c728f;
-  --border-color: rgba(148, 163, 184, 0.28);
+  --border-color: #e2e8f0;
 
-  --shadow-sm: 0 8px 18px rgba(148, 163, 184, 0.12), 0 2px 8px rgba(15, 23, 42, 0.04);
-  --shadow-md: 0 16px 30px rgba(93, 111, 140, 0.12), 0 4px 12px rgba(15, 23, 42, 0.05);
-  --shadow-lg: 0 24px 45px rgba(71, 85, 105, 0.16), 0 12px 18px rgba(15, 23, 42, 0.08);
+  --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.08), 0 1px 2px rgba(15, 23, 42, 0.04);
+  --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.07);
+  --shadow-lg: 0 10px 25px rgba(15, 23, 42, 0.1);
 
-  --radius-sm: 10px;
-  --radius-md: 16px;
-  --radius-lg: 22px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
   --radius-full: 9999px;
 
   --font-sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans Devanagari', sans-serif;
@@ -45,11 +45,6 @@
 body {
   font-family: var(--font-sans);
   background: var(--bg-page);
-  background-image: linear-gradient(135deg, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.08)), url("../img/dashboard-bg.png");
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
   color: var(--text-main);
   line-height: 1.6;
   min-height: 100vh;
@@ -61,12 +56,12 @@ body {
    Header & Navigation
    ========================================================================== */
 .site-header {
-  background: rgba(255, 255, 255, 0.18);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.35);
+  background: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
   position: sticky;
   top: 0;
   z-index: 100;
-  box-shadow: 0 6px 18px rgba(148, 163, 184, 0.04);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
 }
 
 .header-container {
@@ -308,11 +303,11 @@ body {
    Cards & Layout Components
    ========================================================================== */
 .card {
-  background: rgba(255, 255, 255, 0.22);
-  border: 1px solid rgba(255, 255, 255, 0.32);
+  background: #ffffff;
+  border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
   padding: 1.25rem;
-  box-shadow: 0 12px 30px rgba(148, 163, 184, 0.06);
+  box-shadow: var(--shadow-sm);
   margin-bottom: 1.25rem;
   position: relative;
 }
@@ -344,11 +339,11 @@ body {
 }
 
 .stat-card {
-  background: rgba(255, 255, 255, 0.18);
-  border: 1px solid rgba(255, 255, 255, 0.28);
+  background: #ffffff;
+  border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
   padding: 1rem 1.15rem;
-  box-shadow: 0 12px 26px rgba(148, 163, 184, 0.05);
+  box-shadow: var(--shadow-sm);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -406,11 +401,11 @@ body {
 
 /* Hero Next Visit Card */
 .next-visit-card {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.16) 0%, rgba(240, 253, 244, 0.2) 100%);
-  border: 1.5px solid rgba(110, 231, 183, 0.35);
+  background: #ffffff;
+  border: 1.5px solid #86efac;
   border-radius: var(--radius-lg);
   padding: 1.5rem;
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-sm);
   margin-bottom: 1.5rem;
 }
 
@@ -819,15 +814,15 @@ body {
 }
 
 .modal-content {
-  background: rgba(255, 255, 255, 0.18);
+  background: #ffffff;
   border-radius: var(--radius-lg);
   max-width: 550px;
   width: 100%;
   max-height: 90vh;
   overflow-y: auto;
   padding: 1.5rem;
-  box-shadow: 0 22px 40px rgba(71, 85, 105, 0.12);
-  border: 1px solid rgba(255, 255, 255, 0.28);
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--border-color);
 }
 
 /* ==========================================================================
@@ -836,10 +831,10 @@ body {
 .landing-hero {
   text-align: center;
   padding: 2.5rem 1rem;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.16) 0%, rgba(240, 253, 244, 0.2) 100%);
+  background: #ffffff;
   border-radius: var(--radius-lg);
-  border: 1px solid rgba(255, 255, 255, 0.32);
-  box-shadow: 0 18px 34px rgba(148, 163, 184, 0.05);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
   margin-bottom: 2rem;
 }
 
@@ -861,11 +856,11 @@ body {
 .auth-card-container {
   max-width: 480px;
   margin: 2rem auto;
-  background: rgba(255, 255, 255, 0.14);
-  border: 1px solid rgba(255, 255, 255, 0.28);
+  background: #ffffff;
+  border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
   padding: 2rem;
-  box-shadow: 0 18px 30px rgba(148, 163, 184, 0.06);
+  box-shadow: var(--shadow-md);
 }
 
 .quick-demo-box {
@@ -881,8 +876,8 @@ body {
    Footer
    ========================================================================== */
 .site-footer {
-  background: rgba(255, 255, 255, 0.12);
-  border-top: 1px solid rgba(255, 255, 255, 0.22);
+  background: #ffffff;
+  border-top: 1px solid var(--border-color);
   padding: 1.25rem;
   text-align: center;
   font-size: 0.82rem;
@@ -1495,9 +1490,7 @@ body {
 }
 
 .sih-block {
-  background: var(--bg-card);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: #ffffff;
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
   padding: 2rem 1.75rem;
@@ -1534,7 +1527,7 @@ body {
 }
 
 .sih-impact-card {
-  background: rgba(255, 255, 255, 0.85);
+  background: #ffffff;
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
   padding: 1.25rem 1rem;
@@ -1593,7 +1586,7 @@ body {
 }
 
 .sih-tech-card {
-  background: rgba(255, 255, 255, 0.92);
+  background: #ffffff;
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
   padding: 1.25rem;
@@ -1724,7 +1717,7 @@ body {
 }
 
 .sih-team-card {
-  background: rgba(255, 255, 255, 0.85);
+  background: #ffffff;
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
   padding: 1.5rem 1rem;
@@ -1777,7 +1770,7 @@ body {
 .sih-cta-block {
   text-align: center;
   padding: 2.5rem 1.5rem;
-  background: linear-gradient(135deg, rgba(240, 253, 244, 0.8) 0%, rgba(238, 246, 255, 0.8) 100%);
+  background: #ffffff;
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
@@ -1808,7 +1801,7 @@ body {
 
 /* Minimal SIH Footer */
 .sih-footer {
-  background: rgba(255, 255, 255, 0.3);
+  background: #ffffff;
   border-top: 1px solid var(--border-color);
   padding: 1.5rem 1rem;
   text-align: center;
@@ -1832,6 +1825,262 @@ body {
   flex-wrap: wrap;
   font-size: 0.82rem;
   color: var(--text-muted);
+}
+
+/* ==========================================================================
+   Twilio WhatsApp Bot Floating Widget & Chat Window
+   ========================================================================== */
+.wa-float-btn {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 999;
+  background: #25D366;
+  color: #ffffff;
+  border: none;
+  border-radius: 9999px;
+  padding: 0.65rem 1.15rem;
+  font-size: 0.92rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: 0 4px 14px rgba(37, 211, 102, 0.45);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.wa-float-btn:hover {
+  background: #1EBE5D;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(37, 211, 102, 0.55);
+}
+
+.wa-chat-window {
+  position: fixed;
+  bottom: 80px;
+  right: 24px;
+  width: 375px;
+  max-width: calc(100vw - 32px);
+  height: 520px;
+  max-height: calc(100vh - 120px);
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.18);
+  border: 1px solid #e2e8f0;
+  display: none;
+  flex-direction: column;
+  z-index: 1000;
+  overflow: hidden;
+  font-family: inherit;
+}
+
+.wa-chat-window.open {
+  display: flex;
+}
+
+.wa-chat-header {
+  background: #075E54;
+  color: #ffffff;
+  padding: 0.85rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.wa-header-info {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.wa-header-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #25D366;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.wa-header-title {
+  font-weight: 700;
+  font-size: 0.95rem;
+  line-height: 1.2;
+}
+
+.wa-header-subtitle {
+  font-size: 0.72rem;
+  color: #bbf7d0;
+}
+
+.wa-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.wa-header-btn {
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 0.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+}
+
+.wa-header-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.wa-chat-body {
+  flex: 1;
+  background: #efeae2;
+  background-image: radial-gradient(#d4cdc3 1px, transparent 1px);
+  background-size: 16px 16px;
+  padding: 0.85rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.wa-bubble {
+  max-width: 85%;
+  padding: 0.65rem 0.85rem;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  line-height: 1.45;
+  position: relative;
+  word-wrap: break-word;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+
+.wa-bubble.bot {
+  background: #ffffff;
+  color: #111827;
+  align-self: flex-start;
+  border-top-left-radius: 2px;
+}
+
+.wa-bubble.user {
+  background: #dcf8c6;
+  color: #111827;
+  align-self: flex-end;
+  border-top-right-radius: 2px;
+}
+
+.wa-bubble-time {
+  font-size: 0.68rem;
+  color: #6b7280;
+  text-align: right;
+  margin-top: 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.2rem;
+}
+
+.wa-quick-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 0.35rem;
+}
+
+.wa-chip-btn {
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  color: #0f172a;
+  border-radius: 14px;
+  padding: 0.25rem 0.6rem;
+  font-size: 0.76rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.wa-chip-btn:hover {
+  background: #f0fdf4;
+  border-color: #22c55e;
+  color: #15803d;
+}
+
+.wa-input-container {
+  background: #f0f2f5;
+  padding: 0.5rem 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+.wa-input-box {
+  flex: 1;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 20px;
+  padding: 0.5rem 0.85rem;
+  font-size: 0.85rem;
+  outline: none;
+  font-family: inherit;
+}
+
+.wa-input-box:focus {
+  border-color: #25D366;
+}
+
+.wa-send-btn {
+  background: #25D366;
+  color: #ffffff;
+  border: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1rem;
+  flex-shrink: 0;
+  transition: background 0.15s ease;
+}
+
+.wa-send-btn:hover {
+  background: #1EBE5D;
+}
+
+.wa-footer-links {
+  background: #f8fafc;
+  border-top: 1px solid #e2e8f0;
+  padding: 0.45rem 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.74rem;
+  color: #64748b;
+}
+
+.wa-real-btn {
+  color: #166534;
+  font-weight: 700;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.wa-real-btn:hover {
+  text-decoration: underline;
 }
 
 /* ==========================================================================

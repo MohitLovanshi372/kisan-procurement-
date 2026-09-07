@@ -16,10 +16,7 @@
         <span class="brand-icon">
           <img src="img/logo.png" alt="Mandisathi" class="brand-icon-img" onerror="this.style.display='none'; this.parentElement.innerText='🌾';">
         </span>
-        <div>
-          <div class="brand-title" data-i18n="brandTitle">Mandisathi</div>
-          <div class="brand-subtitle" data-i18n="farmerPortal">Farmer Portal</div>
-        </div>
+        <span class="brand-title" data-i18n="brandTitle">Mandisathi</span>
       </a>
 
       <button id="hamburgerBtn" class="hamburger-btn" aria-label="Toggle Navigation">☰</button>
@@ -69,8 +66,12 @@
         </div>
         <div>
           <h2 id="profName" style="font-size: 1.4rem; font-weight: 700; color: var(--text-main);">Ramesh Patel</h2>
-          <div style="color: var(--text-muted); font-size: 0.88rem;">
-            <span data-i18n="farmerId">Farmer ID</span>: <strong id="profFarmerId" style="color: var(--primary-dark);">FMR1001</strong> • <span data-i18n="mobileLabel">Mobile</span>: <span id="profMobile">9876543210</span>
+          <div style="color: var(--text-muted); font-size: 0.88rem; display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; margin-top: 0.25rem;">
+            <span><span data-i18n="farmerId">Farmer ID</span>: <strong id="profFarmerId" style="color: var(--primary-dark);">FMR1001</strong></span>
+            <span>•</span>
+            <span><span data-i18n="aadharLinkedMobileShort">Aadhaar-Linked Mobile</span>: <strong id="profMobile">9876543210</strong> <span class="badge badge-green" style="font-size: 0.72rem; padding: 0.15rem 0.4rem;" data-i18n="uidaiLinkedBadge">✓ Aadhaar Linked</span></span>
+            <span>•</span>
+            <span><span data-i18n="aadharLabel">Aadhaar</span>: <strong id="profAadhar" style="font-family: monospace;">•••• •••• 4589</strong></span>
           </div>
         </div>
       </div>
@@ -104,6 +105,59 @@
         <div style="background: #f8fafc; padding: 0.85rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
           <div style="font-size: 0.8rem; color: var(--text-muted); font-weight: 600;" data-i18n="preferredCentreLabel">PREFERRED CENTRE</div>
           <div id="profCentre" style="font-size: 1.05rem; font-weight: 700; margin-top: 0.2rem;">Sanwer Procurement Centre</div>
+        </div>
+      </div>
+
+      <!-- Direct Benefit Transfer (DBT) Bank Account Details Box -->
+      <div style="margin-top: 1.5rem; padding: 1.25rem; background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%); border: 1.5px solid #86efac; border-radius: var(--radius-md);">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 0.5rem; border-bottom: 1px solid #bbf7d0; padding-bottom: 0.75rem; margin-bottom: 1rem;">
+          <div style="display: flex; align-items: center; gap: 0.6rem;">
+            <span style="font-size: 1.5rem;">🏛️</span>
+            <div>
+              <h3 style="font-size: 1.05rem; font-weight: 700; color: #166534; margin: 0;" data-i18n="dbtBankCardHeading">Direct Benefit Transfer (DBT) Bank Account</h3>
+              <div style="font-size: 0.76rem; color: #15803d;" data-i18n="dbtBankCardSubtitle">Aadhaar-seeded bank account for MSP direct government payments</div>
+            </div>
+          </div>
+          <span class="badge badge-green" id="profDbtBadge" data-i18n="dbtActiveBadge">✓ DBT Active & Aadhaar Seeded</span>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 1rem;">
+          <div style="background: rgba(255,255,255,0.7); padding: 0.75rem; border-radius: var(--radius-sm); border: 1px solid #bbf7d0;">
+            <div style="font-size: 0.75rem; color: #166534; font-weight: 600;" data-i18n="bankNameLabel">BANK NAME</div>
+            <div id="profBankName" style="font-size: 0.98rem; font-weight: 700; color: var(--text-main); margin-top: 0.2rem;">State Bank of India</div>
+          </div>
+
+          <div style="background: rgba(255,255,255,0.7); padding: 0.75rem; border-radius: var(--radius-sm); border: 1px solid #bbf7d0;">
+            <div style="font-size: 0.75rem; color: #166534; font-weight: 600;" data-i18n="accountHolderNameLabel">ACCOUNT HOLDER NAME</div>
+            <div id="profAccountHolder" style="font-size: 0.98rem; font-weight: 700; color: var(--text-main); margin-top: 0.2rem;">Ramesh Patel</div>
+          </div>
+
+          <div style="background: rgba(255,255,255,0.7); padding: 0.75rem; border-radius: var(--radius-sm); border: 1px solid #bbf7d0;">
+            <div style="font-size: 0.75rem; color: #166534; font-weight: 600; display: flex; justify-content: space-between; align-items: center;">
+              <span data-i18n="accountNumberLabel">BANK ACCOUNT NUMBER</span>
+              <button type="button" id="toggleMaskAccountBtn" style="background: none; border: none; font-size: 0.75rem; color: var(--primary); cursor: pointer; text-decoration: underline;">Show</button>
+            </div>
+            <div id="profAccountNumber" style="font-size: 0.98rem; font-weight: 700; font-family: monospace; color: var(--text-main); margin-top: 0.2rem;">•••• •••• 1928</div>
+          </div>
+
+          <div style="background: rgba(255,255,255,0.7); padding: 0.75rem; border-radius: var(--radius-sm); border: 1px solid #bbf7d0;">
+            <div style="font-size: 0.75rem; color: #166534; font-weight: 600;" data-i18n="ifscCodeLabel">IFSC CODE</div>
+            <div id="profIfscCode" style="font-size: 0.98rem; font-weight: 700; font-family: monospace; color: var(--text-main); margin-top: 0.2rem;">SBIN0001234</div>
+          </div>
+
+          <div style="background: rgba(255,255,255,0.7); padding: 0.75rem; border-radius: var(--radius-sm); border: 1px solid #bbf7d0;">
+            <div style="font-size: 0.75rem; color: #166534; font-weight: 600;" data-i18n="branchNameOptionalLabel">BRANCH NAME</div>
+            <div id="profBranchName" style="font-size: 0.98rem; font-weight: 700; color: var(--text-main); margin-top: 0.2rem;">Sanwer Branch (Indore)</div>
+          </div>
+
+          <div style="background: rgba(255,255,255,0.7); padding: 0.75rem; border-radius: var(--radius-sm); border: 1px solid #bbf7d0;">
+            <div style="font-size: 0.75rem; color: #166534; font-weight: 600;" data-i18n="dbtSeedingMethod">DBT SEEDING STATUS</div>
+            <div style="font-size: 0.92rem; font-weight: 700; color: #166534; margin-top: 0.2rem;" data-i18n="npciMappedText">✓ NPCI Aadhaar-Mapped</div>
+          </div>
+        </div>
+
+        <div style="margin-top: 0.85rem; font-size: 0.75rem; color: #166534; line-height: 1.4;" data-i18n="dbtDisclaimerNote">
+          🔒 <strong>Official Guarantee:</strong> Payments for accepted crop procurement are processed directly into this Aadhaar-linked account within 3–7 business days via Public Financial Management System (PFMS) with zero broker commissions.
         </div>
       </div>
 
@@ -163,6 +217,46 @@
               <option value="Indore Central Mandi">Indore Central Mandi</option>
               <option value="Depalpur Krishi Upaj Mandi">Depalpur Krishi Upaj Mandi</option>
             </select>
+          </div>
+        </div>
+
+        <!-- DBT Bank Account Fields in Modal -->
+        <div style="margin-top: 1rem; padding: 0.9rem; background: #f0fdf4; border: 1px solid #86efac; border-radius: var(--radius-sm);">
+          <div style="font-weight: 700; color: #166534; font-size: 0.88rem; margin-bottom: 0.6rem; display: flex; align-items: center; gap: 0.4rem;">
+            <span>🏛️</span> <span data-i18n="editDbtBankTitle">Update DBT Bank Account Details</span>
+          </div>
+
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label class="form-label" for="editBankName" style="font-size: 0.8rem;" data-i18n="bankNameLabel">Bank Name</label>
+              <input type="text" id="editBankName" class="form-input" placeholder="e.g. State Bank of India">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="editAccountHolder" style="font-size: 0.8rem;" data-i18n="accountHolderNameLabel">Account Holder Name</label>
+              <input type="text" id="editAccountHolder" class="form-input" placeholder="e.g. Ramesh Patel">
+            </div>
+          </div>
+
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label class="form-label" for="editAccountNumber" style="font-size: 0.8rem;" data-i18n="accountNumberLabel">Account Number</label>
+              <input type="text" id="editAccountNumber" class="form-input" placeholder="e.g. 30982451928">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="editIfscCode" style="font-size: 0.8rem;" data-i18n="ifscCodeLabel">IFSC Code (11 Digits)</label>
+              <input type="text" id="editIfscCode" class="form-input" style="text-transform: uppercase;" maxlength="11" placeholder="e.g. SBIN0001234">
+            </div>
+          </div>
+
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label class="form-label" for="editBranchName" style="font-size: 0.8rem;" data-i18n="branchNameOptionalLabel">Branch Name</label>
+              <input type="text" id="editBranchName" class="form-input" placeholder="e.g. Sanwer Branch">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="editAadhar" style="font-size: 0.8rem;" data-i18n="aadharNumberLabel">Aadhaar Number</label>
+              <input type="text" id="editAadhar" class="form-input" placeholder="e.g. 789456124589" maxlength="14">
+            </div>
           </div>
         </div>
 

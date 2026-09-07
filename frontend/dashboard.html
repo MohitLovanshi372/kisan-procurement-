@@ -16,13 +16,7 @@
         <span class="brand-icon">
           <img src="img/logo.png" alt="Mandisathi" class="brand-icon-img" onerror="this.style.display='none'; this.parentElement.innerText='🌾';">
         </span>
-        <div>
-          <div class="brand-title">
-            Mandisathi
-            <span class="brand-tag">Farmer Portal</span>
-          </div>
-          <div class="brand-subtitle">Simple • Transparent • Farmer First</div>
-        </div>
+        <span class="brand-title" data-i18n="brandTitle">Mandisathi</span>
       </a>
 
       <button id="hamburgerBtn" class="hamburger-btn" aria-label="Toggle Navigation">☰</button>
@@ -573,6 +567,9 @@
           <button id="btnCopySimMessage" class="btn btn-outline-primary btn-sm">
             <span>📋</span> <span data-i18n="copyMessage">Copy Message</span>
           </button>
+          <button id="btnOpenWaBotModal" class="btn btn-sm" style="background: #25d366; color: #ffffff; border: 1px solid #1ebe5d; display: flex; align-items: center; gap: 0.35rem; font-weight: 600;">
+            <span>💬</span> <span>WhatsApp Sahayak</span>
+          </button>
           <button id="btnTriggerReminderApi" class="btn btn-primary btn-sm" style="background: #059669; border-color: #047857; display: flex; align-items: center; gap: 0.35rem;">
             <span>⚡</span> <span data-i18n="sendMockReminderBtn">Send Mock Reminder Now</span>
           </button>
@@ -845,5 +842,6 @@
   <script src="js/socket.io.min.js"></script>
   <script src="js/api.js"></script>
   <script src="js/dashboard.js"></script>
+  <script src="js/whatsapp-widget.js"></script>
 </body>
 </html>

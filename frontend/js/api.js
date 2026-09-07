@@ -42,7 +42,11 @@ function requireAuth(allowedRoles = ["farmer", "admin"]) {
   const user = getUser();
 
   if (!token || !user) {
-    window.location.href = "login.html";
+    if (allowedRoles.length === 1 && allowedRoles[0] === "admin") {
+      window.location.href = "admin-login.html";
+    } else {
+      window.location.href = "login.html";
+    }
     return false;
   }
 
@@ -50,6 +54,8 @@ function requireAuth(allowedRoles = ["farmer", "admin"]) {
     if (user.role === "admin") {
       window.location.href = "admin.html";
     } else {
+      // Farmer trying to access admin page
+      showToast("Access Denied: Only Mandi Officers can access the Procurement Centre.", "error");
       window.location.href = "dashboard.html";
     }
     return false;
@@ -179,6 +185,17 @@ const translations = {
 
     // Auth (Login & Register)
     accountLogin: "Account Login",
+    farmerLoginTitle: "Farmer Login",
+    officerPromptText: "Mandi Officer or Staff?",
+    officerLoginLinkText: "Procurement Centre Login →",
+    adminLoginTitle: "Procurement Centre Login",
+    adminLoginSubtitle: "Authorized Mandi Officers and Administrative Staff only",
+    officerMobileLabel: "Officer Mobile / Staff ID",
+    adminLoginBtn: "Secure Officer Login →",
+    adminDemoTitle: "⚡ Quick Officer Demo Login:",
+    farmerPromptText: "Are you a Farmer?",
+    farmerLoginLinkText: "Farmer Login Portal →",
+    farmerLoginPortal: "Farmer Login",
     loginWithMobile: "Login with your registered mobile number",
     mobileInputLabel: "Mobile Number",
     mobilePlaceholder: "e.g. 9876543210",
@@ -209,6 +226,47 @@ const translations = {
     completeRegBtn: "Complete Registration & Generate Token →",
     alreadyRegistered: "Already registered?",
     loginToDashboard: "Login to Dashboard",
+
+    // DBT & Aadhaar Registration Keys
+    aadharMobileLabel: "Aadhaar-Linked Mobile Number *",
+    aadharMobileHint: "📱 Only enter mobile linked with your Aadhaar (Required for OTP & DBT)",
+    aadharNumberLabel: "Aadhaar Number (12 Digits) *",
+    aadharPlaceholder: "e.g. 7894 5612 4589",
+    aadharHint: "For biometric identity and DBT subsidy verification",
+    dbtSectionTitle: "Bank Account for Direct Benefit Transfer (DBT)",
+    dbtSectionSubtitle: "Government MSP payment will be credited directly to this Aadhaar-linked bank account without middleman cuts.",
+    bankNameLabel: "Bank Name *",
+    accountHolderNameLabel: "Account Holder Name (as per Bank) *",
+    holderNamePlaceholder: "e.g. Ramesh Patel",
+    accountNumberLabel: "Bank Account Number *",
+    accountNumberPlaceholder: "Enter Bank Account Number",
+    confirmAccountNumberLabel: "Confirm Bank Account Number *",
+    confirmAccountPlaceholder: "Re-enter Bank Account Number",
+    ifscCodeLabel: "Bank IFSC Code (11 Digits) *",
+    ifscPlaceholder: "e.g. SBIN0001234",
+    ifscHint: "Check 5th character is zero (0) as per RBI format",
+    branchNameOptionalLabel: "Branch Name (Optional)",
+    branchPlaceholder: "e.g. Sanwer Branch",
+    dbtConsentText: "I confirm that this bank account is active and seeded with my Aadhaar number for receiving direct government MSP payments (DBT enabled).",
+    otherBankOption: "Other Bank",
+    dbtBankCardHeading: "Direct Benefit Transfer (DBT) Bank Account",
+    dbtBankCardSubtitle: "Aadhaar-seeded bank account for MSP direct government payments",
+    dbtActiveBadge: "✓ DBT Active & Aadhaar Seeded",
+    dbtSeedingMethod: "DBT SEEDING STATUS",
+    npciMappedText: "✓ NPCI Aadhaar-Mapped",
+    dbtDisclaimerNote: "🔒 Official Guarantee: Payments for accepted crop procurement are processed directly into this Aadhaar-linked account within 3–7 business days via Public Financial Management System (PFMS) with zero broker commissions.",
+    editDbtBankTitle: "Update DBT Bank Account Details",
+    aadharLinkedMobileShort: "Aadhaar-Linked Mobile",
+    uidaiLinkedBadge: "✓ Aadhaar Linked",
+    aadharLabel: "Aadhaar",
+    dbtBeneficiaryBank: "DBT Crediting Bank:",
+    dbtAadhaarStatus: "Aadhaar DBT Seeding:",
+    validMobileRequired: "Please enter a valid 10-digit Aadhaar-linked mobile number",
+    validAadharRequired: "Aadhaar number must be 12 digits",
+    bankAccountRequired: "Please enter your Bank Account Number for DBT payment",
+    accountNumberMismatch: "Bank account numbers do not match. Please verify.",
+    validIfscRequired: "IFSC Code must be 11 characters (e.g. SBIN0001234)",
+    dbtConsentRequired: "Please accept the Aadhaar DBT seeding confirmation",
 
     // Dashboard
     dashboardGreeting: "Namaste",
@@ -604,6 +662,17 @@ const translations = {
 
     // Auth (Login & Register)
     accountLogin: "खाता लॉगिन",
+    farmerLoginTitle: "किसान लॉगिन",
+    officerPromptText: "मंडी अधिकारी या स्टाफ?",
+    officerLoginLinkText: "खरीद केंद्र लॉगिन →",
+    adminLoginTitle: "खरीद केंद्र लॉगिन",
+    adminLoginSubtitle: "केवल अधिकृत मंडी अधिकारी और प्रशासनिक स्टाफ के लिए",
+    officerMobileLabel: "अधिकारी मोबाइल / स्टाफ आईडी",
+    adminLoginBtn: "सुरक्षित अधिकारी लॉगिन →",
+    adminDemoTitle: "⚡ त्वरित अधिकारी डेमो लॉगिन:",
+    farmerPromptText: "क्या आप किसान हैं?",
+    farmerLoginLinkText: "किसान लॉगिन पोर्टल →",
+    farmerLoginPortal: "किसान लॉगिन",
     loginWithMobile: "अपने पंजीकृत मोबाइल नंबर से लॉगिन करें",
     mobileInputLabel: "मोबाइल नंबर",
     mobilePlaceholder: "उदा. 9876543210",
@@ -634,6 +703,47 @@ const translations = {
     completeRegBtn: "पंजीकरण पूर्ण करें एवं टोकन बनाएं →",
     alreadyRegistered: "पहले से पंजीकृत हैं?",
     loginToDashboard: "डैशबोर्ड पर लॉगिन करें",
+
+    // DBT & Aadhaar Registration Keys (Hindi)
+    aadharMobileLabel: "आधार से लिंक मोबाइल नंबर *",
+    aadharMobileHint: "📱 केवल अपने आधार से लिंक 10 अंकों का मोबाइल नंबर दर्ज करें (OTP व DBT सूचना हेतु)",
+    aadharNumberLabel: "आधार संख्या (12 अंक) *",
+    aadharPlaceholder: "उदा. 7894 5612 4589",
+    aadharHint: "बायोमेट्रिक पहचान एवं प्रत्यक्ष लाभ अंतरण (DBT) सत्यापन हेतु",
+    dbtSectionTitle: "प्रत्यक्ष लाभ अंतरण (DBT) हेतु बैंक खाता विवरण",
+    dbtSectionSubtitle: "शासन की एमएसपी राशि बिना किसी बिचौलिए के सीधे इसी आधार-सीडेड बैंक खाते में जमा होगी।",
+    bankNameLabel: "बैंक का नाम *",
+    accountHolderNameLabel: "खाताधारक का नाम (बैंक पासबुक अनुसार) *",
+    holderNamePlaceholder: "उदा. रमेश पटेल",
+    accountNumberLabel: "बैंक खाता संख्या *",
+    accountNumberPlaceholder: "बैंक खाता संख्या दर्ज करें",
+    confirmAccountNumberLabel: "बैंक खाता संख्या पुनः दर्ज करें *",
+    confirmAccountPlaceholder: "खाता संख्या दोबारा दर्ज करें",
+    ifscCodeLabel: "बैंक आईएफएससी कोड (11 अक्षर/अंक) *",
+    ifscPlaceholder: "उदा. SBIN0001234",
+    ifscHint: "आरबीआई नियमानुसार पांचवां अक्षर शून्य (0) होना अनिवार्य है",
+    branchNameOptionalLabel: "शाखा का नाम (वैकल्पिक)",
+    branchPlaceholder: "उदा. सांवेर शाखा",
+    dbtConsentText: "मैं पुष्टि करता हूँ कि यह बैंक खाता सक्रिय है और सरकारी एमएसपी राशि (DBT) प्राप्त करने हेतु मेरे आधार से लिंक/सीडेड है।",
+    otherBankOption: "अन्य बैंक",
+    dbtBankCardHeading: "प्रत्यक्ष लाभ अंतरण (DBT) बैंक खाता",
+    dbtBankCardSubtitle: "सरकारी न्यूनतम समर्थन मूल्य (MSP) भुगतान हेतु आधार-सीडेड बैंक खाता",
+    dbtActiveBadge: "✓ डीबीटी सक्रिय एवं आधार लिंक",
+    dbtSeedingMethod: "डीबीटी सीडिंग स्थिति",
+    npciMappedText: "✓ NPCI आधार मैप्ड",
+    dbtDisclaimerNote: "🔒 शासकीय गारंटी: फसल खरीदी का भुगतान पीएफएमएस (PFMS) प्रणाली द्वारा बिना किसी दलाली के 3 से 7 कार्यदिवसों में सीधे इसी आधार लिंक बैंक खाते में अंतरित किया जाता है।",
+    editDbtBankTitle: "डीबीटी बैंक खाता विवरण अपडेट करें",
+    aadharLinkedMobileShort: "आधार लिंक मोबाइल",
+    uidaiLinkedBadge: "✓ आधार लिंक",
+    aadharLabel: "आधार",
+    dbtBeneficiaryBank: "डीबीटी लाभार्थी बैंक:",
+    dbtAadhaarStatus: "आधार डीबीटी स्थिति:",
+    validMobileRequired: "कृपया आधार से लिंक 10 अंकों का मान्य मोबाइल नंबर दर्ज करें",
+    validAadharRequired: "आधार संख्या 12 अंकों की होनी चाहिए",
+    bankAccountRequired: "कृपया डीबीटी भुगतान हेतु बैंक खाता संख्या दर्ज करें",
+    accountNumberMismatch: "बैंक खाता संख्या मेल नहीं खा रही है। कृपया जाँच करें।",
+    validIfscRequired: "आईएफएससी कोड 11 अक्षरों का होना चाहिए (उदा. SBIN0001234)",
+    dbtConsentRequired: "कृपया आधार डीबीटी सीडिंग सहमति पर टिक करें",
 
     // Dashboard
     dashboardGreeting: "नमस्ते",

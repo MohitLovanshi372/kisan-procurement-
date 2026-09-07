@@ -15,10 +15,7 @@
         <span class="brand-icon">
           <img src="img/logo.png" alt="Mandisathi" class="brand-icon-img" onerror="this.style.display='none'; this.parentElement.innerText='🌾';">
         </span>
-        <div>
-          <div class="brand-title" data-i18n="brandTitle">Mandisathi</div>
-          <div class="brand-subtitle" data-i18n="farmerPortal">Farmer Portal</div>
-        </div>
+        <span class="brand-title" data-i18n="brandTitle">Mandisathi</span>
       </a>
       <div class="header-actions">
         <button id="langSwitchBtn" class="lang-btn">हिंदी</button>
@@ -49,20 +46,42 @@
           </div>
 
           <div class="form-group">
-            <label class="form-label" for="mobile" data-i18n="mobileInputLabel">Mobile Number *</label>
-            <input type="tel" id="mobile" class="form-input" placeholder="e.g. 9876543210" data-i18n-placeholder="mobilePlaceholder" required maxlength="10">
+            <label class="form-label" for="mobile" data-i18n="aadharMobileLabel">Aadhaar-Linked Mobile Number *</label>
+            <input type="tel" id="mobile" class="form-input" placeholder="e.g. 9876543210" data-i18n-placeholder="mobilePlaceholder" required maxlength="10" pattern="[6-9][0-9]{9}">
+            <small style="display: block; font-size: 0.74rem; color: #166534; font-weight: 600; margin-top: 0.25rem;">
+              📱 केवल वही मोबाइल नंबर दर्ज करें जो आधार कार्ड से लिंक है (डीबीटी भुगतान एवं व्हाट्सएप अलर्ट हेतु)
+            </small>
           </div>
         </div>
 
         <div class="form-grid-2">
           <div class="form-group">
-            <label class="form-label" for="password" data-i18n="passwordInputLabel">Password *</label>
-            <input type="password" id="password" class="form-input" placeholder="Enter your password" data-i18n-placeholder="passwordPlaceholder" required minlength="4">
+            <label class="form-label" for="aadharNumber" data-i18n="aadharNumberLabel">Aadhaar Number (12 Digits) *</label>
+            <input type="text" id="aadharNumber" class="form-input" placeholder="e.g. 7894 5612 4589" data-i18n-placeholder="aadharPlaceholder" required maxlength="14">
+            <small style="display: block; font-size: 0.73rem; color: var(--text-muted); margin-top: 0.25rem;">
+              डीबीटी एमएसपी भुगतान सीधे आपके इस आधार से जुड़े बैंक खाते में जाएगा
+            </small>
           </div>
 
           <div class="form-group">
+            <label class="form-label" for="password" data-i18n="passwordInputLabel">Password *</label>
+            <input type="password" id="password" class="form-input" placeholder="Enter your password" data-i18n-placeholder="passwordPlaceholder" required minlength="4">
+          </div>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-group">
             <label class="form-label" for="farmerId" data-i18n="farmerIdOptionalLabel">Farmer ID (Optional)</label>
             <input type="text" id="farmerId" class="form-input" placeholder="e.g. FMR1001" data-i18n-placeholder="farmerIdPlaceholder">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="preferredCentre" data-i18n="preferredCentreLabel">Preferred Mandi Centre *</label>
+            <select id="preferredCentre" class="form-select" required>
+              <option value="Sanwer Procurement Centre">Sanwer Procurement Centre (Indore)</option>
+              <option value="Indore Central Mandi">Indore Central Mandi (Laxmibai Nagar)</option>
+              <option value="Depalpur Krishi Upaj Mandi">Depalpur Krishi Upaj Mandi</option>
+            </select>
           </div>
         </div>
 
@@ -97,19 +116,43 @@
           </div>
         </div>
 
-        <div class="form-grid-2">
-          <div class="form-group">
-            <label class="form-label" for="landArea" data-i18n="landAreaLabel">Land Area *</label>
-            <input type="text" id="landArea" class="form-input" placeholder="e.g. 4.5 Acres" data-i18n-placeholder="landAreaPlaceholder" required>
+        <div class="form-group">
+          <label class="form-label" for="landArea" data-i18n="landAreaLabel">Land Area *</label>
+          <input type="text" id="landArea" class="form-input" placeholder="e.g. 4.5 Acres" data-i18n-placeholder="landAreaPlaceholder" required>
+        </div>
+
+        <!-- Direct Benefit Transfer (DBT) Aadhaar-Linked Guarantee (No Bank Account Input Needed) -->
+        <div class="dbt-bank-card" style="margin: 1.25rem 0; padding: 1.15rem; background: #f0fdf4; border: 1.5px solid #86efac; border-radius: var(--radius-md);">
+          <div style="display: flex; align-items: flex-start; gap: 0.75rem;">
+            <span style="font-size: 1.6rem; line-height: 1;">🏛️</span>
+            <div>
+              <strong style="font-size: 0.98rem; color: #166534;">आधार-सीडेड डीबीटी भुगतान प्रणाली (NPCI / PFMS DBT)</strong>
+              <div style="font-size: 0.8rem; color: #15803d; margin-top: 0.25rem;">
+                <strong>बैंक खाता नंबर दर्ज करने की आवश्यकता नहीं है:</strong> भारत सरकार के डीबीटी नियमानुसार एमएसपी खरीद की संपूर्ण राशि आपके 12-अंकीय आधार नंबर से जुड़े बैंक खाते में सीधे ट्रांसफर की जाएगी।
+              </div>
+            </div>
           </div>
 
-          <div class="form-group">
-            <label class="form-label" for="preferredCentre" data-i18n="preferredCentreLabel">Preferred Mandi Centre *</label>
-            <select id="preferredCentre" class="form-select" required>
-              <option value="Sanwer Procurement Centre">Sanwer Procurement Centre (Indore)</option>
-              <option value="Indore Central Mandi">Indore Central Mandi (Laxmibai Nagar)</option>
-              <option value="Depalpur Krishi Upaj Mandi">Depalpur Krishi Upaj Mandi</option>
-            </select>
+          <div style="margin-top: 0.85rem; background: #ffffff; border: 1px solid #bbf7d0; border-radius: var(--radius-sm); padding: 0.75rem 0.9rem; font-size: 0.82rem; display: flex; flex-direction: column; gap: 0.45rem;">
+            <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap;">
+              <span style="color: #475569;">भुगतान माध्यम (Payment Method):</span>
+              <span class="badge badge-green">✓ आधार पेमेंट ब्रिज (APBS)</span>
+            </div>
+            <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap;">
+              <span style="color: #475569;">मोबाइल नंबर सत्यापन:</span>
+              <span style="color: #166534; font-weight: 700;">आधार से लिंक होना अनिवार्य</span>
+            </div>
+            <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap;">
+              <span style="color: #475569;">बैंक खाता व IFSC दर्ज करना:</span>
+              <span style="color: #059669; font-weight: 600;">स्वतः लिंक (No Manual Entry)</span>
+            </div>
+          </div>
+
+          <div style="margin-top: 0.85rem; display: flex; align-items: flex-start; gap: 0.5rem;">
+            <input type="checkbox" id="dbtAadharConsent" checked required style="margin-top: 0.2rem; cursor: pointer; accent-color: var(--primary);">
+            <label for="dbtAadharConsent" style="font-size: 0.8rem; color: #14532d; line-height: 1.45;">
+              मैं प्रमाणित करता/करती हूँ कि ऊपर दर्ज 10-अंकीय मोबाइल नंबर मेरे 12-अंकीय आधार कार्ड से लिंक है तथा एमएसपी डीबीटी भुगतान सीधे आधार-सीडेड बैंक खाते में प्राप्त करने हेतु सहमत हूँ।
+            </label>
           </div>
         </div>
 

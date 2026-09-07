@@ -12,6 +12,14 @@ const farmerSchema = new mongoose.Schema({
   crop: { type: String, required: true },
   landArea: { type: String, required: true },
   preferredCentre: { type: String, required: true },
+  aadharNumber: { type: String, default: "" },
+  isAadharLinked: { type: Boolean, default: true },
+  bankName: { type: String, default: "" },
+  accountNumber: { type: String, default: "" },
+  ifscCode: { type: String, default: "" },
+  accountHolderName: { type: String, default: "" },
+  branchName: { type: String, default: "" },
+  dbtStatus: { type: String, default: "Active (Aadhaar Seeded)" },
   role: { type: String, enum: ["farmer", "admin"], default: "farmer" },
   createdAt: { type: Date, default: Date.now }
 });
