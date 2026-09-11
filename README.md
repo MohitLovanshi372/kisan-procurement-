@@ -1,6 +1,7 @@
 # Mandisathi — SIH26032 Prototype
 PROTOTYPE LINK
 https://kisan-procurement.onrender.com/
+https://mandisathi.onrender.com/
 > **Smart India Hackathon (SIH26032)** — Farmer Procurement Assistance Platform  
 > **Tagline:** *Simple • Transparent • Farmer First*
 
