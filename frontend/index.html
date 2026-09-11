@@ -4,8 +4,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mandisathi — </title>
+  <title>Mandisathi — Kisan ka Saathi, Samriddh Bharat ki Ore</title>
+  <meta name="description" content="A farmer-centric MSP procurement platform with digital token QR code generator, live centre congestion tracking, automated Meta WhatsApp Cloud API chatbot, and DBT payment settlement.">
+  <meta property="og:title" content="Mandisathi">
+  <meta property="og:description" content="A farmer-centric MSP procurement platform with digital token QR code generator, live centre congestion tracking, automated Meta WhatsApp Cloud API chatbot, and DBT payment settlement.">
+  <meta property="og:image" content="img/logo.png">
   <link rel="icon" type="image/png" href="img/logo.png">
+  <link rel="apple-touch-icon" href="img/logo.png">
   <link rel="stylesheet" href="css/style.css">
 </head>
 
@@ -16,10 +21,20 @@
     <div class="header-container">
       <a href="index.html" class="brand-logo">
         <span class="brand-icon">
-          <img src="img/logo.png" alt="Mandisathi" class="brand-icon-img" onerror="this.style.display='none'; this.parentElement.innerText='🌾';">
+          <img src="img/logo.png" alt="Mandisathi Logo" class="brand-icon-img" onerror="this.onerror=null; this.src='img/brand-logo.png';">
         </span>
         <span class="brand-title" data-i18n="brandTitle">Mandisathi</span>
       </a>
+
+      <button id="hamburgerBtn" class="hamburger-btn" aria-label="Toggle Navigation">☰</button>
+
+      <ul class="nav-links" id="navLinks">
+        <li class="nav-item active"><a href="#hero" data-i18n="navHome">Home</a></li>
+        <li class="nav-item"><a href="#services" data-i18n="navServices">Services</a></li>
+        <li class="nav-item"><a href="#how-it-works" data-i18n="navHowItWorks">How It Works</a></li>
+        <li class="nav-item"><a href="#demo-credentials" data-i18n="navDemo">Demo</a></li>
+        <li class="nav-item"><a href="about.html" data-i18n="navAbout">About</a></li>
+      </ul>
 
       <div class="header-actions">
         <button id="langSwitchBtn" class="lang-btn">हिंदी</button>
@@ -33,7 +48,10 @@
   <main class="main-content">
 
     <!-- Hero Section -->
-    <section class="landing-hero">
+    <section class="landing-hero" id="hero">
+      <div style="text-align: center; margin-bottom: 1.25rem;">
+        <img src="img/logo.png" alt="Mandisathi - Kisan ka Saathi" style="width: 170px; max-width: 90%; height: auto; margin: 0 auto; display: block; filter: drop-shadow(0 6px 20px rgba(20, 83, 45, 0.2));" onerror="this.onerror=null; this.src='img/brand-logo.png';">
+      </div>
       <div style="margin-bottom: 0.75rem;">
         <span class="demo-tag" style="background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0;"
           data-i18n="mspTag">🌾 Direct Minimum Support Price (MSP) Portal</span>
@@ -57,7 +75,7 @@
       </div>
 
       <!-- Quick Demo Credentials Box -->
-      <div class="quick-demo-box" style="max-width: 600px; margin: 1.5rem auto 0 auto; text-align: left;">
+      <div class="quick-demo-box" id="demo-credentials" style="max-width: 600px; margin: 1.5rem auto 0 auto; text-align: left;">
         <div
           style="font-weight: 700; color: var(--primary-dark); margin-bottom: 0.4rem; display: flex; align-items: center; justify-content: space-between;">
           <span data-i18n="quickDemoTitle">⚡ Instant Demo Credentials (Evaluation)</span>
@@ -87,7 +105,7 @@
     </section>
 
     <!-- 3 Core Feature Highlights -->
-    <section style="margin-bottom: 2.5rem;">
+    <section id="services" style="margin-bottom: 2.5rem;">
       <h2 style="text-align: center; font-size: 1.35rem; font-weight: 700; margin-bottom: 1.25rem;"
         data-i18n="keyServicesTitle">
         Key Farmer Services
@@ -127,7 +145,7 @@
     </section>
 
     <!-- How It Works Section -->
-    <section class="card" style="padding: 2rem 1.5rem;">
+    <section class="card" id="how-it-works" style="padding: 2rem 1.5rem;">
       <h2 style="text-align: center; font-size: 1.35rem; font-weight: 700; margin-bottom: 1.5rem;"
         data-i18n="howItWorksTitle">
         How It Works — Farmer Journey

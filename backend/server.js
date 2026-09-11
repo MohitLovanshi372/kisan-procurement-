@@ -16,11 +16,13 @@ const procurementRoutes = require("./routes/procurementRoutes");
 const centreRoutes = require("./routes/centreRoutes");
 const notificationRoutes = require("./routes/notificationRoutes");
 const adminRoutes = require("./routes/adminRoutes");
+const officerRoutes = require("./routes/officerRoutes");
 const whatsappRoutes = require("./routes/whatsappRoutes");
 
 const app = express();
 const server = http.createServer(app);
-const PORT = process.env.PORT || 3000;
+// Dev and production server port MUST be hardcoded to 3000 for nginx reverse proxy
+const PORT = 3000;
 
 // Initialize Socket.io real-time engine
 const io = initSocket(server);
@@ -44,6 +46,8 @@ app.use("/api/procurement", procurementRoutes);
 app.use("/api/centres", centreRoutes);
 app.use("/api/notifications", notificationRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/api/officer", officerRoutes);
+app.use("/api/centre-officer", officerRoutes);
 
 // Health check API
 app.get("/api/health", (req, res) => {
@@ -55,42 +59,6 @@ app.get("/api/health", (req, res) => {
     realtime: "Socket.io Active",
     time: new Date().toISOString()
   });
-});
-
-// Logo update endpoint (accepts base64 or imageUrl)
-app.post("/api/system/upload-logo", express.json({ limit: "25mb" }), async (req, res) => {
-  try {
-    const { imageBase64, imageUrl } = req.body;
-    let buffer = null;
-
-    if (imageBase64) {
-      const cleanBase64 = imageBase64.replace(/^data:image\/\w+;base64,/, "");
-      buffer = Buffer.from(cleanBase64, "base64");
-    } else if (imageUrl) {
-      const resp = await fetch(imageUrl);
-      if (!resp.ok) {
-        return res.status(400).json({ error: `Failed to fetch image from URL: ${resp.status} ${resp.statusText}` });
-      }
-      const arrayBuffer = await resp.arrayBuffer();
-      buffer = Buffer.from(arrayBuffer);
-    } else {
-      return res.status(400).json({ error: "Please provide either imageBase64 or imageUrl" });
-    }
-
-    const logoPngPath = path.join(frontendPath, "img", "logo.png");
-    const brandLogoPngPath = path.join(frontendPath, "img", "brand-logo.png");
-    fs.writeFileSync(logoPngPath, buffer);
-    fs.writeFileSync(brandLogoPngPath, buffer);
-
-    if (io) {
-      io.emit("logo-updated", { timestamp: Date.now() });
-    }
-
-    return res.json({ success: true, message: "Logo updated successfully!" });
-  } catch (err) {
-    console.error("Logo update error:", err);
-    return res.status(500).json({ error: err.message || "Failed to update logo" });
-  }
 });
 
 // Fallback to frontend index for root navigation

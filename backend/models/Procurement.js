@@ -34,6 +34,23 @@ try {
   MongooseProcurement = mongoose.models.Procurement;
 }
 
+function attachSave(item) {
+  if (!item || typeof item !== "object") return item;
+  if (!item.save) {
+    Object.defineProperty(item, "save", {
+      value: async function() {
+        const idx = inMemoryDB.procurements.findIndex(p => String(p._id) === String(this._id));
+        if (idx !== -1) inMemoryDB.procurements[idx] = this;
+        return this;
+      },
+      writable: true,
+      configurable: true,
+      enumerable: false
+    });
+  }
+  return item;
+}
+
 const Procurement = {
   schema: procurementSchema,
   isMongoose: () => mongoose.connection.readyState === 1 && !inMemoryDB.isUsingMemory,
@@ -45,22 +62,24 @@ const Procurement = {
         if (p[key] !== query[key]) return false;
       }
       return true;
-    });
+    }).map(attachSave);
   },
 
   async findOne(query) {
     if (this.isMongoose()) return await MongooseProcurement.findOne(query);
-    return inMemoryDB.procurements.find(p => {
+    const item = inMemoryDB.procurements.find(p => {
       for (const key in query) {
         if (p[key] !== query[key]) return false;
       }
       return true;
     }) || null;
+    return attachSave(item);
   },
 
   async findById(id) {
     if (this.isMongoose()) return await MongooseProcurement.findById(id);
-    return inMemoryDB.procurements.find(p => String(p._id) === String(id)) || null;
+    const item = inMemoryDB.procurements.find(p => String(p._id) === String(id)) || null;
+    return attachSave(item);
   },
 
   async create(data) {
@@ -70,6 +89,7 @@ const Procurement = {
       createdAt: new Date(),
       ...data
     };
+    attachSave(newProc);
     inMemoryDB.procurements.push(newProc);
     return newProc;
   },
@@ -79,7 +99,7 @@ const Procurement = {
     const idx = inMemoryDB.procurements.findIndex(p => String(p._id) === String(id));
     if (idx === -1) return null;
     inMemoryDB.procurements[idx] = { ...inMemoryDB.procurements[idx], ...update };
-    return inMemoryDB.procurements[idx];
+    return attachSave(inMemoryDB.procurements[idx]);
   },
 
   async countDocuments(query = {}) {

@@ -20,7 +20,14 @@ const farmerSchema = new mongoose.Schema({
   accountHolderName: { type: String, default: "" },
   branchName: { type: String, default: "" },
   dbtStatus: { type: String, default: "Active (Aadhaar Seeded)" },
-  role: { type: String, enum: ["farmer", "admin"], default: "farmer" },
+  role: {
+    type: String,
+    enum: ["FARMER", "CENTRE_OFFICER", "GOVERNMENT_ADMIN", "farmer", "centre_officer", "government_admin", "admin"],
+    default: "FARMER"
+  },
+  assignedCentreId: { type: String, default: null },
+  assignedCentreName: { type: String, default: null },
+  isActive: { type: Boolean, default: true },
   createdAt: { type: Date, default: Date.now }
 });
 
@@ -31,6 +38,23 @@ try {
   MongooseFarmer = mongoose.models.Farmer;
 }
 
+function attachSave(item) {
+  if (!item || typeof item !== "object") return item;
+  if (!item.save) {
+    Object.defineProperty(item, "save", {
+      value: async function() {
+        const idx = inMemoryDB.farmers.findIndex(f => String(f._id) === String(this._id) || f.farmerId === this.farmerId);
+        if (idx !== -1) inMemoryDB.farmers[idx] = this;
+        return this;
+      },
+      writable: true,
+      configurable: true,
+      enumerable: false
+    });
+  }
+  return item;
+}
+
 // Unified wrapper supporting both Mongoose and In-Memory demo store
 const Farmer = {
   schema: farmerSchema,
@@ -38,7 +62,7 @@ const Farmer = {
 
   async findOne(query) {
     if (this.isMongoose()) return await MongooseFarmer.findOne(query);
-    return inMemoryDB.farmers.find(f => {
+    const item = inMemoryDB.farmers.find(f => {
       if (query.$or && Array.isArray(query.$or)) {
         return query.$or.some(subQuery => {
           for (const k in subQuery) {
@@ -52,11 +76,13 @@ const Farmer = {
       }
       return true;
     }) || null;
+    return attachSave(item);
   },
 
   async findById(id) {
     if (this.isMongoose()) return await MongooseFarmer.findById(id);
-    return inMemoryDB.farmers.find(f => String(f._id) === String(id) || f.farmerId === id) || null;
+    const item = inMemoryDB.farmers.find(f => String(f._id) === String(id) || f.farmerId === id) || null;
+    return attachSave(item);
   },
 
   async find(query = {}) {
@@ -66,7 +92,7 @@ const Farmer = {
         if (f[key] !== query[key]) return false;
       }
       return true;
-    });
+    }).map(attachSave);
   },
 
   async create(data) {
@@ -74,9 +100,13 @@ const Farmer = {
     const newFarmer = {
       _id: "fmr_" + Math.random().toString(36).substr(2, 9),
       createdAt: new Date(),
-      role: "farmer",
+      role: data.role || "FARMER",
+      isActive: data.isActive !== false,
+      assignedCentreId: data.assignedCentreId || null,
+      assignedCentreName: data.assignedCentreName || null,
       ...data
     };
+    attachSave(newFarmer);
     inMemoryDB.farmers.push(newFarmer);
     return newFarmer;
   },
@@ -86,7 +116,7 @@ const Farmer = {
     const idx = inMemoryDB.farmers.findIndex(f => String(f._id) === String(id) || f.farmerId === id);
     if (idx === -1) return null;
     inMemoryDB.farmers[idx] = { ...inMemoryDB.farmers[idx], ...update };
-    return inMemoryDB.farmers[idx];
+    return attachSave(inMemoryDB.farmers[idx]);
   },
 
   async countDocuments(query = {}) {

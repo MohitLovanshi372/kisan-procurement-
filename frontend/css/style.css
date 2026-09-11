@@ -42,6 +42,22 @@
   padding: 0;
 }
 
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 80px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto !important;
+  }
+}
+
+section[id],
+div[id].quick-demo-box {
+  scroll-margin-top: 84px;
+}
+
 body {
   font-family: var(--font-sans);
   background: var(--bg-page);
@@ -103,10 +119,31 @@ body {
 .brand-icon-img {
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover;
   display: block;
   border-radius: 50%;
   pointer-events: none;
+}
+
+.auth-logo-badge {
+  width: 130px;
+  max-width: 85%;
+  height: auto;
+  margin: 0 auto 0.85rem auto;
+  display: block;
+  filter: drop-shadow(0 4px 14px rgba(20, 83, 45, 0.18));
+  transition: transform 0.25s ease;
+}
+
+.auth-logo-badge:hover {
+  transform: scale(1.03);
+}
+
+.brand-full-logo {
+  max-height: 48px;
+  width: auto;
+  display: inline-block;
+  vertical-align: middle;
 }
 
 .brand-title {
@@ -667,29 +704,49 @@ body {
    Tables
    ========================================================================== */
 .table-responsive {
+  width: 100%;
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
   border-radius: var(--radius-md);
   border: 1px solid var(--border-color);
   background: #ffffff;
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 #f8fafc;
+  position: relative;
+}
+
+.table-responsive::-webkit-scrollbar {
+  height: 6px;
+}
+
+.table-responsive::-webkit-scrollbar-track {
+  background: #f8fafc;
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
 }
 
 .data-table {
   width: 100%;
+  min-width: 600px;
   border-collapse: collapse;
   text-align: left;
-  font-size: 0.88rem;
+  font-size: 0.86rem;
 }
 
 .data-table th {
   background: #f8fafc;
-  padding: 0.75rem 1rem;
-  font-weight: 600;
+  padding: 0.75rem 0.85rem;
+  font-weight: 700;
   color: var(--text-muted);
   border-bottom: 1px solid var(--border-color);
+  white-space: nowrap;
 }
 
 .data-table td {
-  padding: 0.85rem 1rem;
+  padding: 0.75rem 0.85rem;
   border-bottom: 1px solid #f1f5f9;
   color: var(--text-main);
   vertical-align: middle;
@@ -697,6 +754,12 @@ body {
 
 .data-table tbody tr:hover {
   background: #f8fafc;
+}
+
+.data-table-compact th,
+.data-table-compact td {
+  padding: 0.5rem 0.65rem;
+  font-size: 0.82rem;
 }
 
 /* ==========================================================================
@@ -2237,6 +2300,394 @@ body {
 
 .wa-real-btn:hover {
   text-decoration: underline;
+}
+
+/* ==========================================================================
+   Modern Farmer Registration Theme & Aadhaar OTP Verification
+   ========================================================================== */
+.reg-page-wrapper {
+  max-width: 760px;
+  margin: 1.5rem auto 3rem auto;
+  padding: 0 1rem;
+}
+
+.reg-card {
+  background: #ffffff;
+  border: 1px solid #d1fae5;
+  border-radius: 20px;
+  box-shadow: 0 12px 35px -8px rgba(16, 185, 129, 0.12), 0 4px 12px rgba(15, 23, 42, 0.05);
+  overflow: hidden;
+  transition: all 0.25s ease;
+}
+
+.reg-card-header {
+  background: linear-gradient(135deg, #065f46 0%, #047857 55%, #059669 100%);
+  color: #ffffff;
+  padding: 1.75rem 2rem 1.5rem 2rem;
+  position: relative;
+  text-align: center;
+}
+
+.reg-portal-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  backdrop-filter: blur(8px);
+  color: #ecfdf5;
+  font-size: 0.76rem;
+  font-weight: 600;
+  padding: 0.35rem 0.9rem;
+  border-radius: 9999px;
+  margin-bottom: 0.75rem;
+  letter-spacing: 0.02em;
+}
+
+.reg-card-body {
+  padding: 2rem 2.25rem;
+}
+
+@media (max-width: 640px) {
+  .reg-card-body {
+    padding: 1.25rem 1rem;
+  }
+  .reg-card-header {
+    padding: 1.25rem 1rem;
+  }
+}
+
+/* Stepper Progress Indicator */
+.reg-stepper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.75rem;
+  position: relative;
+  padding: 0.25rem 0.5rem;
+}
+
+.reg-stepper::before {
+  content: "";
+  position: absolute;
+  top: 18px;
+  left: 30px;
+  right: 30px;
+  height: 2px;
+  background: #e2e8f0;
+  z-index: 1;
+}
+
+.reg-step-item {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  flex: 1;
+  text-align: center;
+}
+
+.reg-step-circle {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 2px solid #cbd5e1;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.88rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.reg-step-item.active .reg-step-circle {
+  background: #10b981;
+  border-color: #059669;
+  color: #ffffff;
+  box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.2);
+}
+
+.reg-step-item.completed .reg-step-circle {
+  background: #047857;
+  border-color: #047857;
+  color: #ffffff;
+}
+
+.reg-step-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #64748b;
+  white-space: nowrap;
+}
+
+.reg-step-item.active .reg-step-label {
+  color: #065f46;
+  font-weight: 700;
+}
+
+/* Logical Section Box */
+.reg-section {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 1.25rem 1.4rem;
+  margin-bottom: 1.5rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.reg-section:hover,
+.reg-section:focus-within {
+  border-color: #a7f3d0;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.05);
+}
+
+.reg-section-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #edf2f7;
+}
+
+.reg-section-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  background: #d1fae5;
+  color: #047857;
+  font-size: 0.9rem;
+}
+
+/* Aadhaar Mobile & OTP Verification Styles */
+.mobile-input-group {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.mobile-input-group .form-input {
+  flex: 1;
+}
+
+.btn-send-otp {
+  background: #047857;
+  color: #ffffff;
+  border: none;
+  padding: 0.65rem 1.15rem;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.86rem;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.btn-send-otp:hover:not(:disabled) {
+  background: #065f46;
+  box-shadow: 0 3px 10px rgba(4, 120, 87, 0.25);
+  transform: translateY(-1px);
+}
+
+.btn-send-otp:disabled {
+  background: #94a3b8;
+  cursor: not-allowed;
+  transform: none;
+  opacity: 0.75;
+}
+
+.otp-verification-card {
+  background: linear-gradient(135deg, #ecfdf5 0%, #f0fdf4 100%);
+  border: 1.5px solid #86efac;
+  border-radius: 12px;
+  padding: 1.15rem;
+  margin-top: 1rem;
+  animation: fadeInDown 0.3s ease-out;
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.otp-box-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.85rem;
+}
+
+.otp-destination-text {
+  font-size: 0.85rem;
+  color: #166534;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.otp-inputs-row {
+  display: flex;
+  gap: 0.65rem;
+  align-items: center;
+  margin-bottom: 0.85rem;
+  flex-wrap: wrap;
+}
+
+.otp-main-input {
+  flex: 1;
+  min-width: 170px;
+  font-family: monospace, 'Courier New', Courier;
+  font-size: 1.35rem;
+  font-weight: 800;
+  letter-spacing: 0.45em;
+  text-align: center;
+  padding: 0.65rem 0.85rem;
+  border: 2px solid #86efac;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #065f46;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.otp-main-input:focus {
+  border-color: #059669;
+  box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.2);
+}
+
+.btn-verify-otp {
+  background: #10b981;
+  color: #ffffff;
+  border: none;
+  padding: 0.72rem 1.35rem;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.btn-verify-otp:hover:not(:disabled) {
+  background: #059669;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.otp-footer-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+}
+
+.otp-timer-text {
+  color: #475569;
+  font-weight: 500;
+}
+
+.btn-resend-otp {
+  background: none;
+  border: none;
+  color: #047857;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+}
+
+.btn-resend-otp:disabled {
+  color: #94a3b8;
+  cursor: not-allowed;
+  text-decoration: none;
+}
+
+.otp-sample-chip {
+  background: #dcfce7;
+  color: #15803d;
+  border: 1px dashed #86efac;
+  padding: 3px 9px;
+  border-radius: 6px;
+  font-size: 0.76rem;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.15s ease;
+}
+
+.otp-sample-chip:hover {
+  background: #bbf7d0;
+}
+
+.verified-success-banner {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: #dcfce7;
+  border: 1.5px solid #4ade80;
+  color: #14532d;
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.88rem;
+  margin-top: 0.85rem;
+  animation: fadeInDown 0.25s ease-out;
+}
+
+.verified-success-banner svg {
+  flex-shrink: 0;
+  color: #16a34a;
+}
+
+/* Trust Badges Footer inside Card */
+.reg-trust-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-top: 1.75rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid #edf2f7;
+}
+
+.trust-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.78rem;
+  color: #475569;
+  font-weight: 600;
+}
+
+.trust-item span:first-child {
+  font-size: 1rem;
 }
 
 /* ==========================================================================

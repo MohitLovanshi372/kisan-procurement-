@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const { inMemoryDB } = require("../config/db");
 
 const centreSchema = new mongoose.Schema({
+  centreId: { type: String, default: null },
   name: { type: String, required: true },
   district: { type: String, required: true },
   state: { type: String, required: true },
@@ -31,6 +32,23 @@ try {
   MongooseCentre = mongoose.models.Centre;
 }
 
+function attachSave(item) {
+  if (!item || typeof item !== "object") return item;
+  if (!item.save) {
+    Object.defineProperty(item, "save", {
+      value: async function() {
+        const idx = inMemoryDB.centres.findIndex(c => String(c._id) === String(this._id));
+        if (idx !== -1) inMemoryDB.centres[idx] = this;
+        return this;
+      },
+      writable: true,
+      configurable: true,
+      enumerable: false
+    });
+  }
+  return item;
+}
+
 const Centre = {
   schema: centreSchema,
   isMongoose: () => mongoose.connection.readyState === 1 && !inMemoryDB.isUsingMemory,
@@ -42,33 +60,53 @@ const Centre = {
         if (c[key] !== query[key]) return false;
       }
       return true;
-    });
+    }).map(attachSave);
   },
 
   async findById(id) {
     if (this.isMongoose()) return await MongooseCentre.findById(id);
-    return inMemoryDB.centres.find(c => String(c._id) === String(id) || c.name === id) || null;
+    const item = inMemoryDB.centres.find(c => String(c._id) === String(id) || c.centreId === id || c.name === id) || null;
+    return attachSave(item);
   },
 
   async findOne(query) {
     if (this.isMongoose()) return await MongooseCentre.findOne(query);
-    return inMemoryDB.centres.find(c => {
+    const item = inMemoryDB.centres.find(c => {
+      if (query.$or && Array.isArray(query.$or)) {
+        return query.$or.some(subQuery => {
+          for (const k in subQuery) {
+            if (c[k] !== subQuery[k]) return false;
+          }
+          return true;
+        });
+      }
       for (const key in query) {
         if (c[key] !== query[key]) return false;
       }
       return true;
     }) || null;
+    return attachSave(item);
   },
 
   async create(data) {
     if (this.isMongoose()) return await MongooseCentre.create(data);
     const newCentre = {
       _id: "cnt_" + Math.random().toString(36).substr(2, 9),
+      centreId: data.centreId || "CENTRE_" + Math.floor(100 + Math.random() * 900),
       createdAt: new Date(),
       ...data
     };
+    attachSave(newCentre);
     inMemoryDB.centres.push(newCentre);
     return newCentre;
+  },
+
+  async findByIdAndUpdate(id, update, options = { new: true }) {
+    if (this.isMongoose()) return await MongooseCentre.findByIdAndUpdate(id, update, options);
+    const idx = inMemoryDB.centres.findIndex(c => String(c._id) === String(id) || c.centreId === id || c.name === id);
+    if (idx === -1) return null;
+    inMemoryDB.centres[idx] = { ...inMemoryDB.centres[idx], ...update };
+    return attachSave(inMemoryDB.centres[idx]);
   },
 
   async countDocuments(query = {}) {

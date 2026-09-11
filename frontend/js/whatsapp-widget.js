@@ -82,8 +82,11 @@
       const raw = localStorage.getItem("kpm_user_data");
       if (!raw) return null;
       const user = JSON.parse(raw);
-      if (user && user.name && (user.role === "farmer" || !user.role)) {
-        return user;
+      if (user && user.name) {
+        const role = String(user.role || "").toUpperCase();
+        if (role === "FARMER" || role === "" || !user.role) {
+          return user;
+        }
       }
     } catch (e) {}
     return null;
@@ -509,7 +512,7 @@
       <div id="waChatWidgetRoot">
         <!-- Floating WhatsApp Launcher Button -->
         <button id="waLauncherBtn" class="wa-float-btn" aria-label="Open WhatsApp Assistant" title="MandiSathi WhatsApp Sahayak">
-          <span style="font-size: 1.25rem;">💬</span>
+          <img src="img/whatsapp-logo.png" alt="WhatsApp" style="width: 28px; height: 28px; border-radius: 50%; object-fit: contain; flex-shrink: 0;" onerror="this.src='img/logo-icon.png';">
           <span>WhatsApp Bot</span>
           <span class="wa-sound-badge" id="waSoundBadge" title="Sound notifications active">🔔</span>
         </button>
@@ -519,7 +522,9 @@
           <!-- Card Header -->
           <div class="wa-chat-header">
             <div class="wa-header-info">
-              <div class="wa-header-avatar">🌾</div>
+              <div class="wa-header-avatar" style="overflow: hidden; padding: 0; background: transparent;">
+                <img src="img/whatsapp-logo.png" alt="WhatsApp" style="width: 100%; height: 100%; object-fit: contain; display: block;" onerror="this.src='img/logo.png';">
+              </div>
               <div style="min-width: 0;">
                 <div class="wa-header-title" style="display: flex; align-items: center; gap: 6px;">
                   <span>MandiSathi Kisan Bot</span>

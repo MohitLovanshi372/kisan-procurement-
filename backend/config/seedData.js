@@ -17,11 +17,13 @@ const seedInitialData = async () => {
 
     const salt = await bcrypt.genSalt(10);
     const farmerPassword = await bcrypt.hash("123456", salt);
+    const officerPassword = await bcrypt.hash("officer123", salt);
     const adminPassword = await bcrypt.hash("admin123", salt);
 
-    // 1. Create Centres with real-time congestion metrics
+    // 1. Create Centres with unique centreId and real-time congestion metrics
     const centresData = [
       {
+        centreId: "CENTRE_001",
         name: "Sanwer Procurement Centre",
         district: "Indore",
         state: "Madhya Pradesh",
@@ -42,6 +44,7 @@ const seedInitialData = async () => {
         peakHours: "11:00 AM – 01:30 PM"
       },
       {
+        centreId: "CENTRE_002",
         name: "Indore Central Mandi",
         district: "Indore",
         state: "Madhya Pradesh",
@@ -62,6 +65,7 @@ const seedInitialData = async () => {
         peakHours: "10:00 AM – 02:00 PM"
       },
       {
+        centreId: "CENTRE_003",
         name: "Depalpur Krishi Upaj Mandi",
         district: "Indore",
         state: "Madhya Pradesh",
@@ -82,6 +86,7 @@ const seedInitialData = async () => {
         peakHours: "12:00 PM – 01:00 PM"
       },
       {
+        centreId: "CENTRE_004",
         name: "Mhow Kisan Samriddhi Mandi",
         district: "Indore",
         state: "Madhya Pradesh",
@@ -102,6 +107,7 @@ const seedInitialData = async () => {
         peakHours: "09:30 AM – 11:00 AM"
       },
       {
+        centreId: "CENTRE_005",
         name: "Ujjain APMC Procurement Hub",
         district: "Ujjain",
         state: "Madhya Pradesh",
@@ -122,6 +128,7 @@ const seedInitialData = async () => {
         peakHours: "10:30 AM – 02:30 PM"
       },
       {
+        centreId: "CENTRE_006",
         name: "Dewas Agro Procurement Complex",
         district: "Dewas",
         state: "Madhya Pradesh",
@@ -147,23 +154,60 @@ const seedInitialData = async () => {
       await Centre.create(c);
     }
 
-    // 2. Create Admin User
+    // 2. Create Government Admin User
     await Farmer.create({
-      name: "Admin Officer (Indore Division)",
+      name: "Administrative Director (Mandi Board)",
       mobile: "9999999999",
       password: adminPassword,
       farmerId: "ADM001",
-      village: "District HQ",
+      village: "Mandi Board HQ",
       district: "Indore",
       state: "Madhya Pradesh",
       crop: "All Crops",
       landArea: "N/A",
-      preferredCentre: "Sanwer Procurement Centre",
-      role: "admin"
+      preferredCentre: "All Procurement Centres",
+      role: "GOVERNMENT_ADMIN",
+      isActive: true
     });
 
-    // 3. Create Main Demo Farmer: Ramesh Patel
-    const ramesh = await Farmer.create({
+    // 3. Create Centre Officer 1 (Assigned to Sanwer Procurement Centre)
+    await Farmer.create({
+      name: "Rajesh Sharma (Centre Officer)",
+      mobile: "9811111111",
+      password: officerPassword,
+      farmerId: "OFF001",
+      village: "Sanwer",
+      district: "Indore",
+      state: "Madhya Pradesh",
+      crop: "Procurement Administration",
+      landArea: "N/A",
+      preferredCentre: "Sanwer Procurement Centre",
+      assignedCentreId: "CENTRE_001",
+      assignedCentreName: "Sanwer Procurement Centre",
+      role: "CENTRE_OFFICER",
+      isActive: true
+    });
+
+    // 4. Create Centre Officer 2 (Assigned to Indore Central Mandi)
+    await Farmer.create({
+      name: "Vikram Singh (Centre Officer)",
+      mobile: "9822222222",
+      password: officerPassword,
+      farmerId: "OFF002",
+      village: "Laxmibai Nagar",
+      district: "Indore",
+      state: "Madhya Pradesh",
+      crop: "Procurement Administration",
+      landArea: "N/A",
+      preferredCentre: "Indore Central Mandi",
+      assignedCentreId: "CENTRE_002",
+      assignedCentreName: "Indore Central Mandi",
+      role: "CENTRE_OFFICER",
+      isActive: true
+    });
+
+    // 5. Create Main Demo Farmer: Ramesh Patel (Sanwer Centre)
+    await Farmer.create({
       name: "Ramesh Patel",
       mobile: "9876543210",
       password: farmerPassword,
@@ -174,6 +218,8 @@ const seedInitialData = async () => {
       crop: "Wheat",
       landArea: "4.5 Acres",
       preferredCentre: "Sanwer Procurement Centre",
+      assignedCentreId: "CENTRE_001",
+      assignedCentreName: "Sanwer Procurement Centre",
       aadharNumber: "789456124589",
       isAadharLinked: true,
       bankName: "State Bank of India",
@@ -182,7 +228,8 @@ const seedInitialData = async () => {
       accountHolderName: "Ramesh Patel",
       branchName: "Sanwer Branch (Indore)",
       dbtStatus: "Active (Aadhaar Seeded)",
-      role: "farmer"
+      role: "FARMER",
+      isActive: true
     });
 
     // Procurement for Ramesh Patel
@@ -207,7 +254,7 @@ const seedInitialData = async () => {
     await Notification.create({
       farmerId: "FMR1001",
       title: "Procurement Schedule Confirmed",
-      message: "Your procurement slot is confirmed for 12 September 2026 at 10:00 AM.",
+      message: "Your procurement slot is confirmed for 12 September 2026 at 10:00 AM at Sanwer Procurement Centre.",
       type: "Schedule",
       isRead: false
     });
@@ -226,26 +273,9 @@ const seedInitialData = async () => {
       isRead: true
     });
 
-    // 4. Create other demo farmers
+    // 6. Create multi-centre demo farmers
     const otherFarmers = [
-      {
-        name: "Sunita Sharma",
-        mobile: "9876543211",
-        farmerId: "FMR1002",
-        village: "Manglia",
-        district: "Indore",
-        state: "Madhya Pradesh",
-        crop: "Soybean",
-        landArea: "3.2 Acres",
-        preferredCentre: "Indore Central Mandi",
-        token: "TK-1043",
-        date: "14 September 2026",
-        procStatus: "Procurement Completed",
-        payStatus: "Paid",
-        amount: 32000,
-        payDate: "18 September 2026",
-        txId: "PAY-20260918-1001"
-      },
+      // Sanwer Centre Farmers (Officer 1's centre)
       {
         name: "Rajesh Yadav",
         mobile: "9876543212",
@@ -256,6 +286,7 @@ const seedInitialData = async () => {
         crop: "Gram (Chana)",
         landArea: "5.0 Acres",
         preferredCentre: "Sanwer Procurement Centre",
+        assignedCentreId: "CENTRE_001",
         token: "TK-1044",
         date: "15 September 2026",
         procStatus: "Arrived",
@@ -264,6 +295,105 @@ const seedInitialData = async () => {
         payDate: null,
         txId: null
       },
+      {
+        name: "Harish Solanki",
+        mobile: "9876543215",
+        farmerId: "FMR1006",
+        village: "Baloda",
+        district: "Indore",
+        state: "Madhya Pradesh",
+        crop: "Wheat",
+        landArea: "6.2 Acres",
+        preferredCentre: "Sanwer Procurement Centre",
+        assignedCentreId: "CENTRE_001",
+        token: "TK-1047",
+        date: "11 September 2026",
+        procStatus: "Procurement Completed",
+        payStatus: "Paid",
+        amount: 56250,
+        payDate: "11 September 2026",
+        txId: "DBT-2026-MP-984401"
+      },
+      {
+        name: "Sohan Lal",
+        mobile: "9876543216",
+        farmerId: "FMR1007",
+        village: "Kshipra",
+        district: "Indore",
+        state: "Madhya Pradesh",
+        crop: "Mustard",
+        landArea: "3.5 Acres",
+        preferredCentre: "Sanwer Procurement Centre",
+        assignedCentreId: "CENTRE_001",
+        token: "TK-1048",
+        date: "13 September 2026",
+        procStatus: "Scheduled",
+        payStatus: "Pending",
+        amount: 38000,
+        payDate: null,
+        txId: null
+      },
+
+      // Indore Central Mandi Farmers (Officer 2's centre)
+      {
+        name: "Sunita Sharma",
+        mobile: "9876543211",
+        farmerId: "FMR1002",
+        village: "Manglia",
+        district: "Indore",
+        state: "Madhya Pradesh",
+        crop: "Soybean",
+        landArea: "3.2 Acres",
+        preferredCentre: "Indore Central Mandi",
+        assignedCentreId: "CENTRE_002",
+        token: "TK-1043",
+        date: "14 September 2026",
+        procStatus: "Procurement Completed",
+        payStatus: "Paid",
+        amount: 32000,
+        payDate: "18 September 2026",
+        txId: "PAY-20260918-1001"
+      },
+      {
+        name: "Devendra Verma",
+        mobile: "9876543217",
+        farmerId: "FMR1008",
+        village: "Rau",
+        district: "Indore",
+        state: "Madhya Pradesh",
+        crop: "Wheat",
+        landArea: "7.0 Acres",
+        preferredCentre: "Indore Central Mandi",
+        assignedCentreId: "CENTRE_002",
+        token: "TK-1049",
+        date: "12 September 2026",
+        procStatus: "Scheduled",
+        payStatus: "Pending",
+        amount: 67500,
+        payDate: null,
+        txId: null
+      },
+      {
+        name: "Priya Patidar",
+        mobile: "9876543218",
+        farmerId: "FMR1009",
+        village: "Kanadia",
+        district: "Indore",
+        state: "Madhya Pradesh",
+        crop: "Gram (Chana)",
+        landArea: "4.0 Acres",
+        preferredCentre: "Indore Central Mandi",
+        assignedCentreId: "CENTRE_002",
+        token: "TK-1050",
+        date: "12 September 2026",
+        procStatus: "Arrived",
+        payStatus: "Processing",
+        amount: 45000,
+        payDate: null,
+        txId: null
+      },
+
+      // Depalpur Mandi Farmers
       {
         name: "Mukesh Choudhary",
         mobile: "9876543213",
@@ -274,6 +404,7 @@ const seedInitialData = async () => {
         crop: "Wheat",
         landArea: "6.0 Acres",
         preferredCentre: "Depalpur Krishi Upaj Mandi",
+        assignedCentreId: "CENTRE_003",
         token: "TK-1045",
         date: "16 September 2026",
         procStatus: "Scheduled",
@@ -292,6 +423,7 @@ const seedInitialData = async () => {
         crop: "Maize",
         landArea: "2.8 Acres",
         preferredCentre: "Depalpur Krishi Upaj Mandi",
+        assignedCentreId: "CENTRE_003",
         token: "TK-1046",
         date: "17 September 2026",
         procStatus: "Registration",
@@ -314,7 +446,10 @@ const seedInitialData = async () => {
         crop: f.crop,
         landArea: f.landArea,
         preferredCentre: f.preferredCentre,
-        role: "farmer"
+        assignedCentreId: f.assignedCentreId,
+        assignedCentreName: f.preferredCentre,
+        role: "FARMER",
+        isActive: true
       });
 
       await Procurement.create({
@@ -322,7 +457,7 @@ const seedInitialData = async () => {
         centreId: f.preferredCentre,
         crop: f.crop,
         quantity: f.crop === "Soybean" ? "12 Quintal" : "20 Quintal",
-        receivedQuantity: f.procStatus === "Procurement Completed" ? "12 Quintal" : "0 Quintal",
+        receivedQuantity: f.procStatus === "Procurement Completed" ? (f.crop === "Soybean" ? "12 Quintal" : "20 Quintal") : "0 Quintal",
         tokenNumber: f.token,
         scheduleDate: f.date,
         startTime: "11:00 AM",
@@ -343,7 +478,7 @@ const seedInitialData = async () => {
       });
     }
 
-    console.log("✅ Demo data seeded successfully with 5+ farmers, admin account, centres and procurement records.");
+    console.log("✅ Demo data seeded successfully with 3 roles: Farmers, Centre Officers, Government Admin, and isolated centres.");
   } catch (error) {
     console.error("Seed data error:", error);
   }

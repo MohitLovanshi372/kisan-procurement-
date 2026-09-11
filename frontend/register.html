@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Farmer Registration — Mandisathi</title>
   <link rel="icon" type="image/png" href="img/logo.png">
+  <link rel="apple-touch-icon" href="img/logo.png">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -13,7 +14,7 @@
     <div class="header-container">
       <a href="index.html" class="brand-logo">
         <span class="brand-icon">
-          <img src="img/logo.png" alt="Mandisathi" class="brand-icon-img" onerror="this.style.display='none'; this.parentElement.innerText='🌾';">
+          <img src="img/logo.png" alt="Mandisathi Logo" class="brand-icon-img" onerror="this.onerror=null; this.src='img/brand-logo.png';">
         </span>
         <span class="brand-title" data-i18n="brandTitle">Mandisathi</span>
       </a>
@@ -25,144 +26,284 @@
   </header>
 
   <main class="main-content">
-    <div class="auth-card-container" style="max-width: 640px;">
-      <div style="text-align: center; margin-bottom: 1.5rem;">
-        <div style="font-size: 2.2rem; margin-bottom: 0.25rem;">📝</div>
-        <h1 style="font-size: 1.4rem; font-weight: 700;" data-i18n="farmerRegistrationTitle">Farmer Registration</h1>
-        <p style="color: var(--text-muted); font-size: 0.85rem;" data-i18n="registerSubtitle">Register to generate procurement token and schedule slot</p>
-      </div>
-
-      <div style="margin-bottom: 1rem; text-align: right;">
-        <button type="button" id="fillRegisterDemoBtn" class="btn btn-sm btn-secondary" data-i18n="autoFillDemoBtn">
-          ⚡ Auto-fill Sample Farmer Data
-        </button>
-      </div>
-
-      <form id="registerForm">
-        <div class="form-grid-2">
-          <div class="form-group">
-            <label class="form-label" for="name" data-i18n="fullNameLabel">Full Name *</label>
-            <input type="text" id="name" class="form-input" placeholder="e.g. Ramesh Patel" data-i18n-placeholder="fullNamePlaceholder" required>
+    <div class="reg-page-wrapper">
+      <div class="reg-card">
+        
+        <!-- Header Banner with State Emblem Theme -->
+        <div class="reg-card-header">
+          <div class="reg-portal-badge">
+            <span>🏛️</span>
+            <span>मध्य प्रदेश शासन • किसान कल्याण एवं कृषि विकास विभाग • ई-उपार्जन 2026-27</span>
           </div>
-
-          <div class="form-group">
-            <label class="form-label" for="mobile" data-i18n="aadharMobileLabel">Aadhaar-Linked Mobile Number *</label>
-            <input type="tel" id="mobile" class="form-input" placeholder="e.g. 9876543210" data-i18n-placeholder="mobilePlaceholder" required maxlength="10" pattern="[6-9][0-9]{9}">
-            <small style="display: block; font-size: 0.74rem; color: #166534; font-weight: 600; margin-top: 0.25rem;">
-              📱 केवल वही मोबाइल नंबर दर्ज करें जो आधार कार्ड से लिंक है (डीबीटी भुगतान एवं व्हाट्सएप अलर्ट हेतु)
-            </small>
-          </div>
+          <h1 style="font-size: 1.55rem; font-weight: 800; margin-bottom: 0.35rem;" data-i18n="farmerRegistrationTitle">Farmer Registration / किसान नवीन पंजीकरण</h1>
+          <p style="color: #d1fae5; font-size: 0.88rem; max-width: 540px; margin: 0 auto; line-height: 1.45;" data-i18n="registerSubtitle">
+            एमएसपी खरीद, डिजिटल टोकन आवंटन एवं प्रत्यक्ष आधार डीबीटी भुगतान हेतु पंजीकरण करें
+          </p>
         </div>
 
-        <div class="form-grid-2">
-          <div class="form-group">
-            <label class="form-label" for="aadharNumber" data-i18n="aadharNumberLabel">Aadhaar Number (12 Digits) *</label>
-            <input type="text" id="aadharNumber" class="form-input" placeholder="e.g. 7894 5612 4589" data-i18n-placeholder="aadharPlaceholder" required maxlength="14">
-            <small style="display: block; font-size: 0.73rem; color: var(--text-muted); margin-top: 0.25rem;">
-              डीबीटी एमएसपी भुगतान सीधे आपके इस आधार से जुड़े बैंक खाते में जाएगा
-            </small>
+        <div class="reg-card-body">
+
+          <!-- 3-Step Visual Progress Stepper -->
+          <div class="reg-stepper" id="regStepper">
+            <div class="reg-step-item completed" id="stepIndicator1">
+              <div class="reg-step-circle">1</div>
+              <span class="reg-step-label">1. किसान विवरण</span>
+            </div>
+            <div class="reg-step-item active" id="stepIndicator2">
+              <div class="reg-step-circle">2</div>
+              <span class="reg-step-label">2. आधार OTP</span>
+            </div>
+            <div class="reg-step-item" id="stepIndicator3">
+              <div class="reg-step-circle">3</div>
+              <span class="reg-step-label">3. उपार्जन टोकन</span>
+            </div>
           </div>
 
-          <div class="form-group">
-            <label class="form-label" for="password" data-i18n="passwordInputLabel">Password *</label>
-            <input type="password" id="password" class="form-input" placeholder="Enter your password" data-i18n-placeholder="passwordPlaceholder" required minlength="4">
-          </div>
-        </div>
-
-        <div class="form-grid-2">
-          <div class="form-group">
-            <label class="form-label" for="farmerId" data-i18n="farmerIdOptionalLabel">Farmer ID (Optional)</label>
-            <input type="text" id="farmerId" class="form-input" placeholder="e.g. FMR1001" data-i18n-placeholder="farmerIdPlaceholder">
+          <!-- Quick Autofill Button for instant testing -->
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 0.5rem;">
+            <div style="font-size: 0.82rem; color: #475569; font-weight: 500;">
+              <span style="color: #dc2626;">*</span> अनिवार्य फील्ड चिन्हित हैं
+            </div>
+            <button type="button" id="fillRegisterDemoBtn" class="btn btn-sm btn-secondary" style="background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; font-weight: 600;" data-i18n="autoFillDemoBtn">
+              ⚡ Auto-fill Sample Farmer Data
+            </button>
           </div>
 
-          <div class="form-group">
-            <label class="form-label" for="preferredCentre" data-i18n="preferredCentreLabel">Preferred Mandi Centre *</label>
-            <select id="preferredCentre" class="form-select" required>
-              <option value="Sanwer Procurement Centre">Sanwer Procurement Centre (Indore)</option>
-              <option value="Indore Central Mandi">Indore Central Mandi (Laxmibai Nagar)</option>
-              <option value="Depalpur Krishi Upaj Mandi">Depalpur Krishi Upaj Mandi</option>
-            </select>
-          </div>
-        </div>
+          <form id="registerForm">
+            
+            <!-- SECTION 1: Personal & Aadhaar Identity -->
+            <div class="reg-section">
+              <div class="reg-section-title">
+                <span class="reg-section-icon">👤</span>
+                <span>व्यक्तिगत एवं आधार पहचान (Personal & Aadhaar Identification)</span>
+              </div>
 
-        <div class="form-grid-2">
-          <div class="form-group">
-            <label class="form-label" for="village" data-i18n="villageLabel">Village *</label>
-            <input type="text" id="village" class="form-input" placeholder="e.g. Sanwer" data-i18n-placeholder="villagePlaceholder" required>
-          </div>
+              <div class="form-grid-2">
+                <div class="form-group">
+                  <label class="form-label" for="name" data-i18n="fullNameLabel">Full Name / किसान का पूरा नाम *</label>
+                  <input type="text" id="name" class="form-input" placeholder="e.g. Ramesh Patel" data-i18n-placeholder="fullNamePlaceholder" required>
+                </div>
 
-          <div class="form-group">
-            <label class="form-label" for="district" data-i18n="districtLabel">District *</label>
-            <input type="text" id="district" class="form-input" placeholder="e.g. Indore" data-i18n-placeholder="districtPlaceholder" required>
-          </div>
-        </div>
+                <div class="form-group">
+                  <label class="form-label" for="aadharNumber" data-i18n="aadharNumberLabel">Aadhaar Number (12 Digits) / आधार संख्या *</label>
+                  <input type="text" id="aadharNumber" class="form-input" placeholder="e.g. 7894 5612 4589" data-i18n-placeholder="aadharPlaceholder" required maxlength="14">
+                  <small style="display: block; font-size: 0.74rem; color: #64748b; margin-top: 0.25rem;">
+                    🔒 12-अंकीय आधार नंबर (NPCI डीबीटी खाते से स्वतः लिंक)
+                  </small>
+                </div>
+              </div>
 
-        <div class="form-grid-2">
-          <div class="form-group">
-            <label class="form-label" for="state" data-i18n="stateLabel">State *</label>
-            <input type="text" id="state" class="form-input" value="Madhya Pradesh" required>
-          </div>
+              <div class="form-grid-2" style="margin-top: 0.75rem;">
+                <div class="form-group">
+                  <label class="form-label" for="password" data-i18n="passwordInputLabel">Account Password / पासवर्ड बनाएं *</label>
+                  <input type="password" id="password" class="form-input" placeholder="Enter secure password" data-i18n-placeholder="passwordPlaceholder" required minlength="4">
+                  <small style="display: block; font-size: 0.74rem; color: #64748b; margin-top: 0.25rem;">
+                    भविष्य में लॉगिन एवं टोकन रसीद देखने हेतु
+                  </small>
+                </div>
 
-          <div class="form-group">
-            <label class="form-label" for="crop" data-i18n="cropLabel">Crop *</label>
-            <select id="crop" class="form-select" required>
-              <option value="Wheat" data-i18n="wheatCrop">Wheat (गेहूँ)</option>
-              <option value="Soybean" data-i18n="soybeanCrop">Soybean (सोयाबीन)</option>
-              <option value="Gram (Chana)" data-i18n="gramCrop">Gram / Chana (चना)</option>
-              <option value="Paddy (Dhan)" data-i18n="paddyCrop">Paddy / Dhan (धान)</option>
-              <option value="Maize" data-i18n="maizeCrop">Maize (मक्का)</option>
-              <option value="Mustard" data-i18n="mustardCrop">Mustard (सरसों)</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label" for="landArea" data-i18n="landAreaLabel">Land Area *</label>
-          <input type="text" id="landArea" class="form-input" placeholder="e.g. 4.5 Acres" data-i18n-placeholder="landAreaPlaceholder" required>
-        </div>
-
-        <!-- Direct Benefit Transfer (DBT) Aadhaar-Linked Guarantee (No Bank Account Input Needed) -->
-        <div class="dbt-bank-card" style="margin: 1.25rem 0; padding: 1.15rem; background: #f0fdf4; border: 1.5px solid #86efac; border-radius: var(--radius-md);">
-          <div style="display: flex; align-items: flex-start; gap: 0.75rem;">
-            <span style="font-size: 1.6rem; line-height: 1;">🏛️</span>
-            <div>
-              <strong style="font-size: 0.98rem; color: #166534;">आधार-सीडेड डीबीटी भुगतान प्रणाली (NPCI / PFMS DBT)</strong>
-              <div style="font-size: 0.8rem; color: #15803d; margin-top: 0.25rem;">
-                <strong>बैंक खाता नंबर दर्ज करने की आवश्यकता नहीं है:</strong> भारत सरकार के डीबीटी नियमानुसार एमएसपी खरीद की संपूर्ण राशि आपके 12-अंकीय आधार नंबर से जुड़े बैंक खाते में सीधे ट्रांसफर की जाएगी।
+                <div class="form-group">
+                  <label class="form-label" for="farmerId" data-i18n="farmerIdOptionalLabel">Farmer ID / किसान आईडी (वैकल्पिक)</label>
+                  <input type="text" id="farmerId" class="form-input" placeholder="e.g. FMR1001 (Blank for auto-generate)" data-i18n-placeholder="farmerIdPlaceholder">
+                </div>
               </div>
             </div>
+
+            <!-- SECTION 2: Aadhaar Mobile & Interactive OTP Verification -->
+            <div class="reg-section" style="border: 1.5px solid #a7f3d0; background: #ffffff;">
+              <div class="reg-section-title" style="color: #065f46;">
+                <span class="reg-section-icon" style="background: #10b981; color: #ffffff;">📱</span>
+                <span>आधार-लिंक्ड मोबाइल एवं ओटीपी सत्यापन (Aadhaar Mobile & OTP Verification)</span>
+                <span id="mobileVerifiedBadge" class="badge badge-green" style="margin-left: auto; display: none; font-size: 0.75rem;">✓ Verified</span>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="mobile" data-i18n="aadharMobileLabel">Aadhaar-Linked Mobile Number / आधार से लिंक मोबाइल नंबर *</label>
+                
+                <div class="mobile-input-group">
+                  <div style="position: relative; flex: 1;">
+                    <span style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-weight: 700; color: #475569; font-size: 0.9rem;">+91</span>
+                    <input type="tel" id="mobile" class="form-input" style="padding-left: 45px; font-weight: 600; letter-spacing: 0.05em;" placeholder="9876543210" required maxlength="10" pattern="[6-9][0-9]{9}">
+                  </div>
+                  <button type="button" id="btnSendOtp" class="btn-send-otp">
+                    <span>📲</span> <span id="btnSendOtpText">ओटीपी भेजें (Send OTP)</span>
+                  </button>
+                </div>
+
+                <small style="display: block; font-size: 0.75rem; color: #15803d; font-weight: 600; margin-top: 0.35rem;">
+                  📱 केवल वही मोबाइल नंबर दर्ज करें जो आधार से लिंक है। इस पर 6-अंकीय ओटीपी एवं व्हाट्सएप संदेश भेजा जाएगा।
+                </small>
+              </div>
+
+              <!-- Interactive OTP Verification Box (expands upon sending OTP) -->
+              <div id="otpVerificationBox" class="otp-verification-card" style="display: none;">
+                <div class="otp-box-header">
+                  <div class="otp-destination-text">
+                    <span>📩</span>
+                    <span>ओटीपी भेजा गया: <strong id="otpMaskedPhone">+91 XXXXX XXXXX</strong></span>
+                  </div>
+                  <div style="display: flex; gap: 6px; align-items: center;">
+                    <span style="font-size: 0.74rem; background: #25d366; color: #fff; padding: 2px 7px; border-radius: 4px; font-weight: 600;">WhatsApp ✓</span>
+                    <span style="font-size: 0.74rem; background: #0284c7; color: #fff; padding: 2px 7px; border-radius: 4px; font-weight: 600;">SMS ✓</span>
+                  </div>
+                </div>
+
+                <div class="otp-inputs-row">
+                  <input type="text" id="otpInput" class="otp-main-input" maxlength="6" placeholder="• • • • • •" autocomplete="one-time-code" inputmode="numeric">
+                  <button type="button" id="btnVerifyOtp" class="btn-verify-otp">
+                    <span>✓</span> <span>ओटीपी सत्यापित करें (Verify)</span>
+                  </button>
+                </div>
+
+                <div class="otp-footer-row">
+                  <div class="otp-timer-text">
+                    <span id="otpCountdownWrapper">पुनः ओटीपी भेजें: <strong id="otpTimerCount" style="color: #065f46;">30</strong> सेकंड में</span>
+                    <button type="button" id="btnResendOtp" class="btn-resend-otp" style="display: none;">
+                      🔄 ओटीपी पुनः भेजें (Resend OTP)
+                    </button>
+                  </div>
+                  <div id="demoOtpChipContainer" style="display: inline-flex; align-items: center; gap: 4px;">
+                    <span style="color: #64748b; font-size: 0.75rem;">टेस्ट कोड:</span>
+                    <button type="button" id="demoOtpChip" class="otp-sample-chip" title="Click to auto-fill OTP">
+                      ⚡ <span id="demoOtpValue">123456</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Verified Green Banner -->
+              <div id="otpSuccessBanner" class="verified-success-banner" style="display: none;">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                </svg>
+                <div style="flex: 1;">
+                  <span style="color: #14532d; font-weight: 700;">आधार मोबाइल नंबर सफलतापूर्वक सत्यापित हो चुका है!</span>
+                  <span id="verifiedMobileDisplay" style="display: block; font-size: 0.78rem; color: #166534; margin-top: 2px;">
+                    Mobile verified & linked with Aadhaar NPCI mapper.
+                  </span>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- SECTION 3: Mandi & Agricultural Details -->
+            <div class="reg-section">
+              <div class="reg-section-title">
+                <span class="reg-section-icon">🌾</span>
+                <span>कृषि भूमि एवं उपार्जन केंद्र चयन (Land, Crop & Mandi Centre)</span>
+              </div>
+
+              <div class="form-grid-2">
+                <div class="form-group">
+                  <label class="form-label" for="preferredCentre" data-i18n="preferredCentreLabel">Preferred Mandi Centre / पसंदीदा उपार्जन मंडी केंद्र *</label>
+                  <select id="preferredCentre" class="form-select" required>
+                    <option value="Sanwer Procurement Centre">Sanwer Procurement Centre (Indore)</option>
+                    <option value="Indore Central Mandi">Indore Central Mandi (Laxmibai Nagar)</option>
+                    <option value="Depalpur Krishi Upaj Mandi">Depalpur Krishi Upaj Mandi</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="crop" data-i18n="cropLabel">Crop / उपज का नाम *</label>
+                  <select id="crop" class="form-select" required>
+                    <option value="Wheat" data-i18n="wheatCrop">Wheat (गेहूँ) — MSP ₹2,275/Q</option>
+                    <option value="Soybean" data-i18n="soybeanCrop">Soybean (सोयाबीन) — MSP ₹4,892/Q</option>
+                    <option value="Gram (Chana)" data-i18n="gramCrop">Gram / Chana (चना) — MSP ₹5,440/Q</option>
+                    <option value="Paddy (Dhan)" data-i18n="paddyCrop">Paddy / Dhan (धान) — MSP ₹2,300/Q</option>
+                    <option value="Maize" data-i18n="maizeCrop">Maize (मक्का) — MSP ₹2,225/Q</option>
+                    <option value="Mustard" data-i18n="mustardCrop">Mustard (सरसों) — MSP ₹5,650/Q</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-grid-2" style="margin-top: 0.75rem;">
+                <div class="form-group">
+                  <label class="form-label" for="landArea" data-i18n="landAreaLabel">Land Area / भूमि का रकबा *</label>
+                  <input type="text" id="landArea" class="form-input" placeholder="e.g. 4.5 Acres" data-i18n-placeholder="landAreaPlaceholder" required>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="village" data-i18n="villageLabel">Village / ग्राम *</label>
+                  <input type="text" id="village" class="form-input" placeholder="e.g. Sanwer" data-i18n-placeholder="villagePlaceholder" required>
+                </div>
+              </div>
+
+              <div class="form-grid-2" style="margin-top: 0.75rem;">
+                <div class="form-group">
+                  <label class="form-label" for="district" data-i18n="districtLabel">District / जिला *</label>
+                  <input type="text" id="district" class="form-input" placeholder="e.g. Indore" data-i18n-placeholder="districtPlaceholder" required>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="state" data-i18n="stateLabel">State / राज्य *</label>
+                  <input type="text" id="state" class="form-input" value="Madhya Pradesh" required readonly style="background: #f1f5f9;">
+                </div>
+              </div>
+            </div>
+
+            <!-- SECTION 4: Direct Benefit Transfer (DBT) Aadhaar-Linked Guarantee -->
+            <div class="dbt-bank-card" style="margin: 1.25rem 0; padding: 1.25rem; background: #f0fdf4; border: 1.5px solid #86efac; border-radius: 14px;">
+              <div style="display: flex; align-items: flex-start; gap: 0.75rem;">
+                <span style="font-size: 1.6rem; line-height: 1;">🏛️</span>
+                <div>
+                  <strong style="font-size: 1rem; color: #166534;">आधार-सीडेड प्रत्यक्ष लाभ अंतरण (NPCI / PFMS DBT)</strong>
+                  <div style="font-size: 0.82rem; color: #15803d; margin-top: 0.25rem; line-height: 1.45;">
+                    <strong>बैंक खाता दर्ज करने की आवश्यकता नहीं:</strong> भारत सरकार के डीबीटी नियमानुसार खरीद की संपूर्ण राशि आपके 12-अंकीय आधार से जुड़े बैंक खाते में सीधे ट्रांसफर की जाएगी।
+                  </div>
+                </div>
+              </div>
+
+              <div style="margin-top: 0.85rem; background: #ffffff; border: 1px solid #bbf7d0; border-radius: 8px; padding: 0.75rem 0.9rem; font-size: 0.82rem; display: flex; flex-direction: column; gap: 0.45rem;">
+                <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap;">
+                  <span style="color: #475569;">भुगतान माध्यम (Payment Channel):</span>
+                  <span class="badge badge-green">✓ आधार पेमेंट ब्रिज (APBS)</span>
+                </div>
+                <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap;">
+                  <span style="color: #475569;">मोबाइल नंबर सत्यापन:</span>
+                  <span id="dbtMobileStatus" style="color: #ea580c; font-weight: 700;">ओटीपी सत्यापन अपेक्षित (Pending OTP)</span>
+                </div>
+                <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap;">
+                  <span style="color: #475569;">बैंक खाता व IFSC कोड:</span>
+                  <span style="color: #059669; font-weight: 600;">स्वतः लिंक (No Manual Error)</span>
+                </div>
+              </div>
+
+              <div style="margin-top: 0.85rem; display: flex; align-items: flex-start; gap: 0.5rem;">
+                <input type="checkbox" id="dbtAadharConsent" checked required style="margin-top: 0.25rem; cursor: pointer; accent-color: #059669; width: 16px; height: 16px;">
+                <label for="dbtAadharConsent" style="font-size: 0.8rem; color: #14532d; line-height: 1.45; cursor: pointer;">
+                  मैं प्रमाणित करता/करती हूँ कि ऊपर दर्ज 10-अंकीय मोबाइल नंबर मेरे 12-अंकीय आधार से लिंक है तथा एमएसपी डीबीटी भुगतान सीधे आधार-सीडेड बैंक खाते में प्राप्त करने हेतु सहमत हूँ।
+                </label>
+              </div>
+            </div>
+
+            <!-- Complete Registration Button -->
+            <button type="submit" id="btnRegisterSubmit" class="btn btn-primary btn-block" style="padding: 0.85rem; font-size: 1.05rem; font-weight: 700; border-radius: 12px; background: linear-gradient(135deg, #059669 0%, #047857 100%); box-shadow: 0 4px 15px rgba(5, 150, 105, 0.35);" data-i18n="completeRegBtn">
+              पंजीकरण पूर्ण करें एवं ई-टोकन प्राप्त करें →
+            </button>
+          </form>
+
+          <!-- Trust Badges Bar -->
+          <div class="reg-trust-bar">
+            <div class="trust-item">
+              <span>🔒</span>
+              <span>256-Bit SSL Secured</span>
+            </div>
+            <div class="trust-item">
+              <span>🏛️</span>
+              <span>MP State Mandi Board</span>
+            </div>
+            <div class="trust-item">
+              <span>🌾</span>
+              <span>100% Aadhaar DBT Compliant</span>
+            </div>
           </div>
 
-          <div style="margin-top: 0.85rem; background: #ffffff; border: 1px solid #bbf7d0; border-radius: var(--radius-sm); padding: 0.75rem 0.9rem; font-size: 0.82rem; display: flex; flex-direction: column; gap: 0.45rem;">
-            <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap;">
-              <span style="color: #475569;">भुगतान माध्यम (Payment Method):</span>
-              <span class="badge badge-green">✓ आधार पेमेंट ब्रिज (APBS)</span>
-            </div>
-            <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap;">
-              <span style="color: #475569;">मोबाइल नंबर सत्यापन:</span>
-              <span style="color: #166534; font-weight: 700;">आधार से लिंक होना अनिवार्य</span>
-            </div>
-            <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap;">
-              <span style="color: #475569;">बैंक खाता व IFSC दर्ज करना:</span>
-              <span style="color: #059669; font-weight: 600;">स्वतः लिंक (No Manual Entry)</span>
-            </div>
+          <div style="text-align: center; margin-top: 1.5rem; font-size: 0.9rem; color: #64748b;">
+            <span data-i18n="alreadyRegistered">Already registered?</span> 
+            <a href="login.html" style="color: #047857; font-weight: 700; text-decoration: none; margin-left: 0.25rem;" data-i18n="loginToDashboard">Login to Dashboard / किसान लॉगिन</a>
           </div>
 
-          <div style="margin-top: 0.85rem; display: flex; align-items: flex-start; gap: 0.5rem;">
-            <input type="checkbox" id="dbtAadharConsent" checked required style="margin-top: 0.2rem; cursor: pointer; accent-color: var(--primary);">
-            <label for="dbtAadharConsent" style="font-size: 0.8rem; color: #14532d; line-height: 1.45;">
-              मैं प्रमाणित करता/करती हूँ कि ऊपर दर्ज 10-अंकीय मोबाइल नंबर मेरे 12-अंकीय आधार कार्ड से लिंक है तथा एमएसपी डीबीटी भुगतान सीधे आधार-सीडेड बैंक खाते में प्राप्त करने हेतु सहमत हूँ।
-            </label>
-          </div>
         </div>
-
-        <button type="submit" class="btn btn-primary btn-block" style="margin-top: 1rem; font-size: 1rem;" data-i18n="completeRegBtn">
-          Complete Registration & Generate Token →
-        </button>
-      </form>
-
-      <div style="text-align: center; margin-top: 1.25rem; font-size: 0.88rem; color: var(--text-muted);">
-        <span data-i18n="alreadyRegistered">Already registered?</span> <a href="login.html" style="color: var(--primary); font-weight: 600; text-decoration: none;" data-i18n="loginToDashboard">Login to Dashboard</a>
       </div>
     </div>
   </main>

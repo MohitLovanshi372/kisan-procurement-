@@ -11,16 +11,22 @@ const inMemoryDB = {
 };
 
 const connectDB = async () => {
-  const mongoURI = process.env.MONGO_URI || "mongodb://127.0.0.1:27017/kisan_procurement_db";
+  let mongoURI = process.env.MONGO_URI || process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/kisan_procurement_db";
+  if (typeof mongoURI === "string") {
+    if (mongoURI.startsWith("MONGODB_URI=")) {
+      mongoURI = mongoURI.replace(/^MONGODB_URI=/, "").trim();
+    }
+    mongoURI = mongoURI.replace(/^['"]|['"]$/g, "").trim();
+  }
   try {
-    // Attempt Mongoose connection with 1.5s serverSelectionTimeout
+    // Attempt Mongoose connection with 2s serverSelectionTimeout
     await mongoose.connect(mongoURI, {
-      serverSelectionTimeoutMS: 1500,
+      serverSelectionTimeoutMS: 2000,
     });
-    console.log("✅ MongoDB Connected successfully:", mongoURI);
+    console.log("✅ MongoDB Connected successfully");
     return true;
   } catch (err) {
-    console.log("⚠️ MongoDB local daemon not reachable. Falling back to high-fidelity In-Memory Database Store.");
+    console.log("⚠️ MongoDB remote/local not reachable. Falling back to high-fidelity In-Memory Database Store.");
     inMemoryDB.isUsingMemory = true;
     return false;
   }

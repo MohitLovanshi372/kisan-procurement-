@@ -19,25 +19,38 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  if (fillOfficerDemoBtn) {
+    fillOfficerDemoBtn.addEventListener("click", () => {
+      const adminMobileEl = document.getElementById("adminMobile") || document.getElementById("mobile");
+      const adminPasswordEl = document.getElementById("adminPassword") || document.getElementById("password");
+      if (adminMobileEl) adminMobileEl.value = "9893011111";
+      if (adminPasswordEl) adminPasswordEl.value = "officer123";
+      showToast("Centre Officer credentials filled (Sanwer Mandi)", "info");
+    });
+  }
+
   if (fillAdminDemoBtn) {
     fillAdminDemoBtn.addEventListener("click", () => {
       const adminMobileEl = document.getElementById("adminMobile") || document.getElementById("mobile");
       const adminPasswordEl = document.getElementById("adminPassword") || document.getElementById("password");
       if (adminMobileEl) adminMobileEl.value = "9999999999";
       if (adminPasswordEl) adminPasswordEl.value = "admin123";
-      showToast("Officer credentials filled (Mandi Officer)", "info");
+      showToast("Govt Admin credentials filled (State Mandi Board)", "info");
     });
   }
 
   if (fillRegisterDemoBtn) {
-    fillRegisterDemoBtn.addEventListener("click", () => {
+    fillRegisterDemoBtn.addEventListener("click", async () => {
       const randomNum = Math.floor(1000 + Math.random() * 9000);
       document.getElementById("name").value = "Kailash Verma";
-      document.getElementById("mobile").value = "98260" + randomNum;
+      const mobileInput = document.getElementById("mobile");
+      const sampleMobile = "98260" + randomNum;
+      if (mobileInput) mobileInput.value = sampleMobile;
       const aadharEl = document.getElementById("aadharNumber");
       if (aadharEl) aadharEl.value = "7894 5612 " + randomNum;
       document.getElementById("password").value = "123456";
-      document.getElementById("farmerId").value = "FMR" + randomNum;
+      const farmerIdEl = document.getElementById("farmerId");
+      if (farmerIdEl) farmerIdEl.value = "FMR" + randomNum;
       document.getElementById("village").value = "Sanwer";
       document.getElementById("district").value = "Indore";
       document.getElementById("state").value = "Madhya Pradesh";
@@ -45,21 +58,224 @@ document.addEventListener("DOMContentLoaded", () => {
       document.getElementById("landArea").value = "4.5 Acres";
       document.getElementById("preferredCentre").value = "Sanwer Procurement Centre";
 
-      // Fill Bank DBT Fields
-      const bankNameEl = document.getElementById("bankName");
-      if (bankNameEl) bankNameEl.value = "State Bank of India";
-      const holderEl = document.getElementById("accountHolderName");
-      if (holderEl) holderEl.value = "Kailash Verma";
-      const accEl = document.getElementById("accountNumber");
-      if (accEl) accEl.value = "30982451928";
-      const confirmAccEl = document.getElementById("confirmAccountNumber");
-      if (confirmAccEl) confirmAccEl.value = "30982451928";
-      const ifscEl = document.getElementById("ifscCode");
-      if (ifscEl) ifscEl.value = "SBIN0001234";
-      const branchEl = document.getElementById("branchName");
-      if (branchEl) branchEl.value = "Sanwer Mandi Branch";
+      showToast("Sample registration data populated. Sending Aadhaar OTP...", "info");
 
-      showToast("Sample registration & DBT bank data populated", "info");
+      // Auto-trigger OTP send for smooth 1-click test
+      try {
+        const res = await apiFetch("/api/auth/send-registration-otp", {
+          method: "POST",
+          body: JSON.stringify({ mobile: sampleMobile, name: "Kailash Verma" })
+        });
+        if (res.success) {
+          const otpBox = document.getElementById("otpVerificationBox");
+          const maskedPhoneEl = document.getElementById("otpMaskedPhone");
+          const demoOtpValEl = document.getElementById("demoOtpValue");
+          const otpInput = document.getElementById("otpInput");
+          if (otpBox) otpBox.style.display = "block";
+          if (maskedPhoneEl) maskedPhoneEl.textContent = res.maskedMobile || `+91 ${sampleMobile}`;
+          if (demoOtpValEl && res.demoOtp) demoOtpValEl.textContent = res.demoOtp;
+          if (otpInput) {
+            otpInput.value = res.demoOtp || "123456";
+            otpInput.focus();
+          }
+          showToast(`⚡ Demo OTP generated: ${res.demoOtp || "123456"} (Click 'Verify' or complete form)`, "info");
+        }
+      } catch (err) {
+        console.warn("Auto OTP request notice:", err.message);
+      }
+    });
+  }
+
+  // Registration OTP State Variables
+  let isMobileVerified = false;
+  let verifiedOtp = "";
+  let otpTimerInterval = null;
+
+  const btnSendOtp = document.getElementById("btnSendOtp");
+  const btnSendOtpText = document.getElementById("btnSendOtpText");
+  const btnVerifyOtp = document.getElementById("btnVerifyOtp");
+  const btnResendOtp = document.getElementById("btnResendOtp");
+  const otpInput = document.getElementById("otpInput");
+  const otpVerificationBox = document.getElementById("otpVerificationBox");
+  const otpMaskedPhone = document.getElementById("otpMaskedPhone");
+  const otpTimerCount = document.getElementById("otpTimerCount");
+  const otpCountdownWrapper = document.getElementById("otpCountdownWrapper");
+  const demoOtpChip = document.getElementById("demoOtpChip");
+  const demoOtpValue = document.getElementById("demoOtpValue");
+  const otpSuccessBanner = document.getElementById("otpSuccessBanner");
+  const mobileVerifiedBadge = document.getElementById("mobileVerifiedBadge");
+  const dbtMobileStatus = document.getElementById("dbtMobileStatus");
+  const verifiedMobileDisplay = document.getElementById("verifiedMobileDisplay");
+  const stepIndicator1 = document.getElementById("stepIndicator1");
+  const stepIndicator2 = document.getElementById("stepIndicator2");
+  const stepIndicator3 = document.getElementById("stepIndicator3");
+
+  function startOtpTimer(seconds = 30) {
+    if (otpTimerInterval) clearInterval(otpTimerInterval);
+    let remaining = seconds;
+    if (otpCountdownWrapper) otpCountdownWrapper.style.display = "inline";
+    if (btnResendOtp) btnResendOtp.style.display = "none";
+    if (otpTimerCount) otpTimerCount.textContent = remaining;
+
+    otpTimerInterval = setInterval(() => {
+      remaining -= 1;
+      if (otpTimerCount) otpTimerCount.textContent = remaining;
+      if (remaining <= 0) {
+        clearInterval(otpTimerInterval);
+        otpTimerInterval = null;
+        if (otpCountdownWrapper) otpCountdownWrapper.style.display = "none";
+        if (btnResendOtp) {
+          btnResendOtp.style.display = "inline";
+          btnResendOtp.disabled = false;
+        }
+      }
+    }, 1000);
+  }
+
+  async function handleSendOtp() {
+    const rawMobile = (document.getElementById("mobile")?.value || "").trim();
+    const cleanMobile = rawMobile.replace(/[^0-9]/g, "").slice(-10);
+    const farmerName = (document.getElementById("name")?.value || "").trim();
+
+    if (!cleanMobile || cleanMobile.length < 10) {
+      showToast("Please enter a valid 10-digit Aadhaar-linked mobile number first.", "error");
+      const mobileEl = document.getElementById("mobile");
+      if (mobileEl) mobileEl.focus();
+      return;
+    }
+
+    if (btnSendOtp) {
+      btnSendOtp.disabled = true;
+      if (btnSendOtpText) btnSendOtpText.textContent = "Sending OTP...";
+    }
+
+    const res = await apiFetch("/api/auth/send-registration-otp", {
+      method: "POST",
+      body: JSON.stringify({ mobile: cleanMobile, name: farmerName })
+    });
+
+    if (btnSendOtp) {
+      btnSendOtp.disabled = false;
+      if (btnSendOtpText) btnSendOtpText.textContent = "Resend OTP (पुनः भेजें)";
+    }
+
+    if (res.success) {
+      if (otpVerificationBox) otpVerificationBox.style.display = "block";
+      if (otpMaskedPhone) otpMaskedPhone.textContent = res.maskedMobile || `+91 ${cleanMobile.slice(0, 2)}*****${cleanMobile.slice(-3)}`;
+      if (demoOtpValue && res.demoOtp) demoOtpValue.textContent = res.demoOtp;
+      if (otpInput) {
+        otpInput.value = "";
+        otpInput.focus();
+      }
+      startOtpTimer(30);
+      showToast(res.message || "OTP sent successfully to your mobile & WhatsApp!", "info");
+      
+      // Update stepper
+      if (stepIndicator1) stepIndicator1.className = "reg-step-item completed";
+      if (stepIndicator2) stepIndicator2.className = "reg-step-item active";
+    } else {
+      showToast(res.message || "Failed to send OTP. Please check the number.", "error");
+    }
+  }
+
+  async function handleVerifyOtp() {
+    const rawMobile = (document.getElementById("mobile")?.value || "").trim();
+    const cleanMobile = rawMobile.replace(/[^0-9]/g, "").slice(-10);
+    const enteredOtp = (otpInput?.value || "").trim();
+
+    if (!cleanMobile || cleanMobile.length < 10) {
+      showToast("Please enter a valid 10-digit mobile number.", "error");
+      return;
+    }
+
+    if (!enteredOtp || enteredOtp.length < 4) {
+      showToast("Please enter the 6-digit OTP received on your mobile.", "error");
+      if (otpInput) otpInput.focus();
+      return;
+    }
+
+    if (btnVerifyOtp) {
+      btnVerifyOtp.disabled = true;
+      btnVerifyOtp.innerHTML = "<span>⏳</span> <span>सत्यापित हो रहा है...</span>";
+    }
+
+    const res = await apiFetch("/api/auth/verify-registration-otp", {
+      method: "POST",
+      body: JSON.stringify({ mobile: cleanMobile, otp: enteredOtp })
+    });
+
+    if (btnVerifyOtp) {
+      btnVerifyOtp.disabled = false;
+      btnVerifyOtp.innerHTML = "<span>✓</span> <span>ओटीपी सत्यापित करें (Verify)</span>";
+    }
+
+    if (res.success) {
+      isMobileVerified = true;
+      verifiedOtp = enteredOtp;
+
+      if (otpTimerInterval) clearInterval(otpTimerInterval);
+      if (otpVerificationBox) otpVerificationBox.style.display = "none";
+      if (otpSuccessBanner) otpSuccessBanner.style.display = "flex";
+      if (mobileVerifiedBadge) mobileVerifiedBadge.style.display = "inline-flex";
+      if (btnSendOtp) {
+        btnSendOtp.disabled = true;
+        btnSendOtp.style.background = "#166534";
+        if (btnSendOtpText) btnSendOtpText.textContent = "✓ Verified (सत्यापित)";
+      }
+      const mobileInput = document.getElementById("mobile");
+      if (mobileInput) {
+        mobileInput.readOnly = true;
+        mobileInput.style.background = "#f0fdf4";
+        mobileInput.style.borderColor = "#86efac";
+      }
+      if (verifiedMobileDisplay) {
+        verifiedMobileDisplay.textContent = `Aadhaar Mobile +91 ${cleanMobile} successfully verified & mapped with NPCI.`;
+      }
+      if (dbtMobileStatus) {
+        dbtMobileStatus.textContent = "✓ आधार ओटीपी सत्यापित (NPCI Active)";
+        dbtMobileStatus.style.color = "#16a34a";
+      }
+
+      // Update stepper to step 3
+      if (stepIndicator2) stepIndicator2.className = "reg-step-item completed";
+      if (stepIndicator3) stepIndicator3.className = "reg-step-item active";
+
+      showToast("Aadhaar mobile successfully verified via OTP!", "success");
+    } else {
+      showToast(res.message || "Invalid OTP. Please check the code and retry.", "error");
+    }
+  }
+
+  if (btnSendOtp) {
+    btnSendOtp.addEventListener("click", handleSendOtp);
+  }
+
+  if (btnResendOtp) {
+    btnResendOtp.addEventListener("click", handleSendOtp);
+  }
+
+  if (btnVerifyOtp) {
+    btnVerifyOtp.addEventListener("click", handleVerifyOtp);
+  }
+
+  if (demoOtpChip) {
+    demoOtpChip.addEventListener("click", () => {
+      const code = demoOtpValue ? demoOtpValue.textContent.trim() : "123456";
+      if (otpInput) {
+        otpInput.value = code;
+        handleVerifyOtp();
+      }
+    });
+  }
+
+  // Quick auto-verify when typing 6 digits in OTP input
+  if (otpInput) {
+    otpInput.addEventListener("input", (e) => {
+      const val = e.target.value.replace(/[^0-9]/g, "");
+      e.target.value = val;
+      if (val.length === 6) {
+        handleVerifyOtp();
+      }
     });
   }
 
@@ -90,12 +306,13 @@ document.addEventListener("DOMContentLoaded", () => {
       submitBtn.innerHTML = originalText;
 
       if (res.success && res.data) {
-        if (res.data.farmer.role !== "farmer") {
-          showToast("Access Denied: This portal is exclusively for Farmers. Mandi Officers please use the Procurement Centre Login.", "error");
+        const userRole = (res.data.role || (res.data.farmer && res.data.farmer.role) || "").toUpperCase();
+        if (userRole !== "FARMER") {
+          showToast("Access Denied: This portal is exclusively for Farmers. Mandi Officers and Admins please use the Officer Login portal.", "error");
           return;
         }
         setAuthToken(res.data.token);
-        setUser(res.data.farmer);
+        setUser(res.data.user || res.data.farmer);
         showToast("Farmer login successful!", "success");
 
         setTimeout(() => {
@@ -135,16 +352,21 @@ document.addEventListener("DOMContentLoaded", () => {
       submitBtn.innerHTML = originalText;
 
       if (res.success && res.data) {
-        if (res.data.farmer.role !== "admin") {
-          showToast("Access Denied: This portal is strictly for Mandi Officers. Farmers please use the Farmer Login portal.", "error");
+        const userRole = (res.data.role || (res.data.farmer && res.data.farmer.role) || "").toUpperCase();
+        if (userRole === "FARMER") {
+          showToast("Access Denied: This portal is strictly for Mandi Officers and Admins. Farmers please use the Farmer Login portal.", "error");
           return;
         }
+
         setAuthToken(res.data.token);
-        setUser(res.data.farmer);
-        showToast("Officer authentication successful! Redirecting...", "success");
+        setUser(res.data.user || res.data.farmer);
+        
+        const destination = res.data.redirectUrl || (userRole === "CENTRE_OFFICER" ? "centre-officer.html" : "admin.html");
+        const greetingRole = userRole === "CENTRE_OFFICER" ? "Centre Officer" : "Administrator";
+        showToast(`${greetingRole} authentication successful! Redirecting...`, "success");
 
         setTimeout(() => {
-          window.location.href = "admin.html";
+          window.location.href = destination;
         }, 400);
       } else {
         showToast(res.message || "Access Denied: Invalid Mandi Officer credentials.", "error");
@@ -192,6 +414,40 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
+      // Aadhaar Mobile OTP verification guard
+      if (!isMobileVerified) {
+        const pendingOtp = (otpInput?.value || "").trim();
+        if (pendingOtp && pendingOtp.length >= 4) {
+          submitBtn.disabled = true;
+          submitBtn.innerHTML = "Verifying OTP & Registering...";
+          const verifyRes = await apiFetch("/api/auth/verify-registration-otp", {
+            method: "POST",
+            body: JSON.stringify({ mobile: cleanMobile, otp: pendingOtp })
+          });
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = originalText;
+
+          if (verifyRes.success) {
+            isMobileVerified = true;
+            verifiedOtp = pendingOtp;
+            if (otpSuccessBanner) otpSuccessBanner.style.display = "flex";
+            if (otpVerificationBox) otpVerificationBox.style.display = "none";
+          } else {
+            showToast(verifyRes.message || "Invalid OTP. Please check the code received on your mobile.", "error");
+            if (otpVerificationBox) otpVerificationBox.style.display = "block";
+            if (otpInput) otpInput.focus();
+            return;
+          }
+        } else {
+          showToast("Aadhaar Mobile OTP verification required. Sending OTP to your mobile...", "info");
+          handleSendOtp();
+          if (otpVerificationBox) {
+            otpVerificationBox.scrollIntoView({ behavior: "smooth", block: "center" });
+          }
+          return;
+        }
+      }
+
       const payload = {
         name,
         mobile: cleanMobile,
@@ -204,6 +460,7 @@ document.addEventListener("DOMContentLoaded", () => {
         crop,
         landArea,
         preferredCentre,
+        otp: verifiedOtp || "123456",
         bankName: "Aadhaar Linked Primary Bank (NPCI / PFMS)",
         accountHolderName: name,
         accountNumber: `Aadhaar-Seeded (${cleanAadhar.slice(-4)})`,
@@ -228,6 +485,9 @@ document.addEventListener("DOMContentLoaded", () => {
       submitBtn.innerHTML = originalText;
 
       if (res.success && res.data) {
+        if (stepIndicator1) stepIndicator1.className = "reg-step-item completed";
+        if (stepIndicator2) stepIndicator2.className = "reg-step-item completed";
+        if (stepIndicator3) stepIndicator3.className = "reg-step-item completed";
         setAuthToken(res.data.token);
         setUser(res.data.farmer);
         showToast("Registration & DBT account verification successful!", "success");

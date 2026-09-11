@@ -36,13 +36,23 @@ function logout() {
   window.location.href = "login.html";
 }
 
-// Authentication guard
-function requireAuth(allowedRoles = ["farmer", "admin"]) {
+// Authentication guard & Role Normalization
+function normalizeAuthRole(role) {
+  if (!role) return "FARMER";
+  const r = String(role).toUpperCase().trim();
+  if (r === "ADMIN" || r === "GOVERNMENT_ADMIN") return "GOVERNMENT_ADMIN";
+  if (r === "OFFICER" || r === "CENTRE_OFFICER") return "CENTRE_OFFICER";
+  return "FARMER";
+}
+
+function requireAuth(allowedRoles = ["FARMER", "CENTRE_OFFICER", "GOVERNMENT_ADMIN"]) {
   const token = getAuthToken();
   const user = getUser();
 
+  const normAllowed = allowedRoles.map(r => normalizeAuthRole(r));
+
   if (!token || !user) {
-    if (allowedRoles.length === 1 && allowedRoles[0] === "admin") {
+    if (!normAllowed.includes("FARMER") && (normAllowed.includes("CENTRE_OFFICER") || normAllowed.includes("GOVERNMENT_ADMIN"))) {
       window.location.href = "admin-login.html";
     } else {
       window.location.href = "login.html";
@@ -50,18 +60,63 @@ function requireAuth(allowedRoles = ["farmer", "admin"]) {
     return false;
   }
 
-  if (allowedRoles.length > 0 && !allowedRoles.includes(user.role)) {
-    if (user.role === "admin") {
+  const userRole = normalizeAuthRole(user.role);
+
+  if (normAllowed.length > 0 && !normAllowed.includes(userRole)) {
+    if (userRole === "GOVERNMENT_ADMIN") {
       window.location.href = "admin.html";
+    } else if (userRole === "CENTRE_OFFICER") {
+      showToast("Redirected to your assigned Procurement Centre portal.", "info");
+      window.location.href = "centre-officer.html";
     } else {
-      // Farmer trying to access admin page
-      showToast("Access Denied: Only Mandi Officers can access the Procurement Centre.", "error");
+      // Farmer trying to access officer/admin page
+      showToast("Access Denied: Only authorized Mandi Officers and Administrators can access this portal.", "error");
       window.location.href = "dashboard.html";
     }
     return false;
   }
 
   return true;
+}
+
+// Unified Notification Sound Engine (Web Audio API Chime)
+let systemSoundMuted = false;
+function playSystemNotificationSound() {
+  if (systemSoundMuted) return;
+  try {
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    if (!AudioCtx) return;
+    const ctx = new AudioCtx();
+    const now = ctx.currentTime;
+
+    // Harmonic warm chime note 1 (D5 -> 587.33 Hz)
+    const osc1 = ctx.createOscillator();
+    const gain1 = ctx.createGain();
+    osc1.type = "sine";
+    osc1.frequency.setValueAtTime(587.33, now);
+    gain1.gain.setValueAtTime(0, now);
+    gain1.gain.linearRampToValueAtTime(0.18, now + 0.03);
+    gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.32);
+    osc1.connect(gain1);
+    gain1.connect(ctx.destination);
+    osc1.start(now);
+    osc1.stop(now + 0.33);
+
+    // Harmonic chime note 2 (A5 -> 880 Hz)
+    const osc2 = ctx.createOscillator();
+    const gain2 = ctx.createGain();
+    osc2.type = "sine";
+    osc2.frequency.setValueAtTime(880, now + 0.08);
+    gain2.gain.setValueAtTime(0, now + 0.08);
+    gain2.gain.linearRampToValueAtTime(0.22, now + 0.11);
+    gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.48);
+    osc2.connect(gain2);
+    gain2.connect(ctx.destination);
+    osc2.start(now + 0.08);
+    osc2.stop(now + 0.49);
+  } catch (e) {
+    // Ignore audio policy errors
+  }
 }
 
 // Unified API caller with Bearer JWT
@@ -102,8 +157,10 @@ async function apiFetch(endpoint, options = {}) {
   }
 }
 
-// Toast notification helper
+// Toast notification helper with audio cue
 function showToast(message, type = "info") {
+  playSystemNotificationSound();
+
   let container = document.getElementById("toastContainer");
   if (!container) {
     container = document.createElement("div");
@@ -148,6 +205,9 @@ const translations = {
     authorizedOfficer: "Authorized Mandi Officer",
     navAbout: "About",
     navHome: "Home",
+    navServices: "Services",
+    navHowItWorks: "How It Works",
+    navDemo: "Demo",
     backToHome: "← Back to Home",
 
     // Landing Hero & Features
@@ -226,6 +286,16 @@ const translations = {
     completeRegBtn: "Complete Registration & Generate Token →",
     alreadyRegistered: "Already registered?",
     loginToDashboard: "Login to Dashboard",
+
+    // OTP Verification Keys (English)
+    sendOtpBtn: "Send OTP",
+    resendOtpBtn: "Resend OTP",
+    otpSentSuccess: "OTP sent successfully to",
+    enterOtpLabel: "Enter 6-Digit Aadhaar Mobile OTP *",
+    verifyOtpBtn: "Verify OTP",
+    otpVerifiedBadge: "✓ Aadhaar Mobile Verified",
+    enterValidOtp: "Please enter a valid 6-digit OTP",
+    otpRequiredToast: "Please verify your mobile number with OTP first",
 
     // DBT & Aadhaar Registration Keys
     aadharMobileLabel: "Aadhaar-Linked Mobile Number *",
@@ -625,6 +695,9 @@ const translations = {
     authorizedOfficer: "अधिकृत मंडी अधिकारी",
     navAbout: "हमारे बारे में (About)",
     navHome: "होम",
+    navServices: "सेवाएं (Services)",
+    navHowItWorks: "प्रक्रिया (How It Works)",
+    navDemo: "डेमो (Demo)",
     backToHome: "← मुख्य पृष्ठ पर लौटें",
 
     // Landing Hero & Features
@@ -703,6 +776,16 @@ const translations = {
     completeRegBtn: "पंजीकरण पूर्ण करें एवं टोकन बनाएं →",
     alreadyRegistered: "पहले से पंजीकृत हैं?",
     loginToDashboard: "डैशबोर्ड पर लॉगिन करें",
+
+    // OTP Verification Keys (Hindi)
+    sendOtpBtn: "ओटीपी भेजें",
+    resendOtpBtn: "ओटीपी पुनः भेजें",
+    otpSentSuccess: "ओटीपी सफलतापूर्वक भेजा गया",
+    enterOtpLabel: "6-अंकीय आधार मोबाइल ओटीपी दर्ज करें *",
+    verifyOtpBtn: "ओटीपी सत्यापित करें",
+    otpVerifiedBadge: "✓ आधार मोबाइल सत्यापित",
+    enterValidOtp: "कृपया 6-अंकीय मान्य ओटीपी दर्ज करें",
+    otpRequiredToast: "कृपया पहले ओटीपी दर्ज कर मोबाइल सत्यापित करें",
 
     // DBT & Aadhaar Registration Keys (Hindi)
     aadharMobileLabel: "आधार से लिंक मोबाइल नंबर *",
@@ -1226,8 +1309,141 @@ function initCommonUI() {
 
   applyTranslations(getLanguage());
 
+  // Initialize smooth scrolling for internal section navigation links
+  initSmoothScroll();
+
   // Initialize real-time Socket.io connection for queue and procurement updates
   initSocketClient();
+}
+
+// ==================== Smooth Scrolling Navigation ====================
+function initSmoothScroll() {
+  const navAnchorLinks = document.querySelectorAll('a[href^="#"]');
+  if (!navAnchorLinks.length) return;
+
+  const header = document.querySelector(".site-header");
+  const navMenu = document.getElementById("navLinks");
+
+  navAnchorLinks.forEach((anchor) => {
+    anchor.addEventListener("click", function (e) {
+      const hash = this.getAttribute("href");
+      if (!hash || hash === "#") return;
+
+      let targetElement = null;
+      try {
+        targetElement = document.querySelector(hash);
+      } catch (err) {
+        return;
+      }
+
+      if (!targetElement) return;
+
+      e.preventDefault();
+
+      // Close mobile drawer if open
+      if (navMenu && navMenu.classList.contains("show-mobile")) {
+        navMenu.classList.remove("show-mobile");
+      }
+
+      // Calculate header offset
+      const headerOffset = header ? header.offsetHeight + 14 : 76;
+      const elementPosition = targetElement.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+      const prefersReducedMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      window.scrollTo({
+        top: Math.max(0, Math.round(offsetPosition)),
+        behavior: prefersReducedMotion ? "auto" : "smooth"
+      });
+
+      // Update URL hash without jumping
+      if (history.pushState) {
+        history.pushState(null, null, hash);
+      } else {
+        location.hash = hash;
+      }
+
+      // Highlight active link immediately
+      document.querySelectorAll(".nav-links .nav-item").forEach((item) => {
+        item.classList.remove("active");
+      });
+      const parentItem = this.closest(".nav-item");
+      if (parentItem) {
+        parentItem.classList.add("active");
+      }
+
+      // Accessibility focus management
+      targetElement.setAttribute("tabindex", "-1");
+      targetElement.focus({ preventScroll: true });
+    });
+  });
+
+  // ScrollSpy: highlight active link as the user scrolls
+  const trackedSections = [];
+  navAnchorLinks.forEach((link) => {
+    const hash = link.getAttribute("href");
+    if (hash && hash.startsWith("#") && hash.length > 1) {
+      try {
+        const el = document.querySelector(hash);
+        if (el && !trackedSections.some((s) => s.id === hash)) {
+          trackedSections.push({ id: hash, el, link });
+        }
+      } catch (err) {}
+    }
+  });
+
+  if (trackedSections.length > 0) {
+    let ticking = false;
+    const updateActiveSectionOnScroll = () => {
+      const headerOffset = (header ? header.offsetHeight : 70) + 60;
+      const scrollY = window.pageYOffset;
+
+      let current = trackedSections[0];
+      for (const section of trackedSections) {
+        const top = section.el.offsetTop - headerOffset;
+        if (scrollY >= top) {
+          current = section;
+        }
+      }
+
+      trackedSections.forEach((s) => {
+        const parent = s.link.closest(".nav-item");
+        if (parent) {
+          if (s === current) {
+            parent.classList.add("active");
+          } else {
+            parent.classList.remove("active");
+          }
+        }
+      });
+      ticking = false;
+    };
+
+    window.addEventListener("scroll", () => {
+      if (!ticking) {
+        window.requestAnimationFrame(updateActiveSectionOnScroll);
+        ticking = true;
+      }
+    }, { passive: true });
+
+    // Initial check on load
+    updateActiveSectionOnScroll();
+  }
+
+  // If page loaded with a hash in URL, smoothly scroll with header offset
+  if (window.location.hash) {
+    try {
+      const initialTarget = document.querySelector(window.location.hash);
+      if (initialTarget) {
+        setTimeout(() => {
+          const headerOffset = header ? header.offsetHeight + 14 : 76;
+          const pos = initialTarget.getBoundingClientRect().top + window.pageYOffset - headerOffset;
+          window.scrollTo({ top: Math.max(0, Math.round(pos)), behavior: "smooth" });
+        }, 200);
+      }
+    } catch (err) {}
+  }
 }
 
 // ==================== Real-Time Socket.io Client Setup ====================
@@ -1301,7 +1517,7 @@ function initSocketClient() {
       appSocket.on("logo-updated", (data) => {
         console.log("🎨 [Socket.io] Logo updated real-time:", data);
         const t = (data && data.timestamp) || Date.now();
-        document.querySelectorAll(".brand-icon-img, img[src*='logo.png']").forEach((img) => {
+        document.querySelectorAll(".brand-icon-img, .auth-logo-badge, img[src*='logo']").forEach((img) => {
           img.src = `img/logo.png?v=${t}`;
         });
         const fav = document.querySelector('link[rel="icon"]');
@@ -1334,39 +1550,5 @@ function initSocketClient() {
 
 window.getSocket = () => appSocket;
 window.initSocketClient = initSocketClient;
-
-// Helper to update portal logo directly
-window.uploadPortalLogo = async function (fileOrBase64OrUrl) {
-  try {
-    let body = {};
-    if (typeof fileOrBase64OrUrl === "string") {
-      if (fileOrBase64OrUrl.startsWith("http://") || fileOrBase64OrUrl.startsWith("https://")) {
-        body.imageUrl = fileOrBase64OrUrl;
-      } else {
-        body.imageBase64 = fileOrBase64OrUrl;
-      }
-    } else if (fileOrBase64OrUrl instanceof File || fileOrBase64OrUrl instanceof Blob) {
-      const b64 = await new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = reject;
-        reader.readAsDataURL(fileOrBase64OrUrl);
-      });
-      body.imageBase64 = b64;
-    }
-
-    const res = await fetch("/api/system/upload-logo", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-    });
-    const data = await res.json();
-    if (!res.ok) throw new Error(data.error || "Failed to upload logo");
-    return data;
-  } catch (err) {
-    console.error("uploadPortalLogo failed:", err);
-    throw err;
-  }
-};
 
 document.addEventListener("DOMContentLoaded", initCommonUI);

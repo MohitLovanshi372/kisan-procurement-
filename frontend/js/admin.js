@@ -6,7 +6,7 @@ let allFarmersData = [];
 let selectedFarmerForUpdate = null;
 
 document.addEventListener("DOMContentLoaded", async () => {
-  if (!requireAuth(["admin"])) return;
+  if (!requireAuth(["GOVERNMENT_ADMIN", "admin"])) return;
 
   setupAdminListeners();
   await loadAdminDashboard();

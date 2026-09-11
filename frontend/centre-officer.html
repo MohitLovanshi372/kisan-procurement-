@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Procurement Centre Officer Portal — Mandisathi</title>
+  <link rel="icon" type="image/png" href="img/logo.png">
+  <link rel="apple-touch-icon" href="img/logo.png">
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .officer-centre-banner {
+      background: linear-gradient(135deg, #065f46 0%, #047857 100%);
+      color: #ffffff;
+      border-radius: var(--radius-md);
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .officer-isolation-pill {
+      background: rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      color: #ffffff;
+      font-size: 0.76rem;
+      font-weight: 700;
+      padding: 0.3rem 0.75rem;
+      border-radius: 9999px;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .verify-box {
+      background: #f8fafc;
+      border: 2px dashed #059669;
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      margin-bottom: 1.25rem;
+    }
+    .action-btn-sm {
+      padding: 0.3rem 0.6rem;
+      font-size: 0.75rem;
+      border-radius: 6px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      border: 1px solid transparent;
+      transition: all 0.15s ease;
+    }
+    .action-btn-weigh {
+      background: #ecfdf5;
+      color: #065f46;
+      border-color: #a7f3d0;
+    }
+    .action-btn-weigh:hover {
+      background: #059669;
+      color: #ffffff;
+    }
+    .action-btn-pay {
+      background: #eff6ff;
+      color: #1e40af;
+      border-color: #bfdbfe;
+    }
+    .action-btn-pay:hover {
+      background: #2563eb;
+      color: #ffffff;
+    }
+    .action-btn-notify {
+      background: #fffbeb;
+      color: #92400e;
+      border-color: #fde68a;
+    }
+    .action-btn-notify:hover {
+      background: #d97706;
+      color: #ffffff;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation Header -->
+  <header class="site-header">
+    <div class="header-container">
+      <a href="centre-officer.html" class="brand-logo">
+        <span class="brand-icon">
+          <img src="img/logo.png" alt="Mandisathi Logo" class="brand-icon-img" onerror="this.onerror=null; this.src='img/brand-logo.png';">
+        </span>
+        <span class="brand-title" data-i18n="brandTitle">Mandisathi</span>
+      </a>
+
+      <div class="header-actions">
+        <button id="langSwitchBtn" class="lang-btn">हिंदी</button>
+        <span class="badge" style="background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0;">
+          👮‍♂️ <span id="officerNameHeader">Centre Officer</span>
+        </span>
+        <button id="headerLogoutBtn" class="btn-logout" data-i18n="logout">Logout</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-content">
+
+    <!-- Assigned Centre Banner (Strict Scope Isolation) -->
+    <div class="officer-centre-banner">
+      <div>
+        <div style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; opacity: 0.9;">
+          Assigned Mandi Procurement Centre
+        </div>
+        <h1 style="font-size: 1.45rem; font-weight: 800; margin: 0.2rem 0;" id="officerCentreTitle">
+          Sanwer Procurement Centre (सांवेर मंडी)
+        </h1>
+        <div style="font-size: 0.85rem; opacity: 0.95;" id="officerCentreMeta">
+          District: Indore • Hours: 09:00 AM – 05:00 PM • Status: <span style="color: #a7f3d0; font-weight: 700;">Open & Active</span>
+        </div>
+      </div>
+      <div style="text-align: right;">
+        <span class="officer-isolation-pill">
+          🔒 Strict Centre Isolation Active
+        </span>
+        <div style="font-size: 0.75rem; margin-top: 0.4rem; opacity: 0.85;">
+          Authorised for this centre only
+        </div>
+      </div>
+    </div>
+
+    <!-- 4 Stats Cards for THIS centre only -->
+    <div class="stat-grid-4">
+      <div class="stat-card stat-blue">
+        <div class="stat-header">
+          <span>👥 Centre Farmers</span>
+        </div>
+        <div class="stat-value" id="statCentreFarmers">--</div>
+        <div class="stat-meta">Scheduled & Registered</div>
+      </div>
+
+      <div class="stat-card stat-amber">
+        <div class="stat-header">
+          <span>🚜 Waiting in Queue</span>
+        </div>
+        <div class="stat-value" id="statWaitingFarmers">--</div>
+        <div class="stat-meta" id="statEstimatedWait">~30 mins wait</div>
+      </div>
+
+      <div class="stat-card stat-green">
+        <div class="stat-header">
+          <span>🌾 Weighment Completed</span>
+        </div>
+        <div class="stat-value" id="statCompletedProcurement">--</div>
+        <div class="stat-meta">Passed Quality Check</div>
+      </div>
+
+      <div class="stat-card stat-purple">
+        <div class="stat-header">
+          <span>💰 DBT Settled</span>
+        </div>
+        <div class="stat-value" id="statTotalDisbursed">₹0</div>
+        <div class="stat-meta" id="statPendingPayments">-- Pending DBT</div>
+      </div>
+    </div>
+
+    <!-- Fast-Track Gate Pass & Token Verifier Card -->
+    <section class="card">
+      <div class="card-header">
+        <div class="card-title">
+          <span>⚡</span> <span>Mandi Gate Token Verification (गेट पास सत्यापन)</span>
+        </div>
+        <span class="badge badge-green">Fast-Track Gate Entry</span>
+      </div>
+
+      <div class="verify-box">
+        <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.75rem;">
+          Enter the token number from farmer's SMS, WhatsApp, or paper pass to verify authorization for this centre:
+        </div>
+        <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+          <input
+            type="text"
+            id="verifyTokenInput"
+            class="form-input"
+            placeholder="e.g. TK-1042"
+            style="flex: 1; min-width: 200px; font-weight: 700; text-transform: uppercase;"
+          />
+          <button id="verifyTokenBtn" class="btn btn-primary" style="min-width: 140px;">
+            🔍 Verify Token
+          </button>
+        </div>
+
+        <div id="verifyResultContainer" style="margin-top: 1rem; display: none;"></div>
+      </div>
+    </section>
+
+    <!-- Centre Queue Management Card -->
+    <section class="card">
+      <div class="card-header">
+        <div class="card-title">
+          <span>⚖️</span> <span>Centre Queue & Weighbridge Controls (कतार व तौल कांटा प्रबंधन)</span>
+        </div>
+        <button id="callNextTokenBtn" class="btn btn-sm btn-primary">
+          📢 Call Next Farmer Token
+        </button>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1rem;">
+        <div style="background: #f8fafc; padding: 0.75rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+          <label class="form-label" style="font-size: 0.8rem;">Waiting Tractors in Yard</label>
+          <input type="number" id="ctrlWaitingFarmers" class="form-input" min="0" max="100" value="12">
+        </div>
+
+        <div style="background: #f8fafc; padding: 0.75rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+          <label class="form-label" style="font-size: 0.8rem;">Estimated Wait Time</label>
+          <input type="text" id="ctrlEstimatedWait" class="form-input" value="30 minutes">
+        </div>
+
+        <div style="background: #f8fafc; padding: 0.75rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+          <label class="form-label" style="font-size: 0.8rem;">Active Weighbridges</label>
+          <select id="ctrlActiveWeighbridges" class="form-select">
+            <option value="1">1 Scale Active</option>
+            <option value="2" selected>2 Scales Active</option>
+            <option value="3">3 Scales Active (Full Capacity)</option>
+          </select>
+        </div>
+
+        <div style="background: #f8fafc; padding: 0.75rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color); display: flex; align-items: flex-end;">
+          <button id="saveQueueMetricsBtn" class="btn btn-secondary btn-block">
+            💾 Update Live Queue
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Scheduled Farmers & Procurement Records Table -->
+    <section class="card">
+      <div class="card-header" style="flex-wrap: wrap; gap: 0.75rem;">
+        <div class="card-title">
+          <span>📋</span> <span>Centre Farmers & Procurement Records (केंद्र किसान सूची)</span>
+        </div>
+        <div style="width: 260px;">
+          <input
+            type="text"
+            id="officerFarmerSearch"
+            class="form-input"
+            placeholder="🔍 Search Token, Name, Village..."
+            style="padding: 0.45rem 0.75rem; font-size: 0.85rem;"
+          />
+        </div>
+      </div>
+
+      <div class="table-responsive">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Token #</th>
+              <th>Farmer Name & Mobile</th>
+              <th>Village</th>
+              <th>Crop & Land</th>
+              <th>Slot Time</th>
+              <th>Procurement Status</th>
+              <th>Received Qty</th>
+              <th>DBT Payment</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="officerFarmersTableBody">
+            <tr>
+              <td colspan="9" style="text-align: center; padding: 2rem; color: var(--text-muted);">
+                ⏳ Loading centre farmers...
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Weighment Modal -->
+  <div id="weighModal" class="modal-overlay">
+    <div class="modal-content">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">
+        <h3 style="font-size: 1.15rem; font-weight: 700;">⚖️ Weighbridge Entry & Verification</h3>
+        <button id="closeWeighModal" style="background: none; border: none; font-size: 1.25rem; cursor: pointer;">✕</button>
+      </div>
+
+      <form id="weighForm">
+        <input type="hidden" id="weighProcId" />
+        <input type="hidden" id="weighFarmerId" />
+
+        <div style="margin-bottom: 0.75rem;">
+          <strong id="weighFarmerName">Farmer Name</strong> (<span id="weighTokenNum">TK-XXXX</span>)
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Procurement Status</label>
+          <select id="weighStatusSelect" class="form-select">
+            <option value="Scheduled">Scheduled</option>
+            <option value="Arrived">Arrived at Gate</option>
+            <option value="Procurement Completed">Procurement Completed (तुलाई पूर्ण)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Actual Received Quantity (Quintal)</label>
+          <input type="text" id="weighReceivedQty" class="form-input" placeholder="e.g. 15 Quintal" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Calculated MSP Amount (₹)</label>
+          <input type="number" id="weighAmount" class="form-input" placeholder="e.g. 37500" required />
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block">
+          ✓ Save Weighment & Generate Slip
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- DBT Payment Modal -->
+  <div id="paymentModal" class="modal-overlay">
+    <div class="modal-content">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">
+        <h3 style="font-size: 1.15rem; font-weight: 700;">💳 Disburse DBT Payment (PFMS / NPCI)</h3>
+        <button id="closePaymentModal" style="background: none; border: none; font-size: 1.25rem; cursor: pointer;">✕</button>
+      </div>
+
+      <form id="paymentForm">
+        <input type="hidden" id="payProcId" />
+
+        <div style="margin-bottom: 0.75rem;">
+          <strong id="payFarmerName">Farmer Name</strong> (<span id="payTokenNum">TK-XXXX</span>)
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Disbursement Amount (₹)</label>
+          <input type="number" id="payAmount" class="form-input" required />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Transaction Reference (UTR / DBT ID)</label>
+          <input type="text" id="payTxId" class="form-input" placeholder="DBT-2026-XXXX" required />
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block">
+          ✓ Confirm & Credit DBT to Bank Account
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div><strong>Mandisathi</strong> • <span>Department of Food & Civil Supplies, Madhya Pradesh</span></div>
+    <div class="footer-sub-note">Procurement Centre Management System • Authorized Centre Officer Interface</div>
+  </footer>
+
+  <script src="js/socket.io.min.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/centre-officer.js"></script>
+</body>
+</html>
