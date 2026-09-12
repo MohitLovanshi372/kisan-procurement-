@@ -3,7 +3,7 @@
   "private": true,
   "version": "1.0.0",
   "scripts": {
-    "dev": "node backend/server.js",
+    "dev": "vite build && node backend/server.js",
     "build": "vite build",
     "start": "node backend/server.js",
     "lint": "node -e 'console.log(\"Syntax and code validation passed\")'"

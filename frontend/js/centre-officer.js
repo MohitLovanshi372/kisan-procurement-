@@ -58,6 +58,16 @@ document.addEventListener("DOMContentLoaded", async () => {
   const payAmount = document.getElementById("payAmount");
   const payTxId = document.getElementById("payTxId");
 
+  function escapeHtml(str) {
+    if (str === null || str === undefined) return "";
+    return String(str)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+
   // Load Dashboard Stats
   async function loadDashboard() {
     try {
@@ -67,55 +77,89 @@ document.addEventListener("DOMContentLoaded", async () => {
         centreData = centre;
 
         if (officerNameHeader) {
-          officerNameHeader.textContent = `${officer.name} (${centre.name})`;
+          officerNameHeader.textContent = `${officer.name} (${centre?.name || "Procurement Centre"})`;
         }
         if (officerCentreTitle) {
-          officerCentreTitle.textContent = centre.name;
+          officerCentreTitle.textContent = centre?.name || "Procurement Centre";
         }
         if (officerCentreMeta) {
-          officerCentreMeta.innerHTML = `
-            District: ${centre.district || "Indore"} • Hours: ${centre.workingHours || "09:00 AM – 05:00 PM"} • Status: <span style="color: #a7f3d0; font-weight: 700;">${centre.status || "Open"}</span>
-          `;
+          if (centre?.centreId && centre?.name !== "No Centre Assigned") {
+            officerCentreMeta.innerHTML = `
+              District: ${escapeHtml(centre.district || "Indore")} • Hours: ${escapeHtml(centre.workingHours || "09:00 AM – 05:00 PM")} • Status: <span style="color: #a7f3d0; font-weight: 700;">${escapeHtml(centre.status || "Open")}</span>
+            `;
+          } else {
+            officerCentreMeta.innerHTML = `
+              <span style="color: #fde68a; font-weight: 600;">⚠️ No Mandi Procurement Centre assigned to this officer account. Please contact Mandi Board Administrator.</span>
+            `;
+          }
         }
 
-        if (statCentreFarmers) statCentreFarmers.textContent = stats.centreFarmersCount || 0;
-        if (statWaitingFarmers) statWaitingFarmers.textContent = stats.waitingNow || 0;
-        if (statEstimatedWait) statEstimatedWait.textContent = centre.estimatedWait || "30 mins wait";
-        if (statCompletedProcurement) statCompletedProcurement.textContent = stats.completedProcurement || 0;
-        if (statTotalDisbursed) statTotalDisbursed.textContent = "₹" + (stats.totalDisbursed || 0).toLocaleString("en-IN");
-        if (statPendingPayments) statPendingPayments.textContent = `${stats.pendingPayments || 0} Pending DBT`;
+        if (statCentreFarmers) statCentreFarmers.textContent = stats?.centreFarmersCount || 0;
+        if (statWaitingFarmers) statWaitingFarmers.textContent = stats?.waitingNow || 0;
+        if (statEstimatedWait) statEstimatedWait.textContent = centre?.estimatedWait || "N/A";
+        if (statCompletedProcurement) statCompletedProcurement.textContent = stats?.completedProcurement || 0;
+        if (statTotalDisbursed) statTotalDisbursed.textContent = "₹" + (stats?.totalDisbursed || 0).toLocaleString("en-IN");
+        if (statPendingPayments) statPendingPayments.textContent = `${stats?.pendingPayments || 0} Pending DBT`;
 
-        if (ctrlWaitingFarmers) ctrlWaitingFarmers.value = centre.waitingFarmers || 12;
-        if (ctrlEstimatedWait) ctrlEstimatedWait.value = centre.estimatedWait || "30 minutes";
-        if (ctrlActiveWeighbridges) ctrlActiveWeighbridges.value = centre.activeWeighbridges || 2;
+        if (ctrlWaitingFarmers) ctrlWaitingFarmers.value = centre?.waitingFarmers || 0;
+        if (ctrlEstimatedWait) ctrlEstimatedWait.value = centre?.estimatedWait || "30 minutes";
+        if (ctrlActiveWeighbridges) ctrlActiveWeighbridges.value = centre?.activeWeighbridges || 2;
+      } else {
+        const errMsg = res?.message || "Unable to load Procurement Centre dashboard";
+        if (officerCentreTitle) {
+          officerCentreTitle.textContent = "Unable to load Procurement Centre dashboard";
+        }
+        if (officerCentreMeta) {
+          officerCentreMeta.innerHTML = `<span style="color: #fca5a5; font-weight: 600;">⚠️ ${escapeHtml(errMsg)}</span>`;
+        }
+        showToast(errMsg, "error");
       }
     } catch (e) {
       console.error("Error loading officer dashboard:", e);
+      const errMsg = e?.message || "Unable to load Procurement Centre dashboard";
+      if (officerCentreTitle) {
+        officerCentreTitle.textContent = "Unable to load Procurement Centre dashboard";
+      }
+      if (officerCentreMeta) {
+        officerCentreMeta.innerHTML = `<span style="color: #fca5a5; font-weight: 600;">⚠️ ${escapeHtml(errMsg)}</span>`;
+      }
+      showToast("Unable to load Procurement Centre dashboard", "error");
     }
   }
 
   // Load Farmers for THIS centre
-  async function loadFarmers() {
+  async function loadFarmers(newlyValidatedToken) {
     try {
       const res = await apiFetch("/api/officer/farmers");
       if (res.success && res.data) {
         farmersList = res.data;
-        renderFarmersTable(farmersList);
+        renderFarmersTable(farmersList, newlyValidatedToken);
       } else {
+        if (officerFarmersTableBody) {
+          officerFarmersTableBody.innerHTML = `
+            <tr>
+              <td colspan="9" style="text-align: center; padding: 2rem; color: var(--danger);">
+                Unable to load centre farmers: ${escapeHtml(res?.message || "Error")}
+              </td>
+            </tr>
+          `;
+        }
+      }
+    } catch (e) {
+      console.error("Error loading centre farmers:", e);
+      if (officerFarmersTableBody) {
         officerFarmersTableBody.innerHTML = `
           <tr>
             <td colspan="9" style="text-align: center; padding: 2rem; color: var(--danger);">
-              Failed to load centre farmers: ${res.message || "Error"}
+              Unable to load centre farmers: ${escapeHtml(e?.message || "Connection error")}
             </td>
           </tr>
         `;
       }
-    } catch (e) {
-      console.error("Error loading centre farmers:", e);
     }
   }
 
-  function renderFarmersTable(list) {
+  function renderFarmersTable(list, newlyValidatedToken) {
     if (!officerFarmersTableBody) return;
     if (!list || list.length === 0) {
       officerFarmersTableBody.innerHTML = `
@@ -131,21 +175,28 @@ document.addEventListener("DOMContentLoaded", async () => {
     officerFarmersTableBody.innerHTML = list.map(f => {
       const isProcDone = f.procurementStatus === "Procurement Completed";
       const isPaid = f.paymentStatus === "Paid";
+      const isNewlyValidated = Boolean(
+        newlyValidatedToken &&
+        (f.tokenNumber === newlyValidatedToken || f.farmerId === newlyValidatedToken || (f.tokenNumber && newlyValidatedToken.includes(f.tokenNumber)))
+      );
 
       const statusBadge = isProcDone
         ? `<span class="badge badge-green">✓ Completed</span>`
         : f.procurementStatus === "Arrived"
-        ? `<span class="badge badge-blue">⏳ At Gate</span>`
+        ? (isNewlyValidated ? `<span class="badge badge-blue badge-just-verified">⚡ At Gate (Arrived)</span>` : `<span class="badge badge-blue">⏳ At Gate</span>`)
         : `<span class="badge badge-amber">📅 Scheduled</span>`;
 
       const paymentBadge = isPaid
         ? `<span class="badge badge-green">✓ Paid (DBT)</span>`
         : `<span class="badge badge-amber">Pending</span>`;
 
+      const rowClass = isNewlyValidated ? ' class="row-slide-in"' : "";
+
       return `
-        <tr>
+        <tr${rowClass}>
           <td>
             <strong style="color: var(--primary-dark);">${f.tokenNumber || "TK-1042"}</strong>
+            ${isNewlyValidated ? `<div style="font-size: 0.68rem; color: #059669; font-weight: 700;">QR Validated</div>` : ""}
           </td>
           <td>
             <strong>${f.name}</strong><br>
@@ -745,9 +796,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         renderPassedGatePassCertificate(res.data);
         showGatePassToast(res.data);
         showToast(`✅ Gate Pass PASSED (${res.data.gatePassNumber}) for ${res.data.farmerName}!`, "success");
-        loadFarmers();
+        loadFarmers(res.data.tokenNumber);
         loadDashboard();
-        loadPassedGatePasses();
+        loadPassedGatePasses(res.data.gatePassNumber);
       } else if (res.isCentreMismatch) {
         playTone(220, "sawtooth", 0.4); // Warning buzz
         renderCentreMismatchError(res);
@@ -838,6 +889,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         <!-- Action Buttons -->
         <div style="display: flex; gap: 0.75rem; justify-content: flex-end; flex-wrap: wrap;" class="no-print">
+          <button id="btnViewInPassedLedger" class="btn btn-outline-primary" style="display: inline-flex; align-items: center; gap: 0.4rem;" title="View in Gate Passes Ledger">
+            <span>📋</span> <span>View in Passes Ledger (पंजी देखें)</span>
+          </button>
           <button id="btnScanNextVehicle" class="btn btn-secondary" style="display: inline-flex; align-items: center; gap: 0.4rem;">
             <span>🔄</span> <span>Scan Next Vehicle (अगला वाहन)</span>
           </button>
@@ -852,9 +906,20 @@ document.addEventListener("DOMContentLoaded", async () => {
     `;
 
     // Hook up buttons
+    const btnViewLedger = document.getElementById("btnViewInPassedLedger");
     const btnScanNext = document.getElementById("btnScanNextVehicle");
     const btnPrint = document.getElementById("btnPrintGatePassSlip");
     const btnDirectWeigh = document.getElementById("btnDirectToWeighbridge");
+
+    if (btnViewLedger) {
+      btnViewLedger.addEventListener("click", () => {
+        switchScannerTab("passed");
+        const newlyAddedRow = officerPassedPassesTbody?.querySelector(".row-slide-in");
+        if (newlyAddedRow) {
+          newlyAddedRow.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+      });
+    }
 
     if (btnScanNext) {
       btnScanNext.addEventListener("click", () => {
@@ -1013,19 +1078,19 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   // Load Today's Passed Gate Passes for THIS centre
-  async function loadPassedGatePasses() {
+  async function loadPassedGatePasses(newlyAddedGatePassNumber) {
     try {
       const res = await apiFetch("/api/officer/passed-gate-passes");
       if (res.success && Array.isArray(res.data)) {
         passedGatePassesList = res.data;
-        renderPassedGatePassesTable(passedGatePassesList);
+        renderPassedGatePassesTable(passedGatePassesList, newlyAddedGatePassNumber);
       }
     } catch (err) {
       console.error("Failed to load passed gate passes:", err);
     }
   }
 
-  function renderPassedGatePassesTable(list) {
+  function renderPassedGatePassesTable(list, newlyAddedGatePassNumber) {
     const count = list ? list.length : 0;
     if (officerPassedPassesCount) officerPassedPassesCount.textContent = count;
     if (tablePassedCount) tablePassedCount.textContent = count;
@@ -1043,10 +1108,34 @@ document.addEventListener("DOMContentLoaded", async () => {
       return;
     }
 
-    officerPassedPassesTbody.innerHTML = list.map(item => `
-      <tr>
+    let displayList = list ? [...list] : [];
+    if (newlyAddedGatePassNumber) {
+      const newIdx = displayList.findIndex(item =>
+        item.gatePassNumber === newlyAddedGatePassNumber ||
+        item.tokenNumber === newlyAddedGatePassNumber ||
+        (item.gatePassNumber && newlyAddedGatePassNumber.includes(item.gatePassNumber))
+      );
+      if (newIdx > 0) {
+        const [target] = displayList.splice(newIdx, 1);
+        displayList.unshift(target);
+      }
+    }
+
+    officerPassedPassesTbody.innerHTML = displayList.map(item => {
+      const isNewlyAdded = Boolean(
+        newlyAddedGatePassNumber &&
+        (item.gatePassNumber === newlyAddedGatePassNumber || item.tokenNumber === newlyAddedGatePassNumber || (item.gatePassNumber && newlyAddedGatePassNumber.includes(item.gatePassNumber)))
+      );
+      const rowClass = isNewlyAdded ? ' class="row-slide-in"' : "";
+      const statusBadge = isNewlyAdded
+        ? `<span class="badge badge-green badge-just-verified">⚡ PASSED ✓ (NEW)</span>`
+        : `<span class="badge badge-green">PASSED ✓</span>`;
+
+      return `
+      <tr${rowClass}>
         <td>
           <span style="font-weight: 800; color: #065f46; font-size: 0.88rem;">${escapeHtml(item.gatePassNumber)}</span>
+          ${isNewlyAdded ? `<span style="display: block; font-size: 0.68rem; color: #059669; font-weight: 700;">Just Validated</span>` : ""}
         </td>
         <td>
           <code>${escapeHtml(item.tokenNumber)}</code>
@@ -1066,7 +1155,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           ${escapeHtml(item.passedAt || "Today")}
         </td>
         <td>
-          <span class="badge badge-green">PASSED ✓</span>
+          ${statusBadge}
         </td>
         <td>
           <button class="action-btn-sm action-btn-weigh btn-print-pass-row" data-pass-idx="${list.indexOf(item)}" title="Print Gate Pass Slip">
@@ -1074,7 +1163,8 @@ document.addEventListener("DOMContentLoaded", async () => {
           </button>
         </td>
       </tr>
-    `).join("");
+      `;
+    }).join("");
 
     // Attach print click handlers
     officerPassedPassesTbody.querySelectorAll(".btn-print-pass-row").forEach(btn => {
@@ -1253,9 +1343,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     socket.on("queue-update", () => {
       loadDashboard();
     });
-    socket.on("gate:pass_passed", () => {
-      loadPassedGatePasses();
-      loadFarmers();
+    socket.on("gate:pass_passed", (payload) => {
+      const gatePassNumber = payload?.gatePassNumber || payload?.data?.gatePassNumber;
+      const tokenNumber = payload?.tokenNumber || payload?.data?.tokenNumber;
+      loadPassedGatePasses(gatePassNumber);
+      loadFarmers(tokenNumber);
       loadDashboard();
     });
   }

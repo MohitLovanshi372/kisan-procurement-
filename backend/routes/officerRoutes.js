@@ -11,12 +11,18 @@ const { sendWhatsAppNotification } = require("../services/metaWhatsAppService");
 // All routes require CENTRE_OFFICER (or GOVERNMENT_ADMIN) role
 router.use(authenticateJWT);
 router.use(authorizeRoles("CENTRE_OFFICER", "GOVERNMENT_ADMIN"));
+router.use(authorizeCentre);
 
 // Helper to resolve officer's assigned centre
 async function getOfficerCentre(req) {
-  const officer = await Farmer.findById(req.user.id);
-  const centreId = req.user.assignedCentreId || officer?.assignedCentreId || "CENTRE_001";
-  const centreName = req.user.assignedCentreName || officer?.assignedCentreName || officer?.preferredCentre || "Sanwer Procurement Centre";
+  let officer = null;
+  try {
+    officer = await Farmer.findById(req.user.id);
+  } catch (err) {
+    console.error("Error finding officer:", err);
+  }
+  const centreId = req.user.assignedCentreId || officer?.assignedCentreId || null;
+  const centreName = req.user.assignedCentreName || officer?.assignedCentreName || officer?.preferredCentre || null;
   return { officer, centreId, centreName };
 }
 
@@ -24,6 +30,45 @@ async function getOfficerCentre(req) {
 router.get("/dashboard", async (req, res) => {
   try {
     const { officer, centreId, centreName } = await getOfficerCentre(req);
+
+    if (!centreId && !centreName) {
+      return res.json({
+        success: true,
+        data: {
+          officer: {
+            name: officer?.name || req.user.name,
+            mobile: officer?.mobile || req.user.mobile,
+            officerId: officer?.farmerId || req.user.farmerId,
+            role: "CENTRE_OFFICER",
+            assignedCentreId: null,
+            assignedCentreName: "Unassigned"
+          },
+          centre: {
+            id: null,
+            centreId: null,
+            name: "No Centre Assigned",
+            location: "No Mandi Procurement Centre assigned yet. Please contact Mandi Board Administrator.",
+            status: "Inactive",
+            workingHours: "N/A",
+            activeWeighbridges: 0,
+            totalWeighbridges: 0,
+            waitingFarmers: 0,
+            estimatedWait: "N/A",
+            congestionLevel: "N/A"
+          },
+          stats: {
+            centreFarmersCount: 0,
+            scheduledToday: 0,
+            waitingNow: 0,
+            completedProcurement: 0,
+            pendingPayments: 0,
+            completedPayments: 0,
+            totalDisbursed: 0
+          }
+        },
+        message: "No procurement centre assigned to this officer account."
+      });
+    }
 
     // Find centre doc
     let centre = await Centre.findOne({ centreId }) || await Centre.findOne({ name: centreName });
@@ -117,6 +162,16 @@ router.get("/farmers", async (req, res) => {
   try {
     const { centreId, centreName } = await getOfficerCentre(req);
 
+    if (!centreId && !centreName) {
+      return res.json({
+        success: true,
+        centre: "Unassigned",
+        centreId: null,
+        count: 0,
+        data: []
+      });
+    }
+
     const allFarmers = await Farmer.find({ role: "FARMER" });
     const allProcurements = await Procurement.find();
 
@@ -184,6 +239,16 @@ router.get("/queue", async (req, res) => {
   try {
     const { centreId, centreName } = await getOfficerCentre(req);
 
+    if (!centreId && !centreName) {
+      return res.json({
+        success: true,
+        data: {
+          centre: null,
+          activeTokens: []
+        }
+      });
+    }
+
     const centre = await Centre.findOne({ centreId }) || await Centre.findOne({ name: centreName });
     const allProcurements = await Procurement.find();
 
@@ -214,6 +279,44 @@ router.get("/queue", async (req, res) => {
   } catch (error) {
     console.error("Officer queue fetch error:", error);
     res.status(500).json({ success: false, message: "Unable to load centre queue" });
+  }
+});
+
+// GET /api/officer/centre/:centreId - fetch specific centre details (restricted to assigned centre)
+router.get("/centre/:centreId", async (req, res) => {
+  try {
+    const { centreId } = req.params;
+    const { centreId: assignedId, centreName: assignedName } = await getOfficerCentre(req);
+    const isSuperAdmin = req.user?.role === "GOVERNMENT_ADMIN";
+
+    if (!isSuperAdmin) {
+      const target = String(centreId || "").trim().toLowerCase();
+      const aId = String(assignedId || "").trim().toLowerCase();
+      const aName = String(assignedName || "").trim().toLowerCase();
+
+      if (!aId && !aName) {
+        return res.status(403).json({
+          success: false,
+          message: "Access Denied: You are not assigned to any procurement centre"
+        });
+      }
+
+      if (target !== aId && target !== aName) {
+        return res.status(403).json({
+          success: false,
+          message: `Access Denied: You are not authorized for procurement centre '${centreId}'`
+        });
+      }
+    }
+
+    let centre = await Centre.findOne({ centreId }) || await Centre.findOne({ name: centreId });
+    if (!centre) {
+      return res.status(404).json({ success: false, message: "Procurement centre not found" });
+    }
+    return res.json({ success: true, data: centre });
+  } catch (error) {
+    console.error("Officer centre fetch error:", error);
+    return res.status(500).json({ success: false, message: "Unable to load centre details" });
   }
 });
 
@@ -443,10 +546,20 @@ router.post("/verify-token", async (req, res) => {
 router.get("/passed-gate-passes", async (req, res) => {
   try {
     const { centreId, centreName } = await getOfficerCentre(req);
+    const isSuperAdmin = req.user?.role === "GOVERNMENT_ADMIN" || centreName === "All Procurement Centres";
+
+    if (!centreId && !centreName && !isSuperAdmin) {
+      return res.json({
+        success: true,
+        centre: "Unassigned",
+        totalPassed: 0,
+        data: []
+      });
+    }
+
     let procs = await Procurement.find({});
 
     // Filter for officer's centre (or all if admin)
-    const isSuperAdmin = req.user?.role === "GOVERNMENT_ADMIN" || centreName === "All Procurement Centres";
     procs = procs.filter(p => {
       const match = isSuperAdmin || (p.centreId === centreName || p.centreId === centreId);
       return match && (p.gatePassStatus === "Passed" || p.gatePassNumber || p.procurementStatus === "Arrived" || p.procurementStatus === "Procurement Completed");
@@ -470,11 +583,12 @@ router.get("/passed-gate-passes", async (req, res) => {
         receivedQuantity: p.receivedQuantity || p.quantity,
         assignedGate: p.assignedGate || "Gate 1 (Weighbridge Scale 1)",
         passedAt: p.gatePassPassedAt || "Today",
+        passedTimestamp: p.gatePassPassedAt ? new Date(p.gatePassPassedAt).getTime() : 0,
         status: p.procurementStatus,
         paymentStatus: p.paymentStatus,
         officerName: p.gatePassedByOfficer || "Centre Officer"
       };
-    }).reverse();
+    }).sort((a, b) => (b.passedTimestamp || 0) - (a.passedTimestamp || 0));
 
     res.json({
       success: true,
