@@ -108,36 +108,127 @@
       </div>
     </section>
 
-    <!-- Farmers Management & Procurement Update Section -->
-    <section class="card">
-      <div class="card-header" style="flex-wrap: wrap; gap: 0.75rem;">
-        <div class="card-title">
-          <span>📋</span> <span data-i18n="farmerManagementTitle">Farmer Procurement & Payment Management</span>
+    <!-- SECTION: GOVT ADMIN CONTROL OVER PROCUREMENT OFFICER ID AND PASSWORD -->
+    <section class="card" id="officerManagementCard" style="border-left: 4px solid var(--secondary);">
+      <div class="card-header" style="flex-wrap: wrap; gap: 0.75rem; justify-content: space-between; align-items: center;">
+        <div>
+          <div class="card-title" style="font-size: 1.15rem;">
+            <span>👮‍♂️</span> <span>Procurement Officers & Credentials Control (ID & Password)</span>
+          </div>
+          <p style="font-size: 0.8rem; color: var(--text-muted); margin: 0.2rem 0 0 0;">
+            Government Administrator control panel to assign, view, update, and reset Mandi Officer Staff IDs, Passwords, and Centre assignments.
+          </p>
         </div>
-        <div style="width: 280px;">
-          <input type="text" id="adminFarmerSearch" class="form-input"
-            placeholder="🔍 Search Farmer ID, Name, Village..." data-i18n-placeholder="searchFarmerPlaceholder"
-            style="padding: 0.45rem 0.75rem; font-size: 0.85rem;">
+        <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+          <input type="text" id="adminOfficerSearch" class="form-input"
+            placeholder="🔍 Search Officer ID, Name, Mandi..."
+            style="padding: 0.45rem 0.75rem; font-size: 0.85rem; width: 220px;">
+          <button type="button" id="btnOpenAddOfficerModal" class="btn btn-secondary btn-sm">
+            ➕ Register New Officer
+          </button>
         </div>
       </div>
 
-      <div id="adminFarmersLoading" style="padding: 1.5rem; text-align: center; color: var(--text-muted);"
-        data-i18n="loadingFarmers">
-        Loading registered farmers...
+      <div id="adminOfficersLoading" style="padding: 1.5rem; text-align: center; color: var(--text-muted);">
+        Loading procurement officers credentials...
       </div>
 
       <div class="table-responsive">
-        <table class="data-table">
+        <table class="data-table" id="officersDataTable">
           <thead>
             <tr>
-              <th data-i18n="farmerId">Farmer ID</th>
-              <th data-i18n="farmerNameMobileTh">Farmer Name & Mobile</th>
-              <th data-i18n="villageDistrictTh">Village & District</th>
-              <th data-i18n="crop">Crop</th>
-              <th data-i18n="centre">Centre</th>
-              <th data-i18n="procurementStatus">Procurement Status</th>
-              <th data-i18n="paymentStatus">Payment Status</th>
-              <th data-i18n="action">Action</th>
+              <th>Officer ID</th>
+              <th>Officer Name & Contact</th>
+              <th>Assigned Procurement Mandi</th>
+              <th>Login Password (Admin Control)</th>
+              <th>Account Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="adminOfficersTableBody">
+            <!-- Dynamic officer rows -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- SECTION: COMPREHENSIVE FARMER MASTER SHEET (किसान डेटा शीट) -->
+    <section class="card" id="farmerSheetCard" style="border-left: 4px solid var(--primary);">
+      <div class="card-header" style="flex-wrap: wrap; gap: 0.75rem; justify-content: space-between; align-items: center;">
+        <div>
+          <div class="card-title" style="font-size: 1.15rem;">
+            <span>📋</span> <span>Farmer Master Sheet (किसान डेटा शीट)</span>
+          </div>
+          <p style="font-size: 0.8rem; color: var(--text-muted); margin: 0.2rem 0 0 0;">
+            Central Government Farmer Ledger: Aadhaar, Bank DBT accounts, Land area, Procurement tokens, and MSP disbursement records.
+          </p>
+        </div>
+        <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+          <button type="button" id="btnOpenAddFarmerModal" class="btn btn-primary btn-sm">
+            ➕ Add Farmer to Sheet
+          </button>
+          <button type="button" id="btnExportFarmerCsv" class="btn btn-outline-primary btn-sm">
+            📥 Export Sheet (CSV)
+          </button>
+          <button type="button" id="btnPrintFarmerSheet" class="btn btn-outline-secondary btn-sm">
+            🖨️ Print Sheet
+          </button>
+        </div>
+      </div>
+
+      <!-- Farmer Master Sheet Search & Multi-Filters -->
+      <div style="display: flex; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 1rem; align-items: center; background: #f8fafc; padding: 0.75rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+        <div style="flex: 2; min-width: 220px;">
+          <input type="text" id="adminFarmerSearch" class="form-input"
+            placeholder="🔍 Search Farmer ID, Name, Mobile, Village, Bank..."
+            style="padding: 0.45rem 0.75rem; font-size: 0.85rem;">
+        </div>
+        <div style="flex: 1; min-width: 140px;">
+          <select id="filterCrop" class="form-select" style="padding: 0.45rem 0.75rem; font-size: 0.85rem;">
+            <option value="">All Crops (सभी फसलें)</option>
+            <option value="Wheat">Wheat (गेहूँ)</option>
+            <option value="Soybean">Soybean (सोयाबीन)</option>
+            <option value="Gram">Gram (चना)</option>
+            <option value="Mustard">Mustard (सरसों)</option>
+          </select>
+        </div>
+        <div style="flex: 1; min-width: 150px;">
+          <select id="filterProcStatus" class="form-select" style="padding: 0.45rem 0.75rem; font-size: 0.85rem;">
+            <option value="">All Procurement Status</option>
+            <option value="Scheduled">Scheduled</option>
+            <option value="Arrived">Arrived</option>
+            <option value="Procurement Completed">Procurement Completed</option>
+            <option value="Cancelled">Cancelled</option>
+          </select>
+        </div>
+        <div style="flex: 1; min-width: 140px;">
+          <select id="filterPaymentStatus" class="form-select" style="padding: 0.45rem 0.75rem; font-size: 0.85rem;">
+            <option value="">All Payment Status</option>
+            <option value="Paid">Paid (DBT)</option>
+            <option value="Processing">Processing</option>
+            <option value="Pending">Pending</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="adminFarmersLoading" style="padding: 1.5rem; text-align: center; color: var(--text-muted);">
+        Loading Farmer Master Sheet records...
+      </div>
+
+      <div class="table-responsive" style="max-height: 520px; overflow-y: auto;">
+        <table class="data-table" id="farmerMasterDataTable">
+          <thead>
+            <tr>
+              <th>Farmer ID</th>
+              <th>Farmer Name & Contact</th>
+              <th>Location</th>
+              <th>Crop & Land</th>
+              <th>Centre</th>
+              <th>Aadhaar & DBT Bank</th>
+              <th>Token & Schedule</th>
+              <th>Procurement Status</th>
+              <th>Payment Status</th>
+              <th style="min-width: 130px;">Actions</th>
             </tr>
           </thead>
           <tbody id="adminFarmersTableBody">
@@ -286,6 +377,351 @@
     </section>
 
   </main>
+
+  <!-- MODAL 1: Register New Procurement Officer (Admin Control) -->
+  <div class="modal-overlay" id="adminAddOfficerModal">
+    <div class="modal-content" style="max-width: 540px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--border-color);">
+        <div>
+          <h2 style="font-size: 1.2rem; font-weight: 700;">👮‍♂️ Register New Procurement Officer</h2>
+          <div style="font-size: 0.82rem; color: var(--text-muted);">Assign new officer credentials with Mandi jurisdiction</div>
+        </div>
+        <button id="closeAddOfficerModalBtn" style="background: transparent; border: none; font-size: 1.3rem; cursor: pointer;">✕</button>
+      </div>
+
+      <form id="adminAddOfficerForm">
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label" for="newOfficerId">Officer Staff ID *</label>
+            <input type="text" id="newOfficerId" class="form-input" placeholder="e.g. OFF005" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="newOfficerName">Full Name *</label>
+            <input type="text" id="newOfficerName" class="form-input" placeholder="e.g. Rameshwar Patidar" required>
+          </div>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label" for="newOfficerMobile">Mobile Number (10 Digits) *</label>
+            <input type="tel" id="newOfficerMobile" class="form-input" placeholder="e.g. 9893055555" maxlength="10" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="newOfficerPassword">Assign Login Password *</label>
+            <input type="text" id="newOfficerPassword" class="form-input" value="officer123" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="newOfficerCentre">Assigned Procurement Mandi *</label>
+          <select id="newOfficerCentre" class="form-select" required>
+            <option value="CENTRE_001|Sanwer Procurement Centre">Sanwer Procurement Centre (Indore)</option>
+            <option value="CENTRE_002|Indore Main Mandi Centre">Indore Main Mandi Centre (Laxmibai Nagar)</option>
+            <option value="CENTRE_003|Depalpur Grain Mandi">Depalpur Grain Mandi (Indore)</option>
+            <option value="CENTRE_004|Mhow Krishi Upaj Mandi">Mhow Krishi Upaj Mandi (Dr. Ambedkar Nagar)</option>
+            <option value="CENTRE_005|Ujjain Krishi Mandi">Ujjain Krishi Mandi (Chimanganj)</option>
+            <option value="CENTRE_006|Dewas Procurement Centre">Dewas Procurement Centre (Mandi Gate)</option>
+          </select>
+        </div>
+
+        <div style="background: #f1f5f9; padding: 0.75rem; border-radius: var(--radius-sm); font-size: 0.8rem; color: #475569; margin-bottom: 1rem;">
+          ℹ️ The officer will be able to log in immediately using their <strong>Mobile Number</strong> or <strong>Officer ID</strong> with this assigned password.
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 0.75rem;">
+          <button type="button" class="btn btn-outline-secondary btn-sm" id="cancelAddOfficerBtn">Cancel</button>
+          <button type="submit" class="btn btn-secondary btn-sm">Create & Save Officer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL 2: Edit Officer Credentials (ID & Password Control) -->
+  <div class="modal-overlay" id="adminEditOfficerModal">
+    <div class="modal-content" style="max-width: 540px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--border-color);">
+        <div>
+          <h2 style="font-size: 1.2rem; font-weight: 700;">🔑 Manage Officer ID & Password</h2>
+          <div style="font-size: 0.82rem; color: var(--text-muted);" id="editOfficerSubTitle">Update credentials & reset password</div>
+        </div>
+        <button id="closeEditOfficerModalBtn" style="background: transparent; border: none; font-size: 1.3rem; cursor: pointer;">✕</button>
+      </div>
+
+      <form id="adminEditOfficerForm">
+        <input type="hidden" id="editOfficerDbId">
+
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label" for="editOfficerId">Officer ID (Staff ID) *</label>
+            <input type="text" id="editOfficerId" class="form-input" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="editOfficerName">Officer Name *</label>
+            <input type="text" id="editOfficerName" class="form-input" required>
+          </div>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label" for="editOfficerMobile">Mobile Number *</label>
+            <input type="tel" id="editOfficerMobile" class="form-input" maxlength="10" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="editOfficerPassword">Reset Password (पासवर्ड बदलें)</label>
+            <input type="text" id="editOfficerPassword" class="form-input" placeholder="Type new password (e.g. officer123)">
+            <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 2px;">Leave as is or enter new password</div>
+          </div>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label" for="editOfficerCentre">Assigned Centre</label>
+            <select id="editOfficerCentre" class="form-select">
+              <option value="CENTRE_001|Sanwer Procurement Centre">Sanwer Procurement Centre (Indore)</option>
+              <option value="CENTRE_002|Indore Main Mandi Centre">Indore Main Mandi Centre (Laxmibai Nagar)</option>
+              <option value="CENTRE_003|Depalpur Grain Mandi">Depalpur Grain Mandi (Indore)</option>
+              <option value="CENTRE_004|Mhow Krishi Upaj Mandi">Mhow Krishi Upaj Mandi (Dr. Ambedkar Nagar)</option>
+              <option value="CENTRE_005|Ujjain Krishi Mandi">Ujjain Krishi Mandi (Chimanganj)</option>
+              <option value="CENTRE_006|Dewas Procurement Centre">Dewas Procurement Centre (Mandi Gate)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="editOfficerActive">Account Status</label>
+            <select id="editOfficerActive" class="form-select">
+              <option value="true">Active (सक्रिय)</option>
+              <option value="false">Disabled / Suspended (निष्क्रिय)</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem;">
+          <button type="button" class="btn btn-outline-danger btn-sm" id="btnDeleteOfficerAction">
+            🗑️ Delete Officer
+          </button>
+          <div style="display: flex; gap: 0.5rem;">
+            <button type="button" class="btn btn-outline-secondary btn-sm" id="cancelEditOfficerBtn">Cancel</button>
+            <button type="submit" class="btn btn-primary btn-sm">Save Officer Changes</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL 3: Add Farmer to Master Sheet -->
+  <div class="modal-overlay" id="adminAddFarmerModal">
+    <div class="modal-content" style="max-width: 600px; max-height: 90vh; overflow-y: auto;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--border-color);">
+        <div>
+          <h2 style="font-size: 1.2rem; font-weight: 700;">👨‍🌾 Add Farmer to Master Sheet</h2>
+          <div style="font-size: 0.82rem; color: var(--text-muted);">Register farmer profile, bank DBT, and crop allocation</div>
+        </div>
+        <button id="closeAddFarmerModalBtn" style="background: transparent; border: none; font-size: 1.3rem; cursor: pointer;">✕</button>
+      </div>
+
+      <form id="adminAddFarmerForm">
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label" for="newFarmerId">Farmer ID</label>
+            <input type="text" id="newFarmerId" class="form-input" placeholder="e.g. FMR1005 (auto if empty)">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="newFarmerName">Farmer Full Name *</label>
+            <input type="text" id="newFarmerName" class="form-input" placeholder="e.g. Anand Sharma" required>
+          </div>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label" for="newFarmerMobile">Mobile Number (10 Digits) *</label>
+            <input type="tel" id="newFarmerMobile" class="form-input" placeholder="e.g. 9826012345" maxlength="10" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="newFarmerPassword">Initial Password</label>
+            <input type="text" id="newFarmerPassword" class="form-input" value="123456" required>
+          </div>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label" for="newFarmerVillage">Village *</label>
+            <input type="text" id="newFarmerVillage" class="form-input" placeholder="e.g. Sanwer" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="newFarmerDistrict">District *</label>
+            <input type="text" id="newFarmerDistrict" class="form-input" value="Indore" required>
+          </div>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label" for="newFarmerCrop">Crop (फसल) *</label>
+            <select id="newFarmerCrop" class="form-select" required>
+              <option value="Wheat">Wheat (गेहूँ)</option>
+              <option value="Soybean">Soybean (सोयाबीन)</option>
+              <option value="Gram">Gram (चना)</option>
+              <option value="Mustard">Mustard (सरसों)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="newFarmerLand">Land Area (भूमि क्षेत्र) *</label>
+            <input type="text" id="newFarmerLand" class="form-input" placeholder="e.g. 4.5 Acres" value="4.0 Acres" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="newFarmerCentre">Preferred Procurement Centre</label>
+          <select id="newFarmerCentre" class="form-select">
+            <option value="Sanwer Procurement Centre">Sanwer Procurement Centre</option>
+            <option value="Indore Main Mandi Centre">Indore Main Mandi Centre</option>
+            <option value="Depalpur Grain Mandi">Depalpur Grain Mandi</option>
+            <option value="Mhow Krishi Upaj Mandi">Mhow Krishi Upaj Mandi</option>
+          </select>
+        </div>
+
+        <div style="font-weight: 600; font-size: 0.9rem; margin-top: 0.75rem; margin-bottom: 0.5rem; color: var(--primary);">
+          🏦 Bank & Aadhaar DBT Verification:
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label" for="newFarmerAadhar">Aadhaar Number</label>
+            <input type="text" id="newFarmerAadhar" class="form-input" placeholder="e.g. 482910482910" maxlength="12">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="newFarmerBank">Bank Name</label>
+            <input type="text" id="newFarmerBank" class="form-input" value="State Bank of India">
+          </div>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label" for="newFarmerAccount">Account Number</label>
+            <input type="text" id="newFarmerAccount" class="form-input" placeholder="e.g. 30829104820">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="newFarmerIfsc">IFSC Code</label>
+            <input type="text" id="newFarmerIfsc" class="form-input" value="SBIN0001234">
+          </div>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 1rem;">
+          <button type="button" class="btn btn-outline-secondary btn-sm" id="cancelAddFarmerBtn">Cancel</button>
+          <button type="submit" class="btn btn-primary btn-sm">Add to Master Sheet</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL 4: Edit Farmer Details in Master Sheet -->
+  <div class="modal-overlay" id="adminEditFarmerModal">
+    <div class="modal-content" style="max-width: 600px; max-height: 90vh; overflow-y: auto;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--border-color);">
+        <div>
+          <h2 style="font-size: 1.2rem; font-weight: 700;">✏️ Edit Farmer Master Details</h2>
+          <div style="font-size: 0.82rem; color: var(--text-muted);" id="editFarmerSubTitle">Update master record & credentials</div>
+        </div>
+        <button id="closeEditFarmerModalBtn" style="background: transparent; border: none; font-size: 1.3rem; cursor: pointer;">✕</button>
+      </div>
+
+      <form id="adminEditFarmerForm">
+        <input type="hidden" id="editFarmerDbId">
+
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label" for="editFarmerName">Farmer Name *</label>
+            <input type="text" id="editFarmerName" class="form-input" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="editFarmerMobile">Mobile Number *</label>
+            <input type="tel" id="editFarmerMobile" class="form-input" maxlength="10" required>
+          </div>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label" for="editFarmerVillage">Village</label>
+            <input type="text" id="editFarmerVillage" class="form-input">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="editFarmerDistrict">District</label>
+            <input type="text" id="editFarmerDistrict" class="form-input">
+          </div>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label" for="editFarmerCrop">Crop (फसल)</label>
+            <select id="editFarmerCrop" class="form-select">
+              <option value="Wheat">Wheat (गेहूँ)</option>
+              <option value="Soybean">Soybean (सोयाबीन)</option>
+              <option value="Gram">Gram (चना)</option>
+              <option value="Mustard">Mustard (सरसों)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="editFarmerLand">Land Area</label>
+            <input type="text" id="editFarmerLand" class="form-input">
+          </div>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label" for="editFarmerCentre">Preferred Centre</label>
+            <select id="editFarmerCentre" class="form-select">
+              <option value="Sanwer Procurement Centre">Sanwer Procurement Centre</option>
+              <option value="Indore Main Mandi Centre">Indore Main Mandi Centre</option>
+              <option value="Depalpur Grain Mandi">Depalpur Grain Mandi</option>
+              <option value="Mhow Krishi Upaj Mandi">Mhow Krishi Upaj Mandi</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="editFarmerPassword">Reset Farmer Password</label>
+            <input type="text" id="editFarmerPassword" class="form-input" placeholder="Type new password (e.g. 123456)">
+          </div>
+        </div>
+
+        <div style="font-weight: 600; font-size: 0.9rem; margin-top: 0.75rem; margin-bottom: 0.5rem; color: var(--primary);">
+          🏦 Bank & DBT Verification Details:
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label" for="editFarmerBank">Bank Name</label>
+            <input type="text" id="editFarmerBank" class="form-input">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="editFarmerAccount">Account Number</label>
+            <input type="text" id="editFarmerAccount" class="form-input">
+          </div>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label class="form-label" for="editFarmerIfsc">IFSC Code</label>
+            <input type="text" id="editFarmerIfsc" class="form-input">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="editFarmerDbt">DBT Status</label>
+            <select id="editFarmerDbt" class="form-select">
+              <option value="Active (Aadhaar Seeded)">Active (Aadhaar Seeded)</option>
+              <option value="Pending Aadhaar Link">Pending Aadhaar Link</option>
+              <option value="Bank Rejection">Bank Rejection</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem;">
+          <button type="button" class="btn btn-outline-danger btn-sm" id="btnDeleteFarmerAction">
+            🗑️ Delete Farmer
+          </button>
+          <div style="display: flex; gap: 0.5rem;">
+            <button type="button" class="btn btn-outline-secondary btn-sm" id="cancelEditFarmerBtn">Cancel</button>
+            <button type="submit" class="btn btn-primary btn-sm">Save Farmer Changes</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <!-- Update Status Modal -->
   <div class="modal-overlay" id="adminStatusModal">

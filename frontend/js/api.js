@@ -10,15 +10,17 @@ const USER_KEY = "kpm_user_data";
 const LANG_KEY = "kpm_selected_lang";
 
 function getAuthToken() {
-  return localStorage.getItem(TOKEN_KEY);
+  return localStorage.getItem(TOKEN_KEY) || localStorage.getItem("token");
 }
 
 function setAuthToken(token) {
+  if (!token) return;
   localStorage.setItem(TOKEN_KEY, token);
+  localStorage.setItem("token", token);
 }
 
 function getUser() {
-  const data = localStorage.getItem(USER_KEY);
+  const data = localStorage.getItem(USER_KEY) || localStorage.getItem("user");
   try {
     return data ? JSON.parse(data) : null;
   } catch (e) {
@@ -27,12 +29,17 @@ function getUser() {
 }
 
 function setUser(user) {
-  localStorage.setItem(USER_KEY, JSON.stringify(user));
+  if (!user) return;
+  const json = JSON.stringify(user);
+  localStorage.setItem(USER_KEY, json);
+  localStorage.setItem("user", json);
 }
 
 function logout() {
   localStorage.removeItem(TOKEN_KEY);
+  localStorage.removeItem("token");
   localStorage.removeItem(USER_KEY);
+  localStorage.removeItem("user");
   window.location.href = "login.html";
 }
 
@@ -1498,6 +1505,13 @@ function initSocketClient() {
       appSocket.on("token:status_changed", (data) => {
         console.log("🏷️ [Socket.io] Real-time token:status_changed:", data);
         window.dispatchEvent(new CustomEvent("token:status_changed", { detail: data }));
+        window.dispatchEvent(new CustomEvent("procurement-update", { detail: data }));
+      });
+
+      // Listen for 'gate:pass_passed'
+      appSocket.on("gate:pass_passed", (data) => {
+        console.log("🎫 [Socket.io] Real-time gate:pass_passed received:", data);
+        window.dispatchEvent(new CustomEvent("gate:pass_passed", { detail: data }));
         window.dispatchEvent(new CustomEvent("procurement-update", { detail: data }));
       });
 

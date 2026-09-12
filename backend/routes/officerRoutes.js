@@ -251,27 +251,50 @@ router.post("/queue/update", async (req, res) => {
   }
 });
 
-// POST /api/officer/verify-token - verifies token for officer's assigned centre ONLY
+// POST /api/officer/verify-token - verifies token for officer's assigned centre ONLY and issues PASSED GATE PASS
 router.post("/verify-token", async (req, res) => {
   try {
     const { centreId, centreName } = await getOfficerCentre(req);
     const { tokenNumber, qrPayload } = req.body;
 
-    let searchToken = tokenNumber;
+    let searchToken = tokenNumber ? String(tokenNumber).trim() : null;
     if (qrPayload) {
       try {
         const parsed = typeof qrPayload === "string" ? JSON.parse(qrPayload) : qrPayload;
-        if (parsed?.tokenNumber) searchToken = parsed.tokenNumber;
+        if (parsed?.tokenNumber) {
+          searchToken = String(parsed.tokenNumber).trim();
+        }
       } catch (e) {
-        searchToken = qrPayload;
+        // Handle raw string payload
+        const raw = String(qrPayload).trim();
+        // Check if raw contains token like TK-1042 or VER-TK-1042
+        const match = raw.match(/TK-\d+/i);
+        if (match) {
+          searchToken = match[0].toUpperCase();
+        } else {
+          searchToken = raw;
+        }
       }
     }
 
-    if (!searchToken) {
-      return res.status(400).json({ success: false, message: "Token number is required" });
+    if (searchToken) {
+      // Strip any VER- prefix or whitespace
+      searchToken = searchToken.replace(/^VER-/i, "").trim();
+      // If composite like TK-1042-FMR1001, extract token
+      const tkMatch = searchToken.match(/TK-\d+/i);
+      if (tkMatch) searchToken = tkMatch[0].toUpperCase();
     }
 
-    const procurement = await Procurement.findOne({ tokenNumber: searchToken });
+    if (!searchToken) {
+      return res.status(400).json({ success: false, message: "Token number or valid QR code is required" });
+    }
+
+    let procurement = await Procurement.findOne({ tokenNumber: searchToken });
+    if (!procurement) {
+      // Try search by farmerId or ID
+      procurement = await Procurement.findOne({ farmerId: searchToken });
+    }
+
     if (!procurement) {
       return res.status(404).json({
         success: false,
@@ -291,49 +314,177 @@ router.post("/verify-token", async (req, res) => {
         isCentreMismatch: true,
         tokenCentre: tokenCentre,
         officerCentre: centreName,
-        message: `Access Denied: Token ${searchToken} is issued for '${tokenCentre}'. You are assigned to '${centreName}' and cannot verify tokens from another centre.`
+        message: `Access Denied: Token ${searchToken} belongs to '${tokenCentre}'. You are assigned to '${centreName}' and can only issue Gate Passes for your own centre.`
       });
     }
 
     const farmer = await Farmer.findOne({ farmerId: procurement.farmerId });
 
-    // Mark status as Arrived if currently Scheduled
-    if (procurement.procurementStatus === "Scheduled") {
+    // Official Gate Pass Generation & Verification
+    const now = new Date();
+    const passedAtStr = now.toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }) + ", " + now.toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit", hour12: true });
+
+    if (!procurement.gatePassNumber) {
+      procurement.gatePassNumber = `GP-${now.getFullYear()}-${Math.floor(100000 + Math.random() * 900000)}`;
+    }
+    procurement.gatePassStatus = "Passed";
+    procurement.gatePassPassedAt = procurement.gatePassPassedAt || passedAtStr;
+    procurement.assignedGate = procurement.assignedGate || "Gate 1 (Weighbridge Scale 1)";
+    procurement.gatePassedByOfficer = req.user?.name || "Centre Officer";
+
+    // Mark status as Arrived if currently Scheduled or Token Generated
+    if (procurement.procurementStatus === "Scheduled" || procurement.procurementStatus === "Token Generated") {
       procurement.procurementStatus = "Arrived";
-      if (typeof procurement.save === "function") {
-        await procurement.save().catch(() => {});
-      } else {
-        await Procurement.findByIdAndUpdate(procurement._id, procurement);
-      }
     }
 
-    emitToFarmer(procurement.farmerId, "gate:entry_verified", {
+    if (typeof procurement.save === "function") {
+      await procurement.save().catch(() => {});
+    } else {
+      await Procurement.findByIdAndUpdate(procurement._id, {
+        gatePassNumber: procurement.gatePassNumber,
+        gatePassStatus: "Passed",
+        gatePassPassedAt: procurement.gatePassPassedAt,
+        assignedGate: procurement.assignedGate,
+        gatePassedByOfficer: procurement.gatePassedByOfficer,
+        procurementStatus: procurement.procurementStatus
+      });
+    }
+
+    // Real-time socket alerts to farmer and centre terminals
+    const passPayload = {
       tokenNumber: procurement.tokenNumber,
+      gatePassNumber: procurement.gatePassNumber,
+      gatePassStatus: "Passed",
+      gatePassPassedAt: procurement.gatePassPassedAt,
+      assignedGate: procurement.assignedGate,
       centre: centreName,
-      time: new Date().toISOString()
+      procurementStatus: procurement.procurementStatus,
+      time: now.toISOString()
+    };
+
+    emitToFarmer(procurement.farmerId, "gate:pass_passed", passPayload);
+    emitToFarmer(procurement.farmerId, "gate:entry_verified", passPayload);
+    emitToAll("gate:pass_passed", {
+      ...passPayload,
+      farmerName: farmer ? farmer.name : "Registered Farmer",
+      crop: procurement.crop,
+      quantity: procurement.quantity,
+      farmerId: procurement.farmerId
     });
+    emitToFarmer(procurement.farmerId, "procurement-update", {
+      farmerId: procurement.farmerId,
+      procurementId: procurement._id,
+      tokenNumber: procurement.tokenNumber,
+      gatePassNumber: procurement.gatePassNumber,
+      procurementStatus: procurement.procurementStatus
+    });
+
+    // Create persistent Notification for farmer
+    try {
+      const notif = await Notification.create({
+        farmerId: procurement.farmerId,
+        title: "✅ Gate Pass Passed • Entry Authorized",
+        message: `Your Gate Pass #${procurement.gatePassNumber} (Token ${procurement.tokenNumber}) has been PASSED by ${centreName} Officer. Vehicle entry authorized for ${procurement.crop} (${procurement.quantity}). Please proceed to ${procurement.assignedGate}.`,
+        type: "Procurement"
+      });
+      emitToFarmer(procurement.farmerId, "notification:new", notif);
+    } catch (e) {}
+
+    // Outbound WhatsApp alert
+    try {
+      if (farmer && farmer.mobile) {
+        sendWhatsAppNotification(
+          farmer.mobile,
+          `🌾 *Gate Pass Passed - Entry Authorized* 🌾\nनमस्ते ${farmer.name} जी!\nआपका गेट पास स्वीकृत कर दिया गया है:\n• गेट पास सं.: *${procurement.gatePassNumber}*\n• टोकन सं.: *${procurement.tokenNumber}*\n• केंद्र: *${centreName}*\n• आवंटित गेट: *${procurement.assignedGate}*\nकृपया अपनी फसल (${procurement.crop} - ${procurement.quantity}) लेकर सीधे धर्मकांटा / तुलाई केंद्र पर जाएं।`
+        ).catch(() => {});
+      }
+    } catch (e) {}
 
     res.json({
       success: true,
       valid: true,
-      message: `✅ Gate Entry Authorized for ${centreName}`,
+      passedGatePass: true,
+      message: `✅ Gate Pass Passed • Entry Authorized for ${centreName}`,
+      gatePassNumber: procurement.gatePassNumber,
+      gatePassStatus: "Passed",
+      gatePassPassedAt: procurement.gatePassPassedAt,
+      assignedGate: procurement.assignedGate,
+      officerName: procurement.gatePassedByOfficer,
+      centreName: centreName,
       data: {
+        procurementId: procurement._id,
         tokenNumber: procurement.tokenNumber,
+        gatePassNumber: procurement.gatePassNumber,
+        gatePassStatus: "Passed",
+        gatePassPassedAt: procurement.gatePassPassedAt,
+        assignedGate: procurement.assignedGate,
         farmerName: farmer ? farmer.name : "Registered Farmer",
+        farmerMobile: farmer ? farmer.mobile : "N/A",
+        farmerVillage: farmer ? (farmer.village || farmer.address || "Local Tehsil") : "Local Tehsil",
         farmerId: procurement.farmerId,
         crop: procurement.crop,
         quantity: procurement.quantity,
+        receivedQuantity: procurement.receivedQuantity || procurement.quantity,
         centre: centreName,
         scheduleDate: procurement.scheduleDate,
         timeSlot: `${procurement.startTime || "10:00 AM"} – ${procurement.endTime || "11:00 AM"}`,
         status: procurement.procurementStatus,
-        assignedGate: "Weighbridge Scale 1",
-        verifiedAt: new Date().toLocaleTimeString("en-IN")
+        officerName: procurement.gatePassedByOfficer,
+        verifiedAt: passedAtStr
       }
     });
   } catch (error) {
     console.error("Token verification error:", error);
-    res.status(500).json({ success: false, message: "Error verifying token" });
+    res.status(500).json({ success: false, message: "Error verifying token and generating gate pass" });
+  }
+});
+
+// GET /api/officer/passed-gate-passes - list all gate passes passed at this centre
+router.get("/passed-gate-passes", async (req, res) => {
+  try {
+    const { centreId, centreName } = await getOfficerCentre(req);
+    let procs = await Procurement.find({});
+
+    // Filter for officer's centre (or all if admin)
+    const isSuperAdmin = req.user?.role === "GOVERNMENT_ADMIN" || centreName === "All Procurement Centres";
+    procs = procs.filter(p => {
+      const match = isSuperAdmin || (p.centreId === centreName || p.centreId === centreId);
+      return match && (p.gatePassStatus === "Passed" || p.gatePassNumber || p.procurementStatus === "Arrived" || p.procurementStatus === "Procurement Completed");
+    });
+
+    const farmers = await Farmer.find({});
+    const farmerMap = new Map(farmers.map(f => [f.farmerId, f]));
+
+    const list = procs.map(p => {
+      const f = farmerMap.get(p.farmerId);
+      return {
+        id: p._id,
+        gatePassNumber: p.gatePassNumber || `GP-2026-${String(p._id).slice(-6).toUpperCase()}`,
+        tokenNumber: p.tokenNumber,
+        farmerId: p.farmerId,
+        farmerName: f ? f.name : "Registered Farmer",
+        farmerMobile: f ? f.mobile : "N/A",
+        farmerVillage: f ? (f.village || f.address || "Local Tehsil") : "Local Tehsil",
+        crop: p.crop,
+        quantity: p.quantity,
+        receivedQuantity: p.receivedQuantity || p.quantity,
+        assignedGate: p.assignedGate || "Gate 1 (Weighbridge Scale 1)",
+        passedAt: p.gatePassPassedAt || "Today",
+        status: p.procurementStatus,
+        paymentStatus: p.paymentStatus,
+        officerName: p.gatePassedByOfficer || "Centre Officer"
+      };
+    }).reverse();
+
+    res.json({
+      success: true,
+      centre: centreName,
+      totalPassed: list.length,
+      data: list
+    });
+  } catch (error) {
+    console.error("Passed gate passes error:", error);
+    res.status(500).json({ success: false, message: "Failed to load passed gate passes" });
   }
 });
 

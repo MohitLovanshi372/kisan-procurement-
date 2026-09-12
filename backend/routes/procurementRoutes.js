@@ -87,6 +87,10 @@ router.get("/qr-code", protect, async (req, res) => {
         timeSlot,
         status: activeProc.procurementStatus,
         paymentStatus: activeProc.paymentStatus,
+        gatePassNumber: activeProc.gatePassNumber || null,
+        gatePassStatus: activeProc.gatePassStatus || "Pending",
+        gatePassPassedAt: activeProc.gatePassPassedAt || null,
+        assignedGate: activeProc.assignedGate || "Gate 1 (Weighbridge Scale 1)",
         verificationHash: `VER-${tokenNumber}-${farmerId.slice(-4)}`
       }
     });
@@ -97,9 +101,17 @@ router.get("/qr-code", protect, async (req, res) => {
 });
 
 // POST /api/procurement/verify-qr
-// Simulates centre gatekeeper scanner verifying the farmer's scannable QR pass
+// QR Code scan and gate pass authorization is strictly restricted to Procurement Centre Officers
 router.post("/verify-qr", protect, async (req, res) => {
   try {
+    if (req.user.role !== "CENTRE_OFFICER" && req.user.role !== "GOVERNMENT_ADMIN") {
+      return res.status(403).json({
+        success: false,
+        valid: false,
+        message: "Access Denied: QR Code scanning and Gate Pass issuance is strictly restricted to Authorized Procurement Centre Officers at the Mandi Gate."
+      });
+    }
+
     const { tokenNumber, qrPayload } = req.body;
     let searchToken = tokenNumber;
 
@@ -113,6 +125,11 @@ router.post("/verify-qr", protect, async (req, res) => {
         // Raw token fallback
         searchToken = qrPayload;
       }
+    }
+
+    if (searchToken) {
+      const match = String(searchToken).match(/TK-\d+/i);
+      if (match) searchToken = match[0].toUpperCase();
     }
 
     if (!searchToken) {
@@ -130,29 +147,64 @@ router.post("/verify-qr", protect, async (req, res) => {
       });
     }
 
+    const now = new Date();
+    const passedAtStr = now.toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" }) + ", " + now.toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit", hour12: true });
+
+    if (!procurement.gatePassNumber) {
+      procurement.gatePassNumber = `GP-${now.getFullYear()}-${Math.floor(100000 + Math.random() * 900000)}`;
+    }
+    procurement.gatePassStatus = "Passed";
+    procurement.gatePassPassedAt = procurement.gatePassPassedAt || passedAtStr;
+    procurement.assignedGate = procurement.assignedGate || "Gate 1 (Weighbridge Scale 1)";
+    procurement.gatePassedByOfficer = req.user?.name || "Centre Officer";
+
+    if (procurement.procurementStatus === "Scheduled" || procurement.procurementStatus === "Token Generated") {
+      procurement.procurementStatus = "Arrived";
+    }
+
+    if (typeof procurement.save === "function") {
+      await procurement.save().catch(() => {});
+    } else {
+      await Procurement.findByIdAndUpdate(procurement._id, procurement);
+    }
+
     // Emit real-time verification notification to farmer and admin dashboard via Socket.io
-    emitToFarmer(procurement.farmerId, "gate:entry_verified", {
+    emitToFarmer(procurement.farmerId, "gate:pass_passed", {
       tokenNumber: procurement.tokenNumber,
+      gatePassNumber: procurement.gatePassNumber,
+      gatePassStatus: "Passed",
+      gatePassPassedAt: procurement.gatePassPassedAt,
+      assignedGate: procurement.assignedGate,
       centre: procurement.centreId,
-      time: new Date().toISOString()
+      time: now.toISOString()
     });
 
     res.json({
       success: true,
       valid: true,
-      message: "✅ Gate Entry Authorized • Valid Digital QR Pass",
+      passedGatePass: true,
+      gatePassNumber: procurement.gatePassNumber,
+      gatePassStatus: "Passed",
+      gatePassPassedAt: procurement.gatePassPassedAt,
+      assignedGate: procurement.assignedGate,
+      message: "✅ Gate Pass Passed • Entry Authorized",
       data: {
         tokenNumber: procurement.tokenNumber,
+        gatePassNumber: procurement.gatePassNumber,
+        gatePassStatus: "Passed",
+        gatePassPassedAt: procurement.gatePassPassedAt,
+        assignedGate: procurement.assignedGate,
         farmerName: farmer ? farmer.name : "Registered Farmer",
         farmerId: procurement.farmerId,
+        farmerMobile: farmer ? farmer.mobile : "N/A",
+        farmerVillage: farmer ? (farmer.village || farmer.address || "Local Tehsil") : "Local Tehsil",
         crop: procurement.crop,
         quantity: procurement.quantity,
         centre: procurement.centreId,
         scheduleDate: procurement.scheduleDate,
         timeSlot: `${procurement.startTime} – ${procurement.endTime}`,
         status: procurement.procurementStatus,
-        gateAssigned: "Gate 2 (Weighbridge Scale A)",
-        verifiedAt: new Date().toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit", second: "2-digit" }),
+        verifiedAt: passedAtStr,
         documentsRequired: ["Aadhaar Card", "Bank Passbook", "Khasra (Land Record)"]
       }
     });

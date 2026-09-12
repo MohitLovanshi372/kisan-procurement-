@@ -680,6 +680,10 @@ function populateQrModal(qrData) {
   const modalSlot = document.getElementById("modalQrSlot");
   const modalHash = document.getElementById("modalQrHash");
   const scannerSampleQr = document.getElementById("scannerSampleQr");
+  const gatePassAlert = document.getElementById("modalGatePassPassedAlert");
+  const gatePassNoBadge = document.getElementById("modalGatePassNoBadge");
+  const gatePassAssignedLane = document.getElementById("modalGatePassAssignedLane");
+  const modalFastTrackLaneText = document.getElementById("modalFastTrackLaneText");
 
   if (modalImg) {
     modalImg.src = qrData.qrDataUrl;
@@ -698,6 +702,16 @@ function populateQrModal(qrData) {
   if (modalCentre) modalCentre.textContent = qrData.centreName;
   if (modalSlot) modalSlot.textContent = `${qrData.scheduleDate} • ${qrData.timeSlot}`;
   if (modalHash) modalHash.textContent = qrData.verificationHash || `VER-${qrData.tokenNumber}`;
+
+  // Update live Gate Pass status if passed by centre officer
+  if (qrData.gatePassStatus === "Passed" && qrData.gatePassNumber) {
+    if (gatePassAlert) gatePassAlert.style.display = "block";
+    if (gatePassNoBadge) gatePassNoBadge.textContent = qrData.gatePassNumber;
+    if (gatePassAssignedLane) gatePassAssignedLane.textContent = qrData.assignedGate || "Gate 1 (Weighbridge Scale 1)";
+    if (modalFastTrackLaneText) modalFastTrackLaneText.textContent = `${qrData.assignedGate || "Gate 1"} • PASSED (${qrData.gatePassNumber})`;
+  } else {
+    if (gatePassAlert) gatePassAlert.style.display = "none";
+  }
 }
 
 function setupQrEventListeners() {
@@ -712,7 +726,6 @@ function setupQrEventListeners() {
     if (qrModal) {
       qrModal.classList.add("active");
       if (currentQrData) populateQrModal(currentQrData);
-      switchQrTab("pass");
     }
   };
 
@@ -732,17 +745,6 @@ function setupQrEventListeners() {
     });
   }
 
-  // Tab buttons in modal
-  const tabPass = document.getElementById("qrTabPass");
-  const tabScanner = document.getElementById("qrTabScanner");
-  const btnSwitchToScanner = document.getElementById("btnSwitchToScanner");
-  const btnBackToPass = document.getElementById("btnBackToQrPass");
-
-  if (tabPass) tabPass.addEventListener("click", () => switchQrTab("pass"));
-  if (tabScanner) tabScanner.addEventListener("click", () => switchQrTab("scanner"));
-  if (btnSwitchToScanner) btnSwitchToScanner.addEventListener("click", () => switchQrTab("scanner"));
-  if (btnBackToPass) btnBackToPass.addEventListener("click", () => switchQrTab("pass"));
-
   // Download & Print buttons
   const btnMainDownload = document.getElementById("btnMainDownloadQr");
   const btnActionDownload = document.getElementById("btnDownloadQrAction");
@@ -752,20 +754,13 @@ function setupQrEventListeners() {
   if (btnActionDownload) btnActionDownload.addEventListener("click", downloadQrCodeImage);
   if (btnActionPrint) btnActionPrint.addEventListener("click", () => window.print());
 
-  // Scanner Simulator Button
-  const btnPerformGateScan = document.getElementById("btnPerformGateScan");
-  const btnMainSimulateScan = document.getElementById("btnMainSimulateScan");
-
-  if (btnPerformGateScan) btnPerformGateScan.addEventListener("click", performGateScanSimulation);
-  if (btnMainSimulateScan) {
-    btnMainSimulateScan.addEventListener("click", () => {
-      openModal();
-      switchQrTab("scanner");
-      setTimeout(() => {
-        performGateScanSimulation();
-      }, 400);
-    });
-  }
+  // Listen for real-time Gate Pass Passed notifications from centre officer
+  window.addEventListener("gate:pass_passed", (e) => {
+    const d = e.detail;
+    if (!d) return;
+    showToast(`✅ Gate Pass PASSED (${d.gatePassNumber || "GP-Issued"})! You may enter ${d.assignedGate || "Weighbridge Gate"}.`, "success");
+    loadDashboardData();
+  });
 }
 
 function switchQrTab(tabName) {

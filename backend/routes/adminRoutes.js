@@ -132,23 +132,30 @@ router.put("/centres/:id", protect, adminOnly, async (req, res) => {
   }
 });
 
-// GET /api/admin/officers - List all Centre Officers
+// GET /api/admin/officers - List all Centre Officers with full ID & password visibility for Admin
 router.get("/officers", protect, adminOnly, async (req, res) => {
   try {
     const allUsers = await Farmer.find();
-    const officers = allUsers.filter(u => u.role === "CENTRE_OFFICER" || u.role === "officer");
+    const officers = allUsers.filter(u => {
+      const r = String(u.role || "").toUpperCase();
+      return r === "CENTRE_OFFICER" || r === "OFFICER";
+    });
 
     res.json({
       success: true,
+      count: officers.length,
       data: officers.map(o => ({
         id: o._id,
         officerId: o.farmerId,
         name: o.name,
         mobile: o.mobile,
+        plainPassword: o.plainPassword || "officer123",
         assignedCentreId: o.assignedCentreId || "CENTRE_001",
         assignedCentreName: o.assignedCentreName || o.preferredCentre || "Sanwer Procurement Centre",
+        preferredCentre: o.preferredCentre || o.assignedCentreName || "Sanwer Procurement Centre",
         isActive: o.isActive !== false,
-        role: "CENTRE_OFFICER"
+        role: "CENTRE_OFFICER",
+        createdAt: o.createdAt || new Date()
       }))
     });
   } catch (error) {
@@ -157,45 +164,66 @@ router.get("/officers", protect, adminOnly, async (req, res) => {
   }
 });
 
-// POST /api/admin/officers - Create / Assign new Centre Officer
+// POST /api/admin/officers - Create / Assign new Centre Officer with custom ID and Password
 router.post("/officers", protect, adminOnly, async (req, res) => {
   try {
-    const { name, mobile, password, assignedCentreId, assignedCentreName } = req.body;
+    const { name, mobile, password, officerId: customOfficerId, assignedCentreId, assignedCentreName } = req.body;
     if (!name || !mobile || !password || !assignedCentreId) {
       return res.status(400).json({ success: false, message: "Name, mobile, password, and assigned centre are required" });
     }
 
     const cleanMobile = mobile.replace(/[^0-9]/g, "").slice(-10);
+    if (!cleanMobile || cleanMobile.length < 10) {
+      return res.status(400).json({ success: false, message: "Please provide a valid 10-digit mobile number" });
+    }
+
     const existing = await Farmer.findOne({ mobile: cleanMobile });
     if (existing) {
-      return res.status(400).json({ success: false, message: `Mobile ${cleanMobile} is already registered` });
+      return res.status(400).json({ success: false, message: `Mobile ${cleanMobile} is already registered with user ${existing.name} (${existing.farmerId})` });
+    }
+
+    let finalOfficerId = (customOfficerId || "").trim().toUpperCase();
+    if (!finalOfficerId) {
+      finalOfficerId = "OFF" + Math.floor(1000 + Math.random() * 9000);
+    }
+
+    // Check if officerId is already taken
+    const existingId = await Farmer.findOne({ farmerId: finalOfficerId });
+    if (existingId) {
+      return res.status(400).json({ success: false, message: `Officer ID "${finalOfficerId}" is already in use by another officer` });
     }
 
     const bcrypt = require("bcryptjs");
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password.trim(), salt);
-    const officerId = "OFF" + Math.floor(1000 + Math.random() * 9000);
 
     const officer = await Farmer.create({
       name: name.trim(),
       mobile: cleanMobile,
       password: hashedPassword,
-      farmerId: officerId,
+      plainPassword: password.trim(),
+      farmerId: finalOfficerId,
       role: "CENTRE_OFFICER",
       assignedCentreId,
       assignedCentreName: assignedCentreName || "Sanwer Procurement Centre",
       preferredCentre: assignedCentreName || "Sanwer Procurement Centre",
+      village: "Mandi Office",
+      district: "Indore",
+      state: "Madhya Pradesh",
+      crop: "Procurement Administration",
+      landArea: "N/A",
       isActive: true
     });
 
     res.status(201).json({
       success: true,
-      message: "Centre Officer created and assigned successfully",
+      message: `Centre Officer "${officer.name}" created successfully with ID ${finalOfficerId}`,
       data: {
         id: officer._id,
         officerId: officer.farmerId,
         name: officer.name,
         mobile: officer.mobile,
+        plainPassword: officer.plainPassword,
         assignedCentreId: officer.assignedCentreId,
         assignedCentreName: officer.assignedCentreName,
         isActive: true
@@ -203,41 +231,54 @@ router.post("/officers", protect, adminOnly, async (req, res) => {
     });
   } catch (error) {
     console.error("Create officer error:", error);
-    res.status(500).json({ success: false, message: "Failed to create officer" });
+    res.status(500).json({ success: false, message: "Failed to create officer: " + error.message });
   }
 });
 
-// PUT /api/admin/officers/:id - Update or toggle officer status
+// PUT /api/admin/officers/:id - Full Control: Update ID, Mobile, Name, Password & Centre
 router.put("/officers/:id", protect, adminOnly, async (req, res) => {
   try {
-    const { assignedCentreId, assignedCentreName, isActive, password } = req.body;
+    const { name, mobile, officerId: newOfficerId, assignedCentreId, assignedCentreName, isActive, password } = req.body;
     let officer = await Farmer.findById(req.params.id) || await Farmer.findOne({ farmerId: req.params.id });
 
     if (!officer) {
-      return res.status(404).json({ success: false, message: "Officer not found" });
+      return res.status(404).json({ success: false, message: "Officer record not found" });
     }
 
+    if (name) officer.name = name.trim();
+    if (mobile) {
+      const cleanMobile = mobile.replace(/[^0-9]/g, "").slice(-10);
+      if (cleanMobile.length === 10) officer.mobile = cleanMobile;
+    }
+    if (newOfficerId) {
+      officer.farmerId = newOfficerId.trim().toUpperCase();
+    }
     if (assignedCentreId) officer.assignedCentreId = assignedCentreId;
     if (assignedCentreName) {
       officer.assignedCentreName = assignedCentreName;
       officer.preferredCentre = assignedCentreName;
     }
-    if (isActive !== undefined) officer.isActive = isActive;
-    if (password) {
+    if (isActive !== undefined) officer.isActive = Boolean(isActive);
+
+    // If new password provided, hash it AND save readable plainPassword
+    if (password && password.trim()) {
       const bcrypt = require("bcryptjs");
       const salt = await bcrypt.genSalt(10);
       officer.password = await bcrypt.hash(password.trim(), salt);
+      officer.plainPassword = password.trim();
     }
 
     await officer.save().catch(() => {});
 
     res.json({
       success: true,
-      message: "Officer record updated successfully",
+      message: `Officer ${officer.farmerId} updated successfully`,
       data: {
         id: officer._id,
         officerId: officer.farmerId,
         name: officer.name,
+        mobile: officer.mobile,
+        plainPassword: officer.plainPassword || password || "officer123",
         assignedCentreId: officer.assignedCentreId,
         assignedCentreName: officer.assignedCentreName,
         isActive: officer.isActive !== false
@@ -245,7 +286,27 @@ router.put("/officers/:id", protect, adminOnly, async (req, res) => {
     });
   } catch (error) {
     console.error("Update officer error:", error);
-    res.status(500).json({ success: false, message: "Failed to update officer" });
+    res.status(500).json({ success: false, message: "Failed to update officer: " + error.message });
+  }
+});
+
+// DELETE /api/admin/officers/:id - Delete or revoke an officer
+router.delete("/officers/:id", protect, adminOnly, async (req, res) => {
+  try {
+    const officer = await Farmer.findById(req.params.id) || await Farmer.findOne({ farmerId: req.params.id });
+    if (!officer) {
+      return res.status(404).json({ success: false, message: "Officer record not found" });
+    }
+
+    await Farmer.deleteOne({ _id: officer._id });
+
+    res.json({
+      success: true,
+      message: `Procurement Officer "${officer.name}" (${officer.farmerId}) successfully removed`
+    });
+  } catch (error) {
+    console.error("Delete officer error:", error);
+    res.status(500).json({ success: false, message: "Failed to remove officer" });
   }
 });
 
@@ -343,13 +404,17 @@ router.get("/live-monitor", protect, adminOnly, async (req, res) => {
   }
 });
 
-// GET /api/admin/farmers
+// GET /api/admin/farmers - Comprehensive Farmer Master Sheet with real-time procurement & DBT status
 router.get("/farmers", protect, adminOnly, async (req, res) => {
   try {
-    const farmers = await Farmer.find({ role: "farmer" });
-    const allProcurements = await Procurement.find();
+    const allUsers = await Farmer.find({});
+    const farmers = allUsers.filter(u => {
+      const r = String(u.role || "").toUpperCase();
+      return r === "FARMER";
+    });
+    const allProcurements = await Procurement.find({});
 
-    // Map each farmer with their procurement
+    // Map each farmer with their procurement and bank/Aadhaar data for Master Sheet
     const farmerList = farmers.map(f => {
       const proc = allProcurements.find(p => p.farmerId === f.farmerId) || {
         _id: "demo_p_" + f.farmerId,
@@ -359,7 +424,9 @@ router.get("/farmers", protect, adminOnly, async (req, res) => {
         scheduleDate: "12 September 2026",
         amount: 45000,
         receivedQuantity: "18 Quintal",
-        quantity: "18 Quintal"
+        quantity: "18 Quintal",
+        gatePassNumber: null,
+        gatePassStatus: "Pending"
       };
 
       return {
@@ -369,30 +436,227 @@ router.get("/farmers", protect, adminOnly, async (req, res) => {
         mobile: f.mobile,
         village: f.village,
         district: f.district,
-        state: f.state,
+        state: f.state || "Madhya Pradesh",
         crop: f.crop,
-        landArea: f.landArea,
-        preferredCentre: f.preferredCentre,
+        landArea: f.landArea || "N/A",
+        preferredCentre: f.preferredCentre || f.assignedCentreName || "Sanwer Procurement Centre",
+        assignedCentreId: f.assignedCentreId,
+        assignedCentreName: f.assignedCentreName || f.preferredCentre,
+        aadharNumber: f.aadharNumber || "",
+        isAadharLinked: f.isAadharLinked !== false,
+        bankName: f.bankName || "State Bank of India",
+        accountNumber: f.accountNumber || "30829104820",
+        ifscCode: f.ifscCode || "SBIN0001234",
+        accountHolderName: f.accountHolderName || f.name,
+        branchName: f.branchName || "Main Branch",
+        dbtStatus: f.dbtStatus || "Active (Aadhaar Seeded)",
+        plainPassword: f.plainPassword || "123456",
+        isActive: f.isActive !== false,
         procurementId: proc._id,
         tokenNumber: proc.tokenNumber,
         scheduleDate: proc.scheduleDate,
         procurementStatus: proc.procurementStatus,
+        gatePassNumber: proc.gatePassNumber || "N/A",
+        gatePassStatus: proc.gatePassStatus || "Pending",
         paymentStatus: proc.paymentStatus,
         quantity: proc.quantity,
         receivedQuantity: proc.receivedQuantity,
         amount: proc.amount,
         paymentDate: proc.paymentDate,
-        transactionId: proc.transactionId
+        transactionId: proc.transactionId,
+        createdAt: f.createdAt || new Date()
       };
     });
 
     res.json({
       success: true,
+      count: farmerList.length,
       data: farmerList
     });
   } catch (error) {
     console.error("Admin farmers error:", error);
-    res.status(500).json({ success: false, message: "Unable to load farmers list" });
+    res.status(500).json({ success: false, message: "Unable to load farmers list: " + error.message });
+  }
+});
+
+// POST /api/admin/farmers - Add new Farmer to Master Sheet directly by Admin
+router.post("/farmers", protect, adminOnly, async (req, res) => {
+  try {
+    const {
+      name,
+      mobile,
+      password,
+      farmerId: customFarmerId,
+      village,
+      district,
+      state,
+      crop,
+      landArea,
+      preferredCentre,
+      aadharNumber,
+      bankName,
+      accountNumber,
+      ifscCode
+    } = req.body;
+
+    if (!name || !mobile) {
+      return res.status(400).json({ success: false, message: "Farmer Name and Mobile are required" });
+    }
+
+    const cleanMobile = mobile.replace(/[^0-9]/g, "").slice(-10);
+    if (cleanMobile.length < 10) {
+      return res.status(400).json({ success: false, message: "Please provide a valid 10-digit mobile number" });
+    }
+
+    const existing = await Farmer.findOne({ mobile: cleanMobile });
+    if (existing) {
+      return res.status(400).json({ success: false, message: `Mobile ${cleanMobile} is already registered (${existing.name})` });
+    }
+
+    let finalFarmerId = (customFarmerId || "").trim().toUpperCase();
+    if (!finalFarmerId) {
+      finalFarmerId = "FMR" + Math.floor(1000 + Math.random() * 9000);
+    }
+
+    const bcrypt = require("bcryptjs");
+    const rawPass = (password || "123456").trim();
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(rawPass, salt);
+
+    const newFarmer = await Farmer.create({
+      name: name.trim(),
+      mobile: cleanMobile,
+      password: hashedPassword,
+      plainPassword: rawPass,
+      farmerId: finalFarmerId,
+      village: (village || "Sanwer").trim(),
+      district: (district || "Indore").trim(),
+      state: (state || "Madhya Pradesh").trim(),
+      crop: (crop || "Wheat").trim(),
+      landArea: (landArea || "3.5 Acres").trim(),
+      preferredCentre: preferredCentre || "Sanwer Procurement Centre",
+      assignedCentreId: "CENTRE_001",
+      assignedCentreName: preferredCentre || "Sanwer Procurement Centre",
+      aadharNumber: (aadharNumber || "").replace(/[^0-9]/g, ""),
+      isAadharLinked: true,
+      bankName: bankName || "State Bank of India",
+      accountNumber: accountNumber || "30829104820",
+      ifscCode: ifscCode || "SBIN0001234",
+      accountHolderName: name.trim(),
+      dbtStatus: "Active (Aadhaar Seeded)",
+      role: "FARMER",
+      isActive: true
+    });
+
+    // Create initial token/procurement entry
+    const tokenNum = "TK-" + Math.floor(1000 + Math.random() * 9000);
+    await Procurement.create({
+      farmerId: finalFarmerId,
+      centreId: preferredCentre || "Sanwer Procurement Centre",
+      crop: crop || "Wheat",
+      quantity: "15 Quintal",
+      receivedQuantity: "0 Quintal",
+      tokenNumber: tokenNum,
+      scheduleDate: "12 September 2026",
+      procurementStatus: "Scheduled",
+      paymentStatus: "Pending",
+      amount: 34125
+    });
+
+    res.status(201).json({
+      success: true,
+      message: `Farmer "${newFarmer.name}" registered successfully with ID ${finalFarmerId}`,
+      data: newFarmer
+    });
+  } catch (error) {
+    console.error("Create farmer error:", error);
+    res.status(500).json({ success: false, message: "Failed to add farmer: " + error.message });
+  }
+});
+
+// PUT /api/admin/farmers/:id - Update Farmer Master Details
+router.put("/farmers/:id", protect, adminOnly, async (req, res) => {
+  try {
+    let farmer = await Farmer.findById(req.params.id) || await Farmer.findOne({ farmerId: req.params.id });
+    if (!farmer) {
+      return res.status(404).json({ success: false, message: "Farmer not found" });
+    }
+
+    const {
+      name,
+      mobile,
+      village,
+      district,
+      crop,
+      landArea,
+      preferredCentre,
+      aadharNumber,
+      bankName,
+      accountNumber,
+      ifscCode,
+      dbtStatus,
+      password,
+      isActive
+    } = req.body;
+
+    if (name) farmer.name = name.trim();
+    if (mobile) {
+      const cleanMobile = mobile.replace(/[^0-9]/g, "").slice(-10);
+      if (cleanMobile.length === 10) farmer.mobile = cleanMobile;
+    }
+    if (village) farmer.village = village.trim();
+    if (district) farmer.district = district.trim();
+    if (crop) farmer.crop = crop.trim();
+    if (landArea) farmer.landArea = landArea.trim();
+    if (preferredCentre) {
+      farmer.preferredCentre = preferredCentre;
+      farmer.assignedCentreName = preferredCentre;
+    }
+    if (aadharNumber !== undefined) farmer.aadharNumber = aadharNumber.replace(/[^0-9]/g, "");
+    if (bankName) farmer.bankName = bankName.trim();
+    if (accountNumber) farmer.accountNumber = accountNumber.trim();
+    if (ifscCode) farmer.ifscCode = ifscCode.trim();
+    if (dbtStatus) farmer.dbtStatus = dbtStatus;
+    if (isActive !== undefined) farmer.isActive = Boolean(isActive);
+
+    if (password && password.trim()) {
+      const bcrypt = require("bcryptjs");
+      const salt = await bcrypt.genSalt(10);
+      farmer.password = await bcrypt.hash(password.trim(), salt);
+      farmer.plainPassword = password.trim();
+    }
+
+    await farmer.save().catch(() => {});
+
+    res.json({
+      success: true,
+      message: `Farmer ${farmer.farmerId} details updated successfully`,
+      data: farmer
+    });
+  } catch (error) {
+    console.error("Update farmer error:", error);
+    res.status(500).json({ success: false, message: "Failed to update farmer: " + error.message });
+  }
+});
+
+// DELETE /api/admin/farmers/:id - Delete farmer from master sheet
+router.delete("/farmers/:id", protect, adminOnly, async (req, res) => {
+  try {
+    const farmer = await Farmer.findById(req.params.id) || await Farmer.findOne({ farmerId: req.params.id });
+    if (!farmer) {
+      return res.status(404).json({ success: false, message: "Farmer not found" });
+    }
+
+    await Farmer.deleteOne({ _id: farmer._id });
+    await Procurement.deleteMany({ farmerId: farmer.farmerId }).catch(() => {});
+
+    res.json({
+      success: true,
+      message: `Farmer "${farmer.name}" (${farmer.farmerId}) removed from master sheet`
+    });
+  } catch (error) {
+    console.error("Delete farmer error:", error);
+    res.status(500).json({ success: false, message: "Failed to delete farmer" });
   }
 });
 

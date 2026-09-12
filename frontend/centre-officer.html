@@ -79,7 +79,139 @@
       background: #d97706;
       color: #ffffff;
     }
-  </style>
+
+    /* Officer QR Camera Scanner Styles */
+    .officer-scan-tabs {
+      display: flex;
+      gap: 0.5rem;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 0.75rem;
+      margin-bottom: 1.25rem;
+      flex-wrap: wrap;
+    }
+    .officer-tab-btn {
+      padding: 0.5rem 1rem;
+      font-size: 0.85rem;
+      font-weight: 700;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-color);
+      background: #ffffff;
+      color: var(--text-muted);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: all 0.15s ease;
+    }
+    .officer-tab-btn:hover {
+      background: #f8fafc;
+      color: var(--text-main);
+    }
+    .officer-tab-btn.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #ffffff;
+      box-shadow: 0 2px 4px rgba(5, 150, 105, 0.2);
+    }
+    .officer-camera-box {
+      background: #0f172a;
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      color: #ffffff;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+    .camera-viewport {
+      position: relative;
+      width: 100%;
+      max-width: 500px;
+      height: 320px;
+      margin: 0 auto;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #000000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid #334155;
+    }
+    .camera-viewport video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .reticle-frame {
+      position: absolute;
+      width: 220px;
+      height: 220px;
+      pointer-events: none;
+      box-sizing: border-box;
+    }
+    .reticle-corner {
+      position: absolute;
+      width: 28px;
+      height: 28px;
+      border-color: #10b981;
+      border-style: solid;
+    }
+    .corner-tl { top: 0; left: 0; border-width: 4px 0 0 4px; border-top-left-radius: 8px; }
+    .corner-tr { top: 0; right: 0; border-width: 4px 4px 0 0; border-top-right-radius: 8px; }
+    .corner-bl { bottom: 0; left: 0; border-width: 0 0 4px 4px; border-bottom-left-radius: 8px; }
+    .corner-br { bottom: 0; right: 0; border-width: 0 4px 4px 0; border-bottom-right-radius: 8px; }
+    .laser-line {
+      position: absolute;
+      left: 6px;
+      right: 6px;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, #10b981, #34d399, #10b981, transparent);
+      box-shadow: 0 0 10px #10b981;
+      animation: laserSweep 2s infinite ease-in-out;
+    }
+    @keyframes laserSweep {
+      0% { top: 12px; opacity: 0.9; }
+      50% { top: 200px; opacity: 1; }
+      100% { top: 12px; opacity: 0.9; }
+    }
+    .gate-pass-slip {
+      background: #ffffff;
+      border: 2px solid #059669;
+      border-radius: var(--radius-md);
+      padding: 1.5rem;
+      position: relative;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    }
+    .gate-pass-stamp {
+      border: 3px solid #059669;
+      color: #059669;
+      text-transform: uppercase;
+      font-weight: 900;
+      font-size: 0.95rem;
+      letter-spacing: 1px;
+      padding: 0.35rem 0.75rem;
+      border-radius: 8px;
+      transform: rotate(-4deg);
+      display: inline-block;
+    }
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      #printableGatePassSlip, #printableGatePassSlip * {
+        visibility: visible;
+      }
+      #printableGatePassSlip {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        border: 2px solid #000;
+        padding: 20px;
+      }
+      .no-print {
+        display: none !important;
+      }
+    }
 </head>
 <body>
 
@@ -163,34 +295,158 @@
       </div>
     </div>
 
-    <!-- Fast-Track Gate Pass & Token Verifier Card -->
-    <section class="card">
+    <!-- Fast-Track Gate Pass & QR Camera Scanner Card -->
+    <section class="card" id="gatePassScannerCard">
       <div class="card-header">
         <div class="card-title">
-          <span>⚡</span> <span>Mandi Gate Token Verification (गेट पास सत्यापन)</span>
+          <span>📷</span> <span>Mandi Gate Camera QR Scanner & Passed Gate Pass (गेट पास कैमरा स्कैनर व सत्यापन)</span>
         </div>
-        <span class="badge badge-green">Fast-Track Gate Entry</span>
+        <div style="display: flex; gap: 0.5rem; align-items: center;">
+          <span class="badge badge-green" id="officerGatePill">Gate 1 • Live Terminal</span>
+          <span class="badge badge-blue">Officer Auth Only</span>
+        </div>
       </div>
 
-      <div class="verify-box">
-        <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.75rem;">
-          Enter the token number from farmer's SMS, WhatsApp, or paper pass to verify authorization for this centre:
+      <!-- Mode Switcher Tabs -->
+      <div class="officer-scan-tabs">
+        <button id="tabCameraScan" class="officer-tab-btn active">
+          <span>📷</span> <span>Live Camera Scanner (कैमरा स्कैनर)</span>
+        </button>
+        <button id="tabUploadScan" class="officer-tab-btn">
+          <span>📁</span> <span>Upload QR Slip / Image</span>
+        </button>
+        <button id="tabManualToken" class="officer-tab-btn">
+          <span>⌨️</span> <span>Manual Token Entry</span>
+        </button>
+        <button id="tabPassedPasses" class="officer-tab-btn">
+          <span>🎟️</span> <span>Today's Passed Gate Passes (<strong id="officerPassedPassesCount">0</strong>)</span>
+        </button>
+        <a href="/react-scanner" id="btnLaunchReactScanner" class="officer-tab-btn" style="background: #065f46; color: #ffffff; border-color: #047857; text-decoration: none; margin-left: auto;" title="Open Dedicated React Camera QR Scanner">
+          <span>⚡</span> <span>React QR Scanner Terminal ↗</span>
+        </a>
+      </div>
+
+      <!-- TAB 1: Live Camera QR Scanner -->
+      <div id="viewCameraScan">
+        <div class="officer-camera-box">
+          <!-- Top Control Bar -->
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; flex-wrap: wrap; gap: 0.5rem;">
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <span id="cameraStatusPill" class="badge badge-green">🟢 Ready to Scan</span>
+              <span style="font-size: 0.78rem; color: #94a3b8;">Procurement Gate Entry</span>
+            </div>
+            <div style="display: flex; gap: 0.5rem;">
+              <button id="btnToggleCamera" class="btn btn-primary btn-sm" style="display: flex; align-items: center; gap: 0.35rem;">
+                <span id="btnToggleCameraIcon">📷</span> <span id="btnToggleCameraText">Start Camera</span>
+              </button>
+              <button id="btnSwitchCameraFacing" class="btn btn-outline-primary btn-sm" style="background: rgba(255,255,255,0.1); border-color: #475569; color: #ffffff;" title="Switch camera facing mode (rear/front)">
+                <span>🔄</span> <span>Flip</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Video Camera Viewport -->
+          <div class="camera-viewport" id="cameraViewport">
+            <video id="officerCameraVideo" playsinline autoplay muted></video>
+            
+            <!-- Reticle Overlay -->
+            <div class="reticle-frame" id="reticleFrame">
+              <div class="reticle-corner corner-tl"></div>
+              <div class="reticle-corner corner-tr"></div>
+              <div class="reticle-corner corner-bl"></div>
+              <div class="reticle-corner corner-br"></div>
+              <div class="laser-line" id="laserScanLine"></div>
+            </div>
+
+            <!-- Overlay Message -->
+            <div id="cameraOverlayMsg" style="position: absolute; bottom: 12px; left: 10px; right: 10px; text-align: center; font-size: 0.78rem; color: #38bdf8; font-weight: 600; text-shadow: 0 1px 3px rgba(0,0,0,0.9); background: rgba(15,23,42,0.7); padding: 4px 8px; border-radius: 6px;">
+              Click "Start Camera" & hold farmer's QR code within the green reticle
+            </div>
+          </div>
+
+          <!-- Hidden Canvas for frame decoding -->
+          <canvas id="cameraScanCanvas" style="display: none;"></canvas>
+
+          <div style="text-align: center; margin-top: 0.75rem; font-size: 0.78rem; color: #94a3b8;">
+            💡 Camera stream will automatically decode the token, check centre authorization, and generate the official <strong>PASSED GATE PASS</strong> with instant audio feedback.
+          </div>
         </div>
-        <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
-          <input
-            type="text"
-            id="verifyTokenInput"
-            class="form-input"
-            placeholder="e.g. TK-1042"
-            style="flex: 1; min-width: 200px; font-weight: 700; text-transform: uppercase;"
-          />
-          <button id="verifyTokenBtn" class="btn btn-primary" style="min-width: 140px;">
-            🔍 Verify Token
+      </div>
+
+      <!-- TAB 2: Upload QR Slip / Image -->
+      <div id="viewUploadScan" style="display: none;">
+        <div style="background: #f8fafc; border: 2px dashed #059669; border-radius: var(--radius-md); padding: 1.5rem; text-align: center;">
+          <div style="font-size: 2rem; margin-bottom: 0.5rem;">📁</div>
+          <div style="font-weight: 700; color: var(--text-main); margin-bottom: 0.25rem;">Upload QR Code Image or Paper Slip Photo</div>
+          <div style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1rem;">
+            Select an image file (JPEG/PNG) from the farmer's mobile screenshot or camera capture
+          </div>
+          <input type="file" id="officerQrFileInput" accept="image/*" style="display: none;" />
+          <button id="btnPickQrFile" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 0.4rem;">
+            <span>📸</span> <span>Choose QR Image File</span>
+          </button>
+          <div id="uploadFileStatus" style="margin-top: 0.75rem; font-size: 0.85rem;"></div>
+        </div>
+      </div>
+
+      <!-- TAB 3: Manual Token Input -->
+      <div id="viewManualToken" style="display: none;">
+        <div class="verify-box">
+          <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.75rem;">
+            Enter token number from farmer's SMS, WhatsApp message, or printed receipt:
+          </div>
+          <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+            <input
+              type="text"
+              id="verifyTokenInput"
+              class="form-input"
+              placeholder="e.g. TK-1042"
+              style="flex: 1; min-width: 200px; font-weight: 700; text-transform: uppercase;"
+            />
+            <button id="verifyTokenBtn" class="btn btn-primary" style="min-width: 140px;">
+              🔍 Verify & Pass Gate
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB 4: Today's Passed Gate Passes Table -->
+      <div id="viewPassedPasses" style="display: none;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+          <div style="font-weight: 700; color: var(--text-main); font-size: 0.95rem;">
+            📋 Today's Authorized Gate Entries (<span id="tablePassedCount">0</span> Vehicles)
+          </div>
+          <button id="btnRefreshPassedPasses" class="btn btn-outline-primary btn-sm">
+            🔄 Refresh List
           </button>
         </div>
-
-        <div id="verifyResultContainer" style="margin-top: 1rem; display: none;"></div>
+        <div class="table-container">
+          <table class="table" style="font-size: 0.85rem;">
+            <thead>
+              <tr>
+                <th>Gate Pass #</th>
+                <th>Token</th>
+                <th>Farmer Name</th>
+                <th>Crop & Quantity</th>
+                <th>Assigned Scale</th>
+                <th>Passed At</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="officerPassedPassesTbody">
+              <tr>
+                <td colspan="8" style="text-align: center; color: var(--text-muted); padding: 1.5rem;">
+                  No vehicles passed yet today. Scan a QR pass to issue the first gate pass!
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
+
+      <!-- Live Gate Pass Result & Certificate Container -->
+      <div id="verifyResultContainer" style="margin-top: 1.25rem; display: none;"></div>
     </section>
 
     <!-- Centre Queue Management Card -->
@@ -351,6 +607,9 @@
     </div>
   </div>
 
+  <!-- Printable Gate Pass Slip Container -->
+  <div id="printableGatePassSlip" style="display: none;"></div>
+
   <footer class="site-footer">
     <div><strong>Mandisathi</strong> • <span>Department of Food & Civil Supplies, Madhya Pradesh</span></div>
     <div class="footer-sub-note">Procurement Centre Management System • Authorized Centre Officer Interface</div>
@@ -358,6 +617,7 @@
 
   <script src="js/socket.io.min.js"></script>
   <script src="js/api.js"></script>
+  <script src="js/jsQR.js"></script>
   <script src="js/centre-officer.js"></script>
 </body>
 </html>

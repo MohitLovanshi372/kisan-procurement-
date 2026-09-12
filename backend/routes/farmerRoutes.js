@@ -207,6 +207,10 @@ router.get("/token", async (req, res) => {
         timeSlot,
         status: activeProc.procurementStatus,
         paymentStatus: activeProc.paymentStatus,
+        gatePassNumber: activeProc.gatePassNumber || null,
+        gatePassStatus: activeProc.gatePassStatus || "Pending",
+        gatePassPassedAt: activeProc.gatePassPassedAt || null,
+        assignedGate: activeProc.assignedGate || "Gate 1 (Weighbridge Scale 1)",
         verificationHash: `VER-${tokenNumber}-${farmerId.slice(-4)}`
       }
     });

@@ -13,9 +13,18 @@ const procurementSchema = new mongoose.Schema({
   endTime: { type: String, default: "11:00 AM" },
   procurementStatus: {
     type: String,
-    enum: ["Registration", "Token Generated", "Scheduled", "Arrived", "Procurement Completed", "Cancelled"],
+    enum: ["Registration", "Token Generated", "Scheduled", "Arrived", "Gate Pass Passed", "Procurement Completed", "Cancelled"],
     default: "Scheduled"
   },
+  gatePassNumber: { type: String, default: null },
+  gatePassStatus: {
+    type: String,
+    enum: ["Pending", "Passed", "Rejected"],
+    default: "Pending"
+  },
+  gatePassPassedAt: { type: String, default: null },
+  assignedGate: { type: String, default: "Gate 1 (Weighbridge Scale 1)" },
+  gatePassedByOfficer: { type: String, default: null },
   paymentStatus: {
     type: String,
     enum: ["Pending", "Processing", "Paid"],

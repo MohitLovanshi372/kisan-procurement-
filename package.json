@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "scripts": {
     "dev": "node backend/server.js",
-    "build": "echo 'Build ready'",
+    "build": "vite build",
     "start": "node backend/server.js",
     "lint": "node -e 'console.log(\"Syntax and code validation passed\")'"
   },
@@ -21,6 +21,7 @@
     "dotenv": "^17.2.3",
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.3",
+    "jsqr": "^1.4.0",
     "lucide-react": "^0.546.0",
     "mongoose": "^9.9.4",
     "motion": "^12.23.24",

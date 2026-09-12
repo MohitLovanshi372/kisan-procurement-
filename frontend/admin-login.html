@@ -35,32 +35,52 @@
 
       <form id="adminLoginForm">
         <div class="form-group">
-          <label class="form-label" for="adminMobile" data-i18n="officerMobileLabel">Officer Mobile / Admin ID</label>
-          <input type="tel" id="adminMobile" class="form-input" placeholder="e.g. 9893011111 or 9999999999" required maxlength="10">
+          <label class="form-label" for="adminMobile">Officer ID / Mobile Number / Admin ID</label>
+          <input type="text" id="adminMobile" class="form-input" placeholder="e.g. OFF001 or 9893011111 or 9999999999" required maxlength="25">
         </div>
 
         <div class="form-group">
-          <label class="form-label" for="adminPassword" data-i18n="passwordInputLabel">Security Password</label>
-          <input type="password" id="adminPassword" class="form-input" placeholder="Enter password" required>
+          <label class="form-label" for="adminPassword">Security Password (पासवर्ड)</label>
+          <div style="position: relative; display: flex; align-items: center;">
+            <input type="password" id="adminPassword" class="form-input" placeholder="Enter security password" required style="padding-right: 2.75rem;">
+            <button type="button" id="toggleAdminPasswordBtn" style="position: absolute; right: 10px; background: none; border: none; cursor: pointer; font-size: 1.15rem; padding: 0.25rem; color: #64748b;" title="Show/Hide Password" aria-label="Toggle Password Visibility">
+              👁️
+            </button>
+          </div>
         </div>
 
-        <button type="submit" class="btn btn-secondary btn-block" style="margin-top: 0.5rem;" data-i18n="adminLoginBtn">
-          Secure Officer Login →
+        <button type="submit" id="adminSubmitBtn" class="btn btn-secondary btn-block" style="margin-top: 0.5rem; font-weight: 700;">
+          Secure Staff & Officer Login →
         </button>
       </form>
 
-      <!-- 1-Click Evaluation Buttons -->
-      <div class="quick-demo-box">
-        <div style="font-weight: 700; margin-bottom: 0.5rem; color: #1e40af;" data-i18n="adminDemoTitle">
-          ⚡ Quick Demo Login (Role-Specific):
+      <!-- 1-Click Fast Login Evaluation Buttons -->
+      <div class="quick-demo-box" style="margin-top: 1.25rem; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 12px; padding: 0.9rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem;">
+          <span style="font-weight: 800; color: #1e40af; font-size: 0.84rem;">
+            ⚡ Quick 1-Click Login:
+          </span>
+          <span class="badge badge-green" style="font-size: 0.7rem; padding: 0.2rem 0.5rem;">Fast &lt;100ms</span>
         </div>
         <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-          <button id="fillOfficerDemoBtn" type="button" class="btn btn-sm btn-secondary btn-block" style="justify-content: flex-start; text-align: left;">
-            👮‍♂️ <strong>Centre Officer:</strong> Sanwer Mandi (9893011111 / officer123)
-          </button>
-          <button id="fillAdminDemoBtn" type="button" class="btn btn-sm btn-secondary btn-block" style="justify-content: flex-start; text-align: left;">
-            🏛️ <strong>Govt Admin:</strong> State Mandi Board (9999999999 / admin123)
-          </button>
+          <div style="display: flex; gap: 0.4rem;">
+            <button id="directAdminOfficerLoginBtn" type="button" class="btn btn-sm btn-block" style="background: #0284c7; color: #ffffff; border: none; font-size: 0.82rem; font-weight: 700; border-radius: 8px; justify-content: flex-start; text-align: left; padding: 0.5rem 0.75rem; display: flex; align-items: center; justify-content: space-between;">
+              <span>🏛️ <strong>Sanwer Mandi Officer:</strong> Rajesh Sharma</span>
+              <span style="background: rgba(255,255,255,0.25); padding: 0.15rem 0.45rem; border-radius: 4px; font-size: 0.74rem;">⚡ Instant Login</span>
+            </button>
+            <button id="fillOfficerDemoBtn" type="button" class="btn btn-sm btn-secondary" title="Fill credentials only" style="padding: 0.5rem 0.6rem; font-size: 0.8rem; border-radius: 8px;">
+              ✏️
+            </button>
+          </div>
+          <div style="display: flex; gap: 0.4rem;">
+            <button id="directAdminGovtLoginBtn" type="button" class="btn btn-sm btn-block" style="background: #4f46e5; color: #ffffff; border: none; font-size: 0.82rem; font-weight: 700; border-radius: 8px; justify-content: flex-start; text-align: left; padding: 0.5rem 0.75rem; display: flex; align-items: center; justify-content: space-between;">
+              <span>🛡️ <strong>Govt Admin (Full Control):</strong> Mandi Board</span>
+              <span style="background: rgba(255,255,255,0.25); padding: 0.15rem 0.45rem; border-radius: 4px; font-size: 0.74rem;">⚡ Instant Login</span>
+            </button>
+            <button id="fillAdminDemoBtn" type="button" class="btn btn-sm btn-secondary" title="Fill credentials only" style="padding: 0.5rem 0.6rem; font-size: 0.8rem; border-radius: 8px;">
+              ✏️
+            </button>
+          </div>
         </div>
       </div>
     </div>

@@ -34,6 +34,14 @@ app.use(express.urlencoded({ extended: true }));
 
 // Serve static frontend files
 const frontendPath = path.join(__dirname, "..", "frontend");
+const distPath = path.join(__dirname, "..", "dist");
+
+// Serve React bundle assets if dist exists
+if (fs.existsSync(distPath)) {
+  app.use("/assets", express.static(path.join(distPath, "assets")));
+  app.use("/dist", express.static(distPath));
+}
+
 app.use(express.static(frontendPath));
 
 // API Routes
@@ -59,6 +67,15 @@ app.get("/api/health", (req, res) => {
     realtime: "Socket.io Active",
     time: new Date().toISOString()
   });
+});
+
+// React Procurement Officer QR Scanner Entry Points
+app.get(["/react", "/react-scanner", "/officer-scanner", "/scanner"], (req, res) => {
+  const reactIndex = path.join(distPath, "index.html");
+  if (fs.existsSync(reactIndex)) {
+    return res.sendFile(reactIndex);
+  }
+  res.sendFile(path.join(frontendPath, "centre-officer.html"));
 });
 
 // Fallback to frontend index for root navigation

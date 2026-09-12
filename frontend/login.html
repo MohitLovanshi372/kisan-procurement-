@@ -26,45 +26,192 @@
 
   <main class="main-content">
     <div class="auth-card-container">
-      <div style="text-align: center; margin-bottom: 1.5rem;">
-        <img src="img/logo.png" alt="Mandisathi - Kisan ka Saathi" class="auth-logo-badge" id="authLogoBadge" onerror="this.onerror=null; this.src='img/brand-logo.png';">
-        <h1 style="font-size: 1.4rem; font-weight: 700;" data-i18n="farmerLoginTitle">Farmer Login</h1>
-        <p style="color: var(--text-muted); font-size: 0.85rem;" data-i18n="loginWithMobile">Login with your registered mobile number</p>
+      
+      <!-- Role Switcher Tabs -->
+      <div class="login-role-tabs" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 4px; background: #f1f5f9; padding: 4px; border-radius: var(--radius-md); margin-bottom: 1.25rem;">
+        <button type="button" id="tabFarmer" class="login-tab-btn active" style="padding: 0.5rem 0.25rem; font-size: 0.78rem; font-weight: 600; border: none; border-radius: var(--radius-sm); cursor: pointer; transition: all 0.2s; background: #ffffff; color: var(--primary); box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+          👨‍🌾 किसान (Farmer)
+        </button>
+        <button type="button" id="tabOfficer" class="login-tab-btn" style="padding: 0.5rem 0.25rem; font-size: 0.78rem; font-weight: 600; border: none; border-radius: var(--radius-sm); cursor: pointer; transition: all 0.2s; background: transparent; color: #64748b;">
+          🏛️ उपार्जन अधिकारी
+        </button>
+        <button type="button" id="tabAdmin" class="login-tab-btn" style="padding: 0.5rem 0.25rem; font-size: 0.78rem; font-weight: 600; border: none; border-radius: var(--radius-sm); cursor: pointer; transition: all 0.2s; background: transparent; color: #64748b;">
+          🛡️ सरकार (Admin)
+        </button>
+      </div>
+
+      <div style="text-align: center; margin-bottom: 1.25rem;">
+        <img src="img/logo.png" alt="Mandisathi Portal" class="auth-logo-badge" id="authLogoBadge" onerror="this.onerror=null; this.src='img/brand-logo.png';">
+        <h1 id="loginCardTitle" style="font-size: 1.35rem; font-weight: 700; margin-top: 0.25rem;">Farmer Login</h1>
+        <p id="loginCardSubtitle" style="color: var(--text-muted); font-size: 0.84rem;">Login with your registered mobile or Farmer ID</p>
       </div>
 
       <form id="loginForm">
+        <!-- Hidden role tracker -->
+        <input type="hidden" id="loginPortalType" value="farmer">
+
         <div class="form-group">
-          <label class="form-label" for="mobile" data-i18n="mobileInputLabel">Mobile Number</label>
-          <input type="tel" id="mobile" class="form-input" placeholder="e.g. 9876543210" data-i18n-placeholder="mobilePlaceholder" required maxlength="10">
+          <label class="form-label" for="mobile" id="loginIdentifierLabel">Mobile Number / Farmer ID</label>
+          <input type="text" id="mobile" class="form-input" placeholder="e.g. 9876543210 or FMR1001" required maxlength="25">
         </div>
 
         <div class="form-group">
-          <label class="form-label" for="password" data-i18n="passwordInputLabel">Password</label>
-          <input type="password" id="password" class="form-input" placeholder="Enter your password" data-i18n-placeholder="passwordPlaceholder" required>
+          <label class="form-label" for="password">Password (पासवर्ड)</label>
+          <div style="position: relative; display: flex; align-items: center;">
+            <input type="password" id="password" class="form-input" placeholder="Enter your password" required style="padding-right: 2.75rem;">
+            <button type="button" id="togglePasswordBtn" style="position: absolute; right: 10px; background: none; border: none; cursor: pointer; font-size: 1.15rem; padding: 0.25rem; color: #64748b;" title="Show/Hide Password" aria-label="Toggle Password Visibility">
+              👁️
+            </button>
+          </div>
         </div>
 
-        <button type="submit" class="btn btn-primary btn-block" style="margin-top: 0.5rem;" data-i18n="secureLoginBtn">
-          Secure Farmer Login →
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; margin-top: -0.25rem;">
+          <label style="display: flex; align-items: center; gap: 0.4rem; font-size: 0.82rem; color: var(--text-muted); cursor: pointer;">
+            <input type="checkbox" id="rememberMeCheckbox" checked> याद रखें (Remember me)
+          </label>
+          <button type="button" id="btnOpenForgotPassword" class="forgot-password-link" style="background: none; border: none; color: var(--primary); font-size: 0.82rem; font-weight: 600; cursor: pointer; padding: 0; text-decoration: underline;">
+            🔑 पासवर्ड भूल गए? (Forgot?)
+          </button>
+        </div>
+
+        <button type="submit" id="loginSubmitBtn" class="btn btn-primary btn-block" style="margin-top: 0.25rem; font-weight: 700;">
+          Secure Login →
         </button>
       </form>
 
-      <!-- 1-Click Evaluation Button (Farmer Only) -->
-      <div class="quick-demo-box">
-        <div style="font-weight: 700; margin-bottom: 0.5rem; color: var(--primary-dark);" data-i18n="quickDemoLogins">
-          ⚡ Quick Demo Login:
+      <!-- 1-Click Fast Login Evaluation Section -->
+      <div class="quick-demo-box" style="margin-top: 1.25rem; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 12px; padding: 0.9rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem;">
+          <span style="font-weight: 800; color: #0f172a; font-size: 0.84rem; display: flex; align-items: center; gap: 0.35rem;">
+            ⚡ <span>तत्काल 1-क्लिक लॉगिन (Fast 1-Click Login):</span>
+          </span>
+          <span class="badge badge-green" style="font-size: 0.7rem; padding: 0.2rem 0.5rem;">सुपर फ़ास्ट &lt;100ms</span>
         </div>
-        <div>
-          <button id="fillFarmerDemoBtn" type="button" class="btn btn-sm btn-secondary btn-block" style="justify-content: center;" data-i18n="farmerDemoBtnText">
-            👨‍🌾 Fill Farmer Demo: Ramesh Patel (9876543210 / 123456)
-          </button>
+        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+          <div style="display: flex; gap: 0.4rem;">
+            <button id="directFarmerLoginBtn" type="button" class="btn btn-sm btn-block" style="background: #059669; color: #ffffff; border: none; font-size: 0.82rem; font-weight: 700; border-radius: 8px; justify-content: flex-start; text-align: left; padding: 0.5rem 0.75rem; display: flex; align-items: center; justify-content: space-between;">
+              <span>👨‍🌾 <strong>Farmer:</strong> Ramesh Patel</span>
+              <span style="background: rgba(255,255,255,0.25); padding: 0.15rem 0.45rem; border-radius: 4px; font-size: 0.74rem;">⚡ Instant Login</span>
+            </button>
+            <button id="fillFarmerDemoBtn" type="button" class="btn btn-sm btn-secondary" title="Fill credentials only" style="padding: 0.5rem 0.6rem; font-size: 0.8rem; border-radius: 8px;">
+              ✏️
+            </button>
+          </div>
+
+          <div style="display: flex; gap: 0.4rem;">
+            <button id="directOfficerLoginBtn" type="button" class="btn btn-sm btn-block" style="background: #0284c7; color: #ffffff; border: none; font-size: 0.82rem; font-weight: 700; border-radius: 8px; justify-content: flex-start; text-align: left; padding: 0.5rem 0.75rem; display: flex; align-items: center; justify-content: space-between;">
+              <span>🏛️ <strong>Officer:</strong> Sanwer Mandi</span>
+              <span style="background: rgba(255,255,255,0.25); padding: 0.15rem 0.45rem; border-radius: 4px; font-size: 0.74rem;">⚡ Instant Login</span>
+            </button>
+            <button id="fillOfficerDemoBtn" type="button" class="btn btn-sm btn-secondary" title="Fill credentials only" style="padding: 0.5rem 0.6rem; font-size: 0.8rem; border-radius: 8px;">
+              ✏️
+            </button>
+          </div>
+
+          <div style="display: flex; gap: 0.4rem;">
+            <button id="directAdminLoginBtn" type="button" class="btn btn-sm btn-block" style="background: #4f46e5; color: #ffffff; border: none; font-size: 0.82rem; font-weight: 700; border-radius: 8px; justify-content: flex-start; text-align: left; padding: 0.5rem 0.75rem; display: flex; align-items: center; justify-content: space-between;">
+              <span>🛡️ <strong>Govt Admin:</strong> Mandi Board</span>
+              <span style="background: rgba(255,255,255,0.25); padding: 0.15rem 0.45rem; border-radius: 4px; font-size: 0.74rem;">⚡ Instant Login</span>
+            </button>
+            <button id="fillAdminDemoBtn" type="button" class="btn btn-sm btn-secondary" title="Fill credentials only" style="padding: 0.5rem 0.6rem; font-size: 0.8rem; border-radius: 8px;">
+              ✏️
+            </button>
+          </div>
         </div>
       </div>
 
-      <div style="text-align: center; margin-top: 1.25rem; font-size: 0.88rem; color: var(--text-muted);">
-        <span data-i18n="newFarmerPrompt">New farmer?</span> <a href="register.html" style="color: var(--primary); font-weight: 600; text-decoration: none;" data-i18n="registerForfarmer">Register for farmer</a>
+      <div id="newFarmerRow" style="text-align: center; margin-top: 1.25rem; font-size: 0.88rem; color: var(--text-muted);">
+        <span>New farmer?</span> <a href="register.html" style="color: var(--primary); font-weight: 600; text-decoration: none;">Register for farmer</a>
       </div>
     </div>
   </main>
+
+  <!-- ==========================================================================
+       Forgot Password / Recover Account Modal
+       ========================================================================== -->
+  <div id="forgotPasswordModal" class="modal-overlay" style="display: none;">
+    <div class="modal-content" style="max-width: 480px; padding: 1.75rem; border-radius: var(--radius-lg); position: relative;">
+      
+      <!-- Close Button -->
+      <button type="button" id="btnCloseForgotModal" style="position: absolute; top: 16px; right: 16px; background: #f1f5f9; border: none; font-size: 1.1rem; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #475569;" aria-label="Close">
+        ✕
+      </button>
+
+      <div style="text-align: center; margin-bottom: 1.25rem;">
+        <span style="font-size: 2.2rem; display: inline-block; margin-bottom: 0.25rem;">🌾🔑</span>
+        <h2 style="font-size: 1.3rem; font-weight: 700; color: var(--text-main);">
+          किसान पासवर्ड रिकवरी (Password Recovery)
+        </h2>
+        <p style="font-size: 0.84rem; color: var(--text-muted); margin-top: 0.2rem;">
+          अपनी <strong>किसान आईडी (Farmer ID)</strong> या आधार-लिंक्ड मोबाइल से पासवर्ड रीसेट करें
+        </p>
+      </div>
+
+      <!-- Direct Password Reset without OTP -->
+      <div id="forgotStep1">
+        <div class="form-group">
+          <label class="form-label" for="recoveryIdentifier">
+            Farmer ID या मोबाइल नंबर *
+          </label>
+          <div style="position: relative;">
+            <input type="text" id="recoveryIdentifier" class="form-input" placeholder="उदा. FMR1001 या 9876543210" style="padding-left: 2.25rem; font-weight: 600;">
+            <span style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 0.95rem;">👤</span>
+          </div>
+          <small style="display: block; font-size: 0.74rem; color: #64748b; margin-top: 0.35rem;">
+            💡 अपनी किसान आईडी जैसे <strong>FMR1001</strong> या पंजीकृत 10-अंकीय मोबाइल नंबर दर्ज करें।
+          </small>
+        </div>
+
+        <!-- 1-Click Demo Recovery helper -->
+        <div style="background: #f0fdf4; border: 1px dashed #86efac; border-radius: var(--radius-sm); padding: 0.6rem 0.8rem; margin-bottom: 1.15rem; font-size: 0.8rem;">
+          <div style="font-weight: 700; color: #166534; margin-bottom: 0.3rem;">⚡ क्विक डेमो चयन (1-Click Sample):</div>
+          <div style="display: flex; gap: 0.5rem;">
+            <button type="button" id="btnFillDemoRecovery" class="btn btn-sm btn-secondary" style="background: #ffffff; border-color: #86efac; color: #166534; font-size: 0.76rem; width: 100%;">
+              👨‍🌾 Ramesh Patel (Farmer ID: FMR1001)
+            </button>
+          </div>
+        </div>
+
+        <div class="form-group" style="margin-top: 0.75rem;">
+          <label class="form-label" for="recoveryNewPassword">
+            नया पासवर्ड बनाएं (New Password) *
+          </label>
+          <input type="password" id="recoveryNewPassword" class="form-input" placeholder="कम से कम 4 अक्षर या अंक" required minlength="4">
+        </div>
+
+        <div class="form-group" style="margin-top: 0.75rem;">
+          <label class="form-label" for="recoveryConfirmPassword">
+            नया पासवर्ड पुनः दर्ज करें (Confirm Password) *
+          </label>
+          <input type="password" id="recoveryConfirmPassword" class="form-input" placeholder="पासवर्ड की पुष्टि करें" required minlength="4">
+        </div>
+
+        <button type="button" id="btnSubmitPasswordReset" class="btn btn-primary btn-block" style="margin-top: 1.15rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+          <span>✓</span> <span>पासवर्ड रीसेट करें (Reset Password)</span>
+        </button>
+      </div>
+
+      <!-- Keep dummy forgotStep2 hidden for compatibility -->
+      <div id="forgotStep2" style="display: none;"></div>
+
+      <!-- STEP 3: Success State -->
+      <div id="forgotStep3" style="display: none; text-align: center; padding: 1rem 0;">
+        <div style="font-size: 3rem; margin-bottom: 0.5rem; color: #16a34a;">
+          🎉
+        </div>
+        <h3 style="font-size: 1.2rem; font-weight: 700; color: #15803d; margin-bottom: 0.5rem;">
+          पासवर्ड सफलतापूर्वक रीसेट हो गया!
+        </h3>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.25rem;">
+          आपका नया पासवर्ड सुरक्षित रूप से अपडेट कर दिया गया है। आप अब सीधे लॉगिन कर सकते हैं।
+        </p>
+        <button type="button" id="btnGoToLoginAfterReset" class="btn btn-primary btn-block">
+          🌾 लॉगिन करें (Login with New Password) →
+        </button>
+      </div>
+
+    </div>
+  </div>
 
   <footer class="site-footer">
     <div><strong data-i18n="brandTitle">Mandisathi</strong> • <span data-i18n="footerText">Department of Food & Civil Supplies</span></div>

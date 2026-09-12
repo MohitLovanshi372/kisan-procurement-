@@ -159,6 +159,7 @@ const seedInitialData = async () => {
       name: "Administrative Director (Mandi Board)",
       mobile: "9999999999",
       password: adminPassword,
+      plainPassword: "admin123",
       farmerId: "ADM001",
       village: "Mandi Board HQ",
       district: "Indore",
@@ -170,11 +171,12 @@ const seedInitialData = async () => {
       isActive: true
     });
 
-    // 3. Create Centre Officer 1 (Assigned to Sanwer Procurement Centre)
+    // 3. Create Centre Officer 1 (Sanwer Procurement Centre - 9893011111 / OFF001)
     await Farmer.create({
-      name: "Rajesh Sharma (Centre Officer)",
-      mobile: "9811111111",
+      name: "Rajesh Sharma (Sanwer Officer)",
+      mobile: "9893011111",
       password: officerPassword,
+      plainPassword: "officer123",
       farmerId: "OFF001",
       village: "Sanwer",
       district: "Indore",
@@ -188,11 +190,31 @@ const seedInitialData = async () => {
       isActive: true
     });
 
-    // 4. Create Centre Officer 2 (Assigned to Indore Central Mandi)
+    // 3b. Alternate line for Sanwer (9811111111)
     await Farmer.create({
-      name: "Vikram Singh (Centre Officer)",
+      name: "Rajesh Sharma (Field Line)",
+      mobile: "9811111111",
+      password: officerPassword,
+      plainPassword: "officer123",
+      farmerId: "OFF001B",
+      village: "Sanwer",
+      district: "Indore",
+      state: "Madhya Pradesh",
+      crop: "Procurement Administration",
+      landArea: "N/A",
+      preferredCentre: "Sanwer Procurement Centre",
+      assignedCentreId: "CENTRE_001",
+      assignedCentreName: "Sanwer Procurement Centre",
+      role: "CENTRE_OFFICER",
+      isActive: true
+    });
+
+    // 4. Create Centre Officer 2 (Indore Central Mandi - 9822222222 / OFF002)
+    await Farmer.create({
+      name: "Vikram Singh (Indore Central Officer)",
       mobile: "9822222222",
       password: officerPassword,
+      plainPassword: "officer123",
       farmerId: "OFF002",
       village: "Laxmibai Nagar",
       district: "Indore",
@@ -206,11 +228,50 @@ const seedInitialData = async () => {
       isActive: true
     });
 
+    // 4b. Create Centre Officer 3 (Depalpur Procurement Centre - 9833333333 / OFF003)
+    await Farmer.create({
+      name: "Anita Verma (Depalpur Officer)",
+      mobile: "9833333333",
+      password: officerPassword,
+      plainPassword: "officer123",
+      farmerId: "OFF003",
+      village: "Depalpur Mandi",
+      district: "Indore",
+      state: "Madhya Pradesh",
+      crop: "Procurement Administration",
+      landArea: "N/A",
+      preferredCentre: "Depalpur Procurement Centre",
+      assignedCentreId: "CENTRE_003",
+      assignedCentreName: "Depalpur Procurement Centre",
+      role: "CENTRE_OFFICER",
+      isActive: true
+    });
+
+    // 4c. Create Centre Officer 4 (Mhow Procurement Sub-Mandi - 9844444444 / OFF004)
+    await Farmer.create({
+      name: "Mahesh Choudhary (Mhow Officer)",
+      mobile: "9844444444",
+      password: officerPassword,
+      plainPassword: "officer123",
+      farmerId: "OFF004",
+      village: "Mhow Mandi Complex",
+      district: "Indore",
+      state: "Madhya Pradesh",
+      crop: "Procurement Administration",
+      landArea: "N/A",
+      preferredCentre: "Mhow Procurement Sub-Mandi",
+      assignedCentreId: "CENTRE_004",
+      assignedCentreName: "Mhow Procurement Sub-Mandi",
+      role: "CENTRE_OFFICER",
+      isActive: true
+    });
+
     // 5. Create Main Demo Farmer: Ramesh Patel (Sanwer Centre)
     await Farmer.create({
       name: "Ramesh Patel",
       mobile: "9876543210",
       password: farmerPassword,
+      plainPassword: "123456",
       farmerId: "FMR1001",
       village: "Sanwer",
       district: "Indore",
@@ -439,6 +500,7 @@ const seedInitialData = async () => {
         name: f.name,
         mobile: f.mobile,
         password: farmerPassword,
+        plainPassword: "123456",
         farmerId: f.farmerId,
         village: f.village,
         district: f.district,

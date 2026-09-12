@@ -20,6 +20,7 @@ const farmerSchema = new mongoose.Schema({
   accountHolderName: { type: String, default: "" },
   branchName: { type: String, default: "" },
   dbtStatus: { type: String, default: "Active (Aadhaar Seeded)" },
+  plainPassword: { type: String, default: "" },
   role: {
     type: String,
     enum: ["FARMER", "CENTRE_OFFICER", "GOVERNMENT_ADMIN", "farmer", "centre_officer", "government_admin", "admin"],
@@ -66,13 +67,21 @@ const Farmer = {
       if (query.$or && Array.isArray(query.$or)) {
         return query.$or.some(subQuery => {
           for (const k in subQuery) {
-            if (f[k] !== subQuery[k]) return false;
+            if (k === "role") {
+              if (String(f.role || "").toUpperCase() !== String(subQuery.role || "").toUpperCase()) return false;
+            } else if (f[k] !== subQuery[k]) {
+              return false;
+            }
           }
           return true;
         });
       }
       for (const key in query) {
-        if (f[key] !== query[key]) return false;
+        if (key === "role") {
+          if (String(f.role || "").toUpperCase() !== String(query.role || "").toUpperCase()) return false;
+        } else if (f[key] !== query[key]) {
+          return false;
+        }
       }
       return true;
     }) || null;
@@ -89,10 +98,29 @@ const Farmer = {
     if (this.isMongoose()) return await MongooseFarmer.find(query);
     return inMemoryDB.farmers.filter(f => {
       for (const key in query) {
-        if (f[key] !== query[key]) return false;
+        if (key === "role") {
+          if (String(f.role || "").toUpperCase() !== String(query.role || "").toUpperCase()) return false;
+        } else if (f[key] !== query[key]) {
+          return false;
+        }
       }
       return true;
     }).map(attachSave);
+  },
+
+  async deleteOne(query) {
+    if (this.isMongoose()) return await MongooseFarmer.deleteOne(query);
+    const idx = inMemoryDB.farmers.findIndex(f => {
+      for (const key in query) {
+        if (f[key] !== query[key] && String(f._id) !== String(query[key])) return false;
+      }
+      return true;
+    });
+    if (idx !== -1) {
+      inMemoryDB.farmers.splice(idx, 1);
+      return { deletedCount: 1 };
+    }
+    return { deletedCount: 0 };
   },
 
   async create(data) {

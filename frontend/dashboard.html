@@ -217,9 +217,9 @@
           <button id="btnMainDownloadQr" class="btn btn-outline-primary btn-sm" style="display: flex; align-items: center; justify-content: center; gap: 0.4rem;">
             <span>📥</span> <span data-i18n="downloadQrPassBtn">Download QR Pass</span>
           </button>
-          <button id="btnMainSimulateScan" class="btn btn-sm" style="background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 0.35rem;">
-            <span>🔬</span> <span data-i18n="testGateScannerBtn">Test Gate Scanner</span>
-          </button>
+          <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 6px; padding: 0.35rem 0.5rem; font-size: 0.72rem; color: #166534; font-weight: 600; text-align: center;">
+            🔒 Centre Officer Camera Scan Only
+          </div>
         </div>
       </section>
 
@@ -596,14 +596,23 @@
           <button id="btnCloseQrModal" style="background: none; border: none; font-size: 1.35rem; cursor: pointer; color: var(--text-muted);">✕</button>
         </div>
 
-        <!-- Modal Mode Switcher -->
-        <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">
-          <button id="qrTabPass" class="channel-tab-btn active">
-            <span>📱</span> <span data-i18n="digitalQrGatePassTab">Digital QR Gate Pass</span>
-          </button>
-          <button id="qrTabScanner" class="channel-tab-btn">
-            <span>🔬</span> <span data-i18n="gateScannerSimulatorTab">Gate Scanner Simulator</span>
-          </button>
+        <!-- Officer Verification Policy Notice -->
+        <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: var(--radius-sm); padding: 0.6rem 0.85rem; margin-bottom: 1rem; font-size: 0.8rem; color: #166534; display: flex; align-items: center; gap: 0.5rem;">
+          <span>🔒</span>
+          <span><strong>Mandi Gate Policy:</strong> QR Code scanning and Gate Pass authorization is performed strictly by the <strong>Procurement Centre Officer</strong> using the gate camera scanner. Please show this screen or printed slip at the entrance.</span>
+        </div>
+
+        <!-- Live Gate Pass Status Alert (shown when passed) -->
+        <div id="modalGatePassPassedAlert" style="display: none; background: #ecfdf5; border: 1.5px solid #10b981; border-radius: var(--radius-sm); padding: 0.85rem; margin-bottom: 1rem; color: #065f46;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.35rem;">
+            <strong style="font-size: 0.95rem; display: flex; align-items: center; gap: 0.35rem;">
+              <span>✅</span> <span>GATE PASS PASSED • ENTRY AUTHORIZED</span>
+            </strong>
+            <span class="badge badge-green" id="modalGatePassNoBadge">GP-2026-0000</span>
+          </div>
+          <div style="font-size: 0.8rem;">
+            Your vehicle has been verified by the Centre Officer. Proceed to: <strong id="modalGatePassAssignedLane">Gate 1 (Weighbridge Scale 1)</strong>
+          </div>
         </div>
 
         <!-- TAB 1: Digital QR Gate Pass View -->
@@ -655,7 +664,7 @@
                 </div>
 
                 <div style="margin-top: 0.6rem; background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 6px; padding: 0.4rem 0.6rem; font-size: 0.75rem; color: #065f46; font-weight: 600;" id="modalFastTrackLaneBox">
-                  ⚡ Fast-Track Lane: <strong>Lane 1 (Weighbridge Scale A)</strong>
+                  ⚡ Fast-Track Lane: <strong id="modalFastTrackLaneText">Gate 1 (Weighbridge Scale 1)</strong>
                 </div>
               </div>
             </div>
@@ -674,78 +683,10 @@
               <span>📥</span> <span data-i18n="downloadQrPassPng">Download QR Pass (PNG)</span>
             </button>
             <div style="display: flex; gap: 0.5rem;">
-              <button id="btnPrintQrAction" class="btn btn-sm btn-secondary" style="display: flex; align-items: center; gap: 0.35rem;">
-                <span>🖨️</span> <span data-i18n="printPass">Print Pass</span>
-              </button>
-              <button id="btnSwitchToScanner" class="btn btn-primary btn-sm" style="display: flex; align-items: center; gap: 0.35rem;">
-                <span>🔬</span> <span data-i18n="testGateScannerArrow">Test Gate Scanner →</span>
+              <button id="btnPrintQrAction" class="btn btn-sm btn-primary" style="display: flex; align-items: center; gap: 0.35rem;">
+                <span>🖨️</span> <span data-i18n="printPass">Print Pass Slip</span>
               </button>
             </div>
-          </div>
-        </div>
-
-        <!-- TAB 2: Gate Scanner Terminal Simulator -->
-        <div id="qrScannerView" style="display: none;">
-          <div style="background: #f8fafc; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 1rem; margin-bottom: 1rem;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-              <div style="font-weight: 700; font-size: 0.92rem; color: var(--text-main); display: flex; align-items: center; gap: 0.35rem;">
-                <span>🏛️</span> <span data-i18n="mandiGateTerminal">Mandi Entrance Gate Scanner Terminal</span>
-              </div>
-              <span class="badge badge-blue" data-i18n="operatorMode">Operator Mode</span>
-            </div>
-            <p style="font-size: 0.8rem; color: var(--text-muted);" data-i18n="scannerSimSubtitle">
-              Simulate the procurement centre gatekeeper scanning the farmer's QR code to instantly verify registration and schedule.
-            </p>
-          </div>
-
-          <!-- Scanner Viewfinder Box -->
-          <div class="qr-scanner-sim-box">
-            <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: #94a3b8; margin-bottom: 0.75rem;">
-              <span data-i18n="cameraGateScanner">CAMERA: HD GATE SCANNER #01</span>
-              <span id="scanLiveClock">10:00 AM</span>
-            </div>
-
-            <div class="qr-viewfinder">
-              <div class="qr-scan-laser"></div>
-              <img id="scannerSampleQr" src="" alt="Target QR" style="width: 130px; height: 130px; opacity: 0.85; border-radius: 6px;">
-            </div>
-
-            <div style="text-align: center; margin-top: 0.75rem; font-size: 0.8rem; color: #38bdf8; font-weight: 600;" data-i18n="alignQrCode">
-              Align QR code inside frame for instant barcode decode
-            </div>
-          </div>
-
-          <!-- Trigger Scan Button -->
-          <div style="text-align: center; margin: 1rem 0;">
-            <button id="btnPerformGateScan" class="btn btn-primary" style="background: #059669; border-color: #047857; width: 100%; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
-              <span>⚡</span> <span data-i18n="scanAndVerifyToken">SCAN & VERIFY TOKEN</span>
-            </button>
-          </div>
-
-          <!-- Gate Verification Result Box -->
-          <div id="gateScanResultBox" style="display: none; background: #ecfdf5; border: 1.5px solid #10b981; border-radius: var(--radius-md); padding: 1rem; margin-top: 1rem;">
-            <div style="display: flex; align-items: center; gap: 0.5rem; color: #065f46; font-weight: 800; font-size: 1rem; margin-bottom: 0.5rem;">
-              <span>✅</span> <span id="gateScanResultTitle" data-i18n="entryAuthorized">ENTRY AUTHORIZED — FAST TRACK LANE 1</span>
-            </div>
-            
-            <div style="font-size: 0.85rem; color: #065f46; display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; background: #ffffff; padding: 0.75rem; border-radius: 6px; border: 1px solid #a7f3d0;">
-              <div><strong>Farmer:</strong> <span id="resScanFarmer">Ramesh Patel</span></div>
-              <div><strong>Token:</strong> <span id="resScanToken">TK-1042</span></div>
-              <div><strong>Crop:</strong> <span id="resScanCrop">Wheat (18 Quintal)</span></div>
-              <div><strong>Centre:</strong> <span id="resScanCentre">Sanwer Mandi</span></div>
-              <div><strong>Slot Time:</strong> <span id="resScanSlot">10:00 AM – 11:00 AM</span></div>
-              <div><strong>Verification:</strong> <span class="badge badge-green" data-i18n="passedBadge">Passed</span></div>
-            </div>
-
-            <div style="font-size: 0.75rem; color: #047857; margin-top: 0.5rem; font-weight: 600;" id="resScanLogText">
-              Proceeding directly to Weighbridge Scale A. Digital check-in logged at <span id="resScanTime"></span>.
-            </div>
-          </div>
-
-          <div style="display: flex; justify-content: flex-end; margin-top: 1rem;">
-            <button id="btnBackToQrPass" class="btn btn-outline-primary btn-sm" data-i18n="backToQrPass">
-              ← Back to QR Gate Pass
-            </button>
           </div>
         </div>
 
