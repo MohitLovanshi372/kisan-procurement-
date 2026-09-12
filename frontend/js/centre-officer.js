@@ -9,6 +9,15 @@ document.addEventListener("DOMContentLoaded", async () => {
     return;
   }
 
+  // Initialize Officer ID Card
+  if (window.MandiSathiIDCard) {
+    MandiSathiIDCard.init({
+      type: "officer",
+      openBtnId: "openOfficerModalBtn",
+      modalId: "digitalOfficerCardModal"
+    });
+  }
+
   let centreData = null;
   let farmersList = [];
 

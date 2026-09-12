@@ -4,6 +4,8 @@ const Farmer = require("../models/Farmer");
 const Procurement = require("../models/Procurement");
 const Centre = require("../models/Centre");
 const Notification = require("../models/Notification");
+const QRCode = require("qrcode");
+const { generateCardPdf } = require("../services/cardPdfService");
 const { authenticateJWT, authorizeRoles, authorizeCentre } = require("../middleware/authMiddleware");
 const { emitToFarmer, emitToAll } = require("../socket");
 const { sendWhatsAppNotification } = require("../services/metaWhatsAppService");
@@ -812,6 +814,204 @@ router.post("/notify-farmer", async (req, res) => {
   } catch (error) {
     console.error("Notify farmer error:", error);
     res.status(500).json({ success: false, message: "Failed to send notification" });
+  }
+});
+
+/**
+ * PROCUREMENT CENTRE OFFICER DIGITAL ID CARD & PROFILE ENDPOINTS
+ */
+async function formatOfficerCard(officer, req) {
+  const host = req.get("host") || "localhost:3000";
+  const protocol = req.protocol || "http";
+  const officerId = officer.farmerId || req.user.farmerId || "OFF001";
+  const verificationPath = `/verify/officer/${officerId}`;
+  const verificationUrl = `${protocol}://${host}${verificationPath}`;
+
+  let qrCodeDataUrl = "";
+  try {
+    qrCodeDataUrl = await QRCode.toDataURL(verificationUrl, {
+      errorCorrectionLevel: "M",
+      margin: 1,
+      width: 220,
+      color: {
+        dark: "#065f46",
+        light: "#ffffff"
+      }
+    });
+  } catch (qrErr) {
+    console.error("Officer QR Code generation error:", qrErr);
+  }
+
+  const cleanMobile = officer.mobile ? String(officer.mobile).replace(/[^0-9]/g, "") : "9893011111";
+  const maskedMobile = cleanMobile.length >= 4 
+    ? "******" + cleanMobile.slice(-4) 
+    : "******3210";
+
+  return {
+    officerName: officer.name,
+    officerId: officerId,
+    designation: officer.designation || "Procurement Centre Officer",
+    assignedCentre: officer.assignedCentreName || officer.preferredCentre || "Sanwer Procurement Centre",
+    centreId: officer.assignedCentreId || "CENTRE_001",
+    district: officer.district || "Indore",
+    mobileNumber: maskedMobile,
+    status: officer.isActive !== false ? "ACTIVE" : "INACTIVE",
+    photo: officer.photo || "",
+    cardId: officer.cardId || `OFF-CRD-${officerId}`,
+    hasGeneratedCard: !!officer.hasGeneratedCard,
+    cardGeneratedAt: officer.cardGeneratedAt || null,
+    verificationUrl,
+    verificationPath,
+    qrCodeDataUrl
+  };
+}
+
+// GET /api/officer/profile - Officer Profile
+router.get("/profile", async (req, res) => {
+  try {
+    const officer = await Farmer.findById(req.user.id);
+    if (!officer) {
+      return res.status(404).json({ success: false, message: "Officer record not found" });
+    }
+    res.json({
+      success: true,
+      data: {
+        id: officer._id,
+        name: officer.name,
+        officerId: officer.farmerId,
+        designation: officer.designation || "Procurement Centre Officer",
+        mobile: officer.mobile,
+        village: officer.village,
+        district: officer.district,
+        state: officer.state,
+        assignedCentreId: officer.assignedCentreId,
+        assignedCentreName: officer.assignedCentreName || officer.preferredCentre,
+        status: officer.isActive !== false ? "Active" : "Inactive",
+        hasGeneratedCard: !!officer.hasGeneratedCard,
+        cardGeneratedAt: officer.cardGeneratedAt,
+        cardId: officer.cardId
+      }
+    });
+  } catch (err) {
+    console.error("Officer profile error:", err);
+    res.status(500).json({ success: false, message: "Unable to load officer profile" });
+  }
+});
+
+// GET /api/officer/card - Authenticated officer ID Card
+router.get("/card", async (req, res) => {
+  try {
+    if (req.user.role !== "CENTRE_OFFICER") {
+      return res.status(403).json({
+        success: false,
+        message: "Access denied: Officer ID Card is available only for Procurement Centre Officers."
+      });
+    }
+
+    const officer = await Farmer.findById(req.user.id);
+    if (!officer) {
+      return res.status(404).json({ success: false, message: "Officer record not found" });
+    }
+
+    const cardData = await formatOfficerCard(officer, req);
+    res.json({ success: true, data: cardData });
+  } catch (error) {
+    console.error("Officer card fetch error:", error);
+    res.status(500).json({ success: false, message: "Unable to load Officer ID Card" });
+  }
+});
+
+// POST /api/officer/card/generate - Generate Officer ID Card
+router.post("/card/generate", async (req, res) => {
+  try {
+    if (req.user.role !== "CENTRE_OFFICER") {
+      return res.status(403).json({
+        success: false,
+        message: "Access denied: Officer ID Card is available only for Procurement Centre Officers."
+      });
+    }
+
+    const officer = await Farmer.findById(req.user.id);
+    if (!officer) {
+      return res.status(404).json({ success: false, message: "Officer record not found" });
+    }
+
+    officer.hasGeneratedCard = true;
+    officer.cardGeneratedAt = new Date();
+    if (!officer.cardId) {
+      officer.cardId = `OFF-CRD-${officer.farmerId}-${Math.floor(1000 + Math.random() * 9000)}`;
+    }
+    await officer.save();
+
+    const cardData = await formatOfficerCard(officer, req);
+    res.json({
+      success: true,
+      message: "Officer ID Card generated successfully",
+      data: cardData
+    });
+  } catch (error) {
+    console.error("Officer card generate error:", error);
+    res.status(500).json({ success: false, message: "Unable to generate Officer ID Card" });
+  }
+});
+
+// GET /api/officer/card/pdf - Download clean, printer-friendly PDF of Officer ID Card
+router.get("/card/pdf", async (req, res) => {
+  try {
+    if (req.user.role !== "CENTRE_OFFICER" && req.user.role !== "GOVERNMENT_ADMIN") {
+      return res.status(403).json({
+        success: false,
+        message: "Access denied: Officer ID Card is available only for Procurement Centre Officers."
+      });
+    }
+
+    const officer = await Farmer.findById(req.user.id);
+    if (!officer) {
+      return res.status(404).json({ success: false, message: "Officer record not found" });
+    }
+
+    const cardData = await formatOfficerCard(officer, req);
+    const pdfBuffer = await generateCardPdf(cardData, "officer");
+
+    const cleanId = (officer.farmerId || "OFF001").replace(/[^a-zA-Z0-9_-]/g, "");
+    const fileName = `MandiSathi_Officer_Card_${cleanId}.pdf`;
+
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader("Content-Disposition", `attachment; filename="${fileName}"`);
+    res.setHeader("Content-Length", pdfBuffer.length);
+    res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+    return res.end(pdfBuffer);
+  } catch (error) {
+    console.error("Officer card PDF download error:", error);
+    res.status(500).json({ success: false, message: "Unable to generate PDF ID card" });
+  }
+});
+
+// GET /api/officer/card/:officerId - Strict isolation: officer can ONLY access their own card
+router.get("/card/:officerId", async (req, res) => {
+  try {
+    const requestedId = req.params.officerId;
+
+    // Strict identity check: authenticated Officer's JWT identity
+    const isSelf = String(req.user.id) === String(requestedId) || String(req.user.farmerId) === String(requestedId);
+
+    if (!isSelf) {
+      return res.status(403).json({
+        success: false,
+        message: "Access denied."
+      });
+    }
+
+    const officer = await Farmer.findById(req.user.id);
+    if (!officer) {
+      return res.status(404).json({ success: false, message: "Officer record not found" });
+    }
+
+    const cardData = await formatOfficerCard(officer, req);
+    res.json({ success: true, data: cardData });
+  } catch (error) {
+    console.error("Officer card fetch by ID error:", error);
+    res.status(500).json({ success: false, message: "Unable to load Officer ID Card" });
   }
 });
 

@@ -18,6 +18,7 @@ const notificationRoutes = require("./routes/notificationRoutes");
 const adminRoutes = require("./routes/adminRoutes");
 const officerRoutes = require("./routes/officerRoutes");
 const whatsappRoutes = require("./routes/whatsappRoutes");
+const verifyRoutes = require("./routes/verifyRoutes");
 
 const app = express();
 const server = http.createServer(app);
@@ -56,6 +57,7 @@ app.use("/api/notifications", notificationRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/officer", officerRoutes);
 app.use("/api/centre-officer", officerRoutes);
+app.use("/api/verify", verifyRoutes);
 
 // Database offline fallback error middleware
 app.use((err, req, res, next) => {
@@ -88,6 +90,16 @@ app.get(["/react", "/react-scanner", "/officer-scanner", "/scanner"], (req, res)
     return res.sendFile(reactIndex);
   }
   res.sendFile(path.join(frontendPath, "centre-officer.html"));
+});
+
+// Public QR Verification Page for Farmer & Officer Digital Cards
+app.get(["/verify", "/verify/farmer/:id", "/verify/officer/:id"], (req, res) => {
+  res.sendFile(path.join(frontendPath, "verify.html"));
+});
+
+// Dedicated Procurement Centre Officer Profile Page
+app.get(["/officer-profile", "/officer-profile.html"], (req, res) => {
+  res.sendFile(path.join(frontendPath, "officer-profile.html"));
 });
 
 // Fallback to frontend index for root navigation

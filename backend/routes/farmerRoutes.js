@@ -5,6 +5,7 @@ const Procurement = require("../models/Procurement");
 const Centre = require("../models/Centre");
 const Notification = require("../models/Notification");
 const QRCode = require("qrcode");
+const { generateCardPdf } = require("../services/cardPdfService");
 const { authenticateJWT, authorizeRoles } = require("../middleware/authMiddleware");
 
 // All routes in this router require authentication and FARMER or GOVERNMENT_ADMIN role
@@ -41,6 +42,11 @@ router.get("/profile", async (req, res) => {
         accountHolderName: farmer.accountHolderName || farmer.name || "",
         branchName: farmer.branchName || "",
         dbtStatus: farmer.dbtStatus || "Active (Aadhaar Seeded)",
+        surveyNumber: farmer.surveyNumber || "KH-2024/782",
+        landRecordStatus: farmer.landRecordStatus || "Farmer Provided",
+        hasGeneratedCard: !!farmer.hasGeneratedCard,
+        cardGeneratedAt: farmer.cardGeneratedAt || null,
+        cardId: farmer.cardId || `FRM-CRD-${farmer.farmerId}`,
         role: farmer.role,
         createdAt: farmer.createdAt
       }
@@ -361,6 +367,175 @@ router.get("/queue", async (req, res) => {
   } catch (error) {
     console.error("Farmer queue error:", error);
     res.status(500).json({ success: false, message: "Unable to load centre queue details" });
+  }
+});
+
+/**
+ * DIGITAL FARMER CARD HELPER & ENDPOINTS
+ */
+async function formatFarmerCard(farmer, req) {
+  const host = req.get("host") || "localhost:3000";
+  const protocol = req.protocol || "http";
+  const verificationPath = `/verify/farmer/${farmer.farmerId}`;
+  const verificationUrl = `${protocol}://${host}${verificationPath}`;
+
+  let qrCodeDataUrl = "";
+  try {
+    qrCodeDataUrl = await QRCode.toDataURL(verificationUrl, {
+      errorCorrectionLevel: "M",
+      margin: 1,
+      width: 220,
+      color: {
+        dark: "#14532d",
+        light: "#ffffff"
+      }
+    });
+  } catch (qrErr) {
+    console.error("QR Code generation error:", qrErr);
+  }
+
+  const cleanMobile = farmer.mobile ? String(farmer.mobile).replace(/[^0-9]/g, "") : "9876543210";
+  const maskedMobile = cleanMobile.length >= 4 
+    ? "******" + cleanMobile.slice(-4) 
+    : "******3210";
+
+  return {
+    farmerName: farmer.name,
+    farmerId: farmer.farmerId,
+    mobileNumber: maskedMobile,
+    village: farmer.village || "Sanwer",
+    district: farmer.district || "Indore",
+    state: farmer.state || "Madhya Pradesh",
+    procurementCentre: farmer.assignedCentreName || farmer.preferredCentre || "Sanwer Procurement Centre",
+    crop: farmer.crop || "Wheat",
+    surveyNumber: farmer.surveyNumber || "KH-2024/782",
+    landArea: farmer.landArea || "4.5 Acres",
+    landRecordStatus: farmer.landRecordStatus || "Farmer Provided",
+    verificationStatus: farmer.verificationStatus || "Active",
+    photo: farmer.photo || "",
+    cardId: farmer.cardId || `FRM-CRD-${farmer.farmerId}`,
+    hasGeneratedCard: !!farmer.hasGeneratedCard,
+    cardGeneratedAt: farmer.cardGeneratedAt || null,
+    verificationUrl,
+    verificationPath,
+    qrCodeDataUrl
+  };
+}
+
+// GET /api/farmers/card - Get Digital Farmer Card for authenticated farmer
+router.get("/card", async (req, res) => {
+  try {
+    if (req.user.role !== "FARMER") {
+      return res.status(403).json({
+        success: false,
+        message: "Access denied: Digital Farmer Card is available only for registered Farmers."
+      });
+    }
+
+    const farmer = await Farmer.findById(req.user.id);
+    if (!farmer) {
+      return res.status(404).json({ success: false, message: "Farmer not found" });
+    }
+
+    const cardData = await formatFarmerCard(farmer, req);
+    res.json({ success: true, data: cardData });
+  } catch (error) {
+    console.error("Farmer card fetch error:", error);
+    res.status(500).json({ success: false, message: "Unable to load Digital Farmer Card" });
+  }
+});
+
+// POST /api/farmers/card/generate - Generate Digital Farmer Card
+router.post("/card/generate", async (req, res) => {
+  try {
+    if (req.user.role !== "FARMER") {
+      return res.status(403).json({
+        success: false,
+        message: "Access denied: Digital Farmer Card is available only for registered Farmers."
+      });
+    }
+
+    const farmer = await Farmer.findById(req.user.id);
+    if (!farmer) {
+      return res.status(404).json({ success: false, message: "Farmer not found" });
+    }
+
+    farmer.hasGeneratedCard = true;
+    farmer.cardGeneratedAt = new Date();
+    if (!farmer.cardId) {
+      farmer.cardId = `FRM-CRD-${farmer.farmerId}-${Math.floor(1000 + Math.random() * 9000)}`;
+    }
+    await farmer.save();
+
+    const cardData = await formatFarmerCard(farmer, req);
+    res.json({
+      success: true,
+      message: "Digital Farmer Card generated successfully",
+      data: cardData
+    });
+  } catch (error) {
+    console.error("Farmer card generate error:", error);
+    res.status(500).json({ success: false, message: "Unable to generate Digital Farmer Card" });
+  }
+});
+
+// GET /api/farmers/card/pdf - Download clean, printer-friendly PDF of Digital Farmer Card
+router.get("/card/pdf", async (req, res) => {
+  try {
+    if (req.user.role !== "FARMER" && req.user.role !== "GOVERNMENT_ADMIN") {
+      return res.status(403).json({
+        success: false,
+        message: "Access denied: Digital Farmer Card is available only for registered Farmers."
+      });
+    }
+
+    const farmer = await Farmer.findById(req.user.id);
+    if (!farmer) {
+      return res.status(404).json({ success: false, message: "Farmer not found" });
+    }
+
+    const cardData = await formatFarmerCard(farmer, req);
+    const pdfBuffer = await generateCardPdf(cardData, "farmer");
+
+    const cleanId = (farmer.farmerId || "FMR1001").replace(/[^a-zA-Z0-9_-]/g, "");
+    const fileName = `MandiSathi_Farmer_Card_${cleanId}.pdf`;
+
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader("Content-Disposition", `attachment; filename="${fileName}"`);
+    res.setHeader("Content-Length", pdfBuffer.length);
+    res.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+    return res.end(pdfBuffer);
+  } catch (error) {
+    console.error("Farmer card PDF download error:", error);
+    res.status(500).json({ success: false, message: "Unable to generate PDF card" });
+  }
+});
+
+// GET /api/farmers/card/:farmerId - Strict role and identity guard
+router.get("/card/:farmerId", async (req, res) => {
+  try {
+    const requestedId = req.params.farmerId;
+    
+    // Strict isolation: authenticatedUser.id === requestedFarmer.id
+    const isSelf = String(req.user.id) === String(requestedId) || String(req.user.farmerId) === String(requestedId);
+    
+    if (!isSelf) {
+      return res.status(403).json({
+        success: false,
+        message: "Access denied: You are not authorized to view another farmer's card."
+      });
+    }
+
+    const farmer = await Farmer.findById(req.user.id);
+    if (!farmer) {
+      return res.status(404).json({ success: false, message: "Farmer not found" });
+    }
+
+    const cardData = await formatFarmerCard(farmer, req);
+    res.json({ success: true, data: cardData });
+  } catch (error) {
+    console.error("Farmer card fetch by ID error:", error);
+    res.status(500).json({ success: false, message: "Unable to load Digital Farmer Card" });
   }
 });
 

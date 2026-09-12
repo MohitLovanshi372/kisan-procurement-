@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Officer Profile & Digital ID Card — MandiSathi</title>
+  <link rel="icon" type="image/png" href="img/logo.png">
+  <link rel="apple-touch-icon" href="img/logo.png">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/digital-card.css">
+</head>
+<body>
+
+  <!-- Top Navigation Header -->
+  <header class="site-header">
+    <div class="header-container">
+      <a href="centre-officer.html" class="brand-logo">
+        <span class="brand-icon">
+          <img src="img/logo.png" alt="MandiSathi Logo" class="brand-icon-img" onerror="this.onerror=null; this.src='img/brand-logo.png';">
+        </span>
+        <span class="brand-title">MandiSathi</span>
+      </a>
+
+      <ul class="nav-links" id="navLinks">
+        <li class="nav-item"><a href="centre-officer.html">Scanner & Operations</a></li>
+        <li class="nav-item active"><a href="officer-profile.html">Officer Profile & ID</a></li>
+      </ul>
+
+      <div class="header-actions">
+        <button id="langSwitchBtn" class="lang-btn">हिंदी</button>
+        <a href="officer-profile.html" class="user-profile-badge" style="text-decoration: none;">
+          <span class="user-avatar" style="background: #0f766e;">👮‍♂️</span>
+          <span id="headerOfficerName">Officer Profile</span>
+        </a>
+        <button id="headerLogoutBtn" class="btn-logout">Logout</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-content">
+    
+    <div class="page-header">
+      <div class="page-title-group">
+        <h1>Procurement Centre Officer Profile</h1>
+        <p class="page-subtitle">Official appointment credentials, assigned mandi jurisdiction, and security token.</p>
+      </div>
+      <div style="display: flex; gap: 0.6rem; align-items: center; flex-wrap: wrap;">
+        <button id="openOfficerCardBtn" class="btn btn-secondary btn-sm" style="display: inline-flex; align-items: center; gap: 0.45rem; background: #0f766e; color: #ffffff; border: none; font-weight: 700; padding: 0.45rem 0.95rem; box-shadow: 0 2px 4px rgba(15, 118, 110, 0.2);">
+          🪪 <span>Generate Official Officer ID Card</span>
+        </button>
+        <a href="centre-officer.html" class="btn btn-primary btn-sm" style="text-decoration: none;">
+          ← Back to Scanner & Gate Pass
+        </a>
+      </div>
+    </div>
+
+    <!-- Officer Profile Card -->
+    <div class="card" style="max-width: 820px; margin: 0 auto;">
+      <div style="display: flex; align-items: center; gap: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1.25rem; margin-bottom: 1.5rem;">
+        <div style="width: 64px; height: 64px; background: #0f766e; color: #fff; font-size: 2rem; font-weight: 700; border-radius: var(--radius-full); display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 8px rgba(15, 118, 110, 0.25);">
+          👮‍♂️
+        </div>
+        <div style="flex-grow: 1;">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+            <h2 id="profOfficerName" style="font-size: 1.4rem; font-weight: 800; color: #0f172a; margin: 0;">Rajesh Sharma</h2>
+            <span class="badge" style="background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; font-weight: 700;">
+              ✓ Officially Authorized Officer
+            </span>
+          </div>
+          <div style="color: var(--text-muted); font-size: 0.88rem; display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; margin-top: 0.35rem;">
+            <span>Officer ID: <strong id="profOfficerId" style="color: #0f766e; font-family: monospace; font-size: 0.95rem;">OFF001</strong></span>
+            <span>•</span>
+            <span>Role: <strong>PROCUREMENT CENTRE OFFICER</strong></span>
+            <span>•</span>
+            <span>Mobile: <strong id="profOfficerMobile" style="font-family: monospace;">******3210</strong></span>
+          </div>
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 1.25rem;">
+        <div style="background: #f8fafc; padding: 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+          <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">OFFICIAL DESIGNATION</div>
+          <div id="profDesignation" style="font-size: 1.05rem; font-weight: 800; margin-top: 0.25rem; color: #0f172a;">Procurement Centre Officer</div>
+        </div>
+
+        <div style="background: #f0fdf4; padding: 1rem; border-radius: var(--radius-sm); border: 1.5px solid #86efac;">
+          <div style="font-size: 0.75rem; color: #166534; font-weight: 700; text-transform: uppercase;">ASSIGNED PROCUREMENT CENTRE</div>
+          <div id="profAssignedCentre" style="font-size: 1.1rem; font-weight: 800; margin-top: 0.25rem; color: #064e3b;">Sanwer Procurement Centre</div>
+          <div id="profCentreId" style="font-size: 0.75rem; color: #15803d; font-family: monospace; margin-top: 0.15rem;">ID: CENTRE_001</div>
+        </div>
+
+        <div style="background: #f8fafc; padding: 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+          <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">MANDI JURISDICTION DISTRICT</div>
+          <div id="profDistrict" style="font-size: 1.05rem; font-weight: 800; margin-top: 0.25rem; color: #0f172a;">Indore</div>
+        </div>
+
+        <div style="background: #f8fafc; padding: 1rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+          <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">STATE & DEPT</div>
+          <div id="profState" style="font-size: 1.05rem; font-weight: 800; margin-top: 0.25rem; color: #0f172a;">Madhya Pradesh (MP-CSCP)</div>
+        </div>
+      </div>
+
+      <!-- Scope Isolation Advisory Box -->
+      <div style="margin-top: 1.5rem; padding: 1rem 1.25rem; background: #f0fdfa; border: 1.5px solid #5eead4; border-radius: var(--radius-md); display: flex; align-items: flex-start; gap: 0.75rem;">
+        <span style="font-size: 1.4rem;">🔒</span>
+        <div style="font-size: 0.82rem; color: #134e4a; line-height: 1.45;">
+          <strong>Strict Centre Isolation Active:</strong> As an appointed Procurement Centre Officer, your digital identity, physical access keys, and system permissions are strictly isolated to your assigned centre (<span id="profBannerCentre">Sanwer Procurement Centre</span>). Any attempts to process gate passes for other centers are automatically blocked by the kernel security policy.
+        </div>
+      </div>
+
+      <!-- Digital ID Card Section Banner -->
+      <div style="margin-top: 1.5rem; padding: 1.25rem; background: #ffffff; border: 2px solid #0f766e; border-radius: var(--radius-md); box-shadow: 0 4px 12px rgba(15, 118, 110, 0.08);">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+          <div style="display: flex; align-items: center; gap: 0.85rem;">
+            <div style="width: 50px; height: 50px; border-radius: 12px; background: #f0fdfa; border: 1.5px solid #99f6e4; display: flex; align-items: center; justify-content: center; font-size: 1.6rem;">
+              🪪
+            </div>
+            <div>
+              <div style="font-size: 0.72rem; font-weight: 800; text-transform: uppercase; color: #0f766e; letter-spacing: 0.06em;">
+                OFFICIAL APPOINTMENT CREDENTIAL
+              </div>
+              <h3 style="font-size: 1.15rem; font-weight: 800; color: #115e59; margin: 0.1rem 0 0.2rem;">
+                Official Procurement Centre Officer ID Card
+              </h3>
+              <div style="font-size: 0.82rem; color: #475569;">
+                Equipped with live QR verification, department watermark, assigned centre isolation tag, and print-ready format.
+              </div>
+            </div>
+          </div>
+          <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+            <button type="button" id="openOfficerCardBannerBtn" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 0.4rem; background: #0f766e; font-weight: 700;">
+              <span>View & Generate Officer ID Card</span> →
+            </button>
+            <button type="button" id="bannerOfficerPrintBtn" class="btn btn-secondary" style="display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.85rem;">
+              🖨️ Print
+            </button>
+            <button type="button" id="bannerOfficerPdfBtn" class="btn btn-secondary" style="display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.85rem; background: #eff6ff; color: #1d4ed8; border-color: #bfdbfe; font-weight: 700;">
+              📄 PDF
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Digital Officer Card Modal -->
+  <div class="idcard-modal-overlay" id="digitalOfficerCardModal">
+    <div class="idcard-modal-content">
+      <div class="idcard-modal-header" style="background: #f0fdfa; border-bottom: 1px solid #ccfbf1;">
+        <div>
+          <h2 style="font-size: 1.25rem; font-weight: 800; color: #115e59; margin: 0;">
+            👮‍♂️ Official Procurement Centre Officer ID Card
+          </h2>
+          <div style="font-size: 0.78rem; color: #64748b; margin-top: 0.2rem;">
+            Official Department Credential for procurement inspection, weighbridge clearance, and gate passes.
+          </div>
+        </div>
+        <button type="button" class="js-close-card-modal" style="background: transparent; border: none; font-size: 1.5rem; cursor: pointer; color: #64748b;">✕</button>
+      </div>
+
+      <div class="idcard-modal-body">
+        <!-- Printable / Downloadable Digital Card Frame -->
+        <div id="digitalIdCardPrintArea" style="width: 100%; display: flex; justify-content: center;">
+          <div class="digital-id-card-frame officer-theme">
+            <!-- Dynamically populated by MandiSathiIDCard -->
+            <div style="padding: 2.5rem 1.5rem; text-align: center; color: #64748b;">
+              <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">👮‍♂️</div>
+              <div style="font-weight: 700; font-size: 1rem; color: #0f172a;">Loading Officer ID Card...</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="idcard-modal-actions">
+        <button type="button" class="btn btn-secondary js-close-card-modal" style="font-size: 0.88rem;">
+          Close
+        </button>
+        <button type="button" class="btn btn-secondary js-print-card-btn" style="display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.88rem;">
+          🖨️ Print Card
+        </button>
+        <button type="button" class="btn btn-secondary js-download-pdf-btn" style="display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.88rem; background: #eff6ff; color: #1d4ed8; border-color: #bfdbfe; font-weight: 700;">
+          📄 Download PDF
+        </button>
+        <button type="button" class="btn btn-secondary js-download-card-btn" style="display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.88rem; background: #f0fdfa; color: #115e59; border-color: #99f6e4;">
+          💾 Download (PNG)
+        </button>
+        <button type="button" class="btn btn-primary js-generate-card-btn" style="display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.88rem; background: #0f766e;">
+          🔄 Generate / Refresh
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div><strong>MandiSathi</strong> • Department of Food, Civil Supplies & Consumer Protection, Government of Madhya Pradesh</div>
+  </footer>
+
+  <script src="js/socket.io.min.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/jspdf.umd.min.js"></script>
+  <script src="js/digital-card.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", async () => {
+      // Role protection: CENTRE_OFFICER only
+      if (!requireAuth(["centre_officer", "CENTRE_OFFICER"])) return;
+
+      // Initialize ID Card handler
+      MandiSathiIDCard.init({
+        type: "officer",
+        openBtnId: "openOfficerCardBtn",
+        modalId: "digitalOfficerCardModal"
+      });
+
+      const bannerBtn = document.getElementById("openOfficerCardBannerBtn");
+      if (bannerBtn) {
+        bannerBtn.addEventListener("click", () => {
+          MandiSathiIDCard.showModal("digitalOfficerCardModal");
+        });
+      }
+
+      const bannerPrint = document.getElementById("bannerOfficerPrintBtn");
+      if (bannerPrint) {
+        bannerPrint.addEventListener("click", async () => {
+          await MandiSathiIDCard.showModal("digitalOfficerCardModal");
+          MandiSathiIDCard.printCard();
+        });
+      }
+
+      const bannerPdf = document.getElementById("bannerOfficerPdfBtn");
+      if (bannerPdf) {
+        bannerPdf.addEventListener("click", async () => {
+          await MandiSathiIDCard.downloadPDF();
+        });
+      }
+
+      await loadOfficerProfile();
+    });
+
+    async function loadOfficerProfile() {
+      try {
+        const res = await apiFetch("/api/officer/profile");
+        if (res.success && res.data) {
+          const officer = res.data;
+          
+          const pName = document.getElementById("profOfficerName");
+          const pId = document.getElementById("profOfficerId");
+          const pMobile = document.getElementById("profOfficerMobile");
+          const pDesig = document.getElementById("profDesignation");
+          const pCentre = document.getElementById("profAssignedCentre");
+          const pCentreId = document.getElementById("profCentreId");
+          const pDist = document.getElementById("profDistrict");
+          const pState = document.getElementById("profState");
+          const pBannerCentre = document.getElementById("profBannerCentre");
+          const headerName = document.getElementById("headerOfficerName");
+
+          const cleanMobile = officer.mobile ? String(officer.mobile).replace(/[^0-9]/g, "") : "9893011111";
+          const maskedMobile = cleanMobile.length >= 4 ? "******" + cleanMobile.slice(-4) : "******3210";
+
+          if (pName) pName.textContent = officer.name || "Centre Officer";
+          if (pId) pId.textContent = officer.officerId || "OFF001";
+          if (pMobile) pMobile.textContent = maskedMobile;
+          if (pDesig) pDesig.textContent = officer.designation || "Procurement Centre Officer";
+          if (pCentre) pCentre.textContent = officer.assignedCentreName || "Sanwer Procurement Centre";
+          if (pCentreId) pCentreId.textContent = `ID: ${officer.assignedCentreId || "CENTRE_001"}`;
+          if (pDist) pDist.textContent = officer.district || "Indore";
+          if (pState) pState.textContent = `${officer.state || "Madhya Pradesh"} (MP-CSCP)`;
+          if (pBannerCentre) pBannerCentre.textContent = officer.assignedCentreName || "Sanwer Procurement Centre";
+          if (headerName) headerName.textContent = officer.name || "Centre Officer";
+        }
+      } catch (err) {
+        console.error("Failed to load officer profile:", err);
+      }
+    }
+  </script>
+</body>
+</html>

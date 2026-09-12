@@ -178,6 +178,7 @@ const seedInitialData = async () => {
       password: officerPassword,
       plainPassword: "officer123",
       farmerId: "OFF001",
+      designation: "Procurement Centre Officer",
       village: "Sanwer",
       district: "Indore",
       state: "Madhya Pradesh",
@@ -187,6 +188,7 @@ const seedInitialData = async () => {
       assignedCentreId: "CENTRE_001",
       assignedCentreName: "Sanwer Procurement Centre",
       role: "CENTRE_OFFICER",
+      verificationStatus: "Active",
       isActive: true
     });
 
@@ -289,6 +291,9 @@ const seedInitialData = async () => {
       accountHolderName: "Ramesh Patel",
       branchName: "Sanwer Branch (Indore)",
       dbtStatus: "Active (Aadhaar Seeded)",
+      surveyNumber: "KH-2024/782",
+      landRecordStatus: "Farmer Provided",
+      verificationStatus: "Active",
       role: "FARMER",
       isActive: true
     });

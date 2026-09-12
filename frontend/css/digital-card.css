@@ -1,0 +1,645 @@
+/* ==========================================================================
+   MandiSathi - Digital ID Card Styles (Farmer & Officer)
+   Professional Government-Service Inspired Design
+   ========================================================================== */
+
+/* Modal Container */
+.idcard-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 99999;
+  padding: 1rem;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.25s ease, visibility 0.25s ease;
+}
+
+.idcard-modal-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.idcard-modal-content {
+  background: #ffffff;
+  border-radius: 16px;
+  max-width: 520px;
+  width: 100%;
+  max-height: 92vh;
+  overflow-y: auto;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  animation: idcardSlideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes idcardSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.idcard-modal-header {
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #f8fafc;
+  border-radius: 16px 16px 0 0;
+}
+
+.idcard-modal-body {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #f1f5f9;
+}
+
+.idcard-modal-actions {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid #e2e8f0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: flex-end;
+  background: #ffffff;
+  border-radius: 0 0 16px 16px;
+}
+
+/* Base Card Physical Frame */
+.digital-id-card-frame {
+  width: 100%;
+  max-width: 440px;
+  background: #ffffff;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.12), 0 8px 10px -6px rgba(0, 0, 0, 0.08);
+  border: 2px solid #047857;
+  position: relative;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: #0f172a;
+}
+
+/* Card Themes */
+.digital-id-card-frame.farmer-theme {
+  border-color: #059669;
+}
+
+.digital-id-card-frame.officer-theme {
+  border-color: #0f766e;
+}
+
+/* Card Header Strip */
+.card-gov-header {
+  background: linear-gradient(135deg, #065f46 0%, #047857 50%, #064e3b 100%);
+  color: #ffffff;
+  padding: 1rem 1.25rem 0.85rem;
+  position: relative;
+  border-bottom: 3px solid #f59e0b;
+}
+
+.officer-theme .card-gov-header {
+  background: linear-gradient(135deg, #0f766e 0%, #115e59 50%, #134e4a 100%);
+  border-bottom: 3px solid #38bdf8;
+}
+
+.card-gov-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.card-emblem-wrap {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  border: 1.5px solid #f59e0b;
+  overflow: hidden;
+}
+
+.card-emblem-wrap img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+
+.card-gov-titles {
+  flex-grow: 1;
+}
+
+.card-gov-ministry {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  opacity: 0.92;
+  color: #fef08a;
+  line-height: 1.2;
+}
+
+.officer-theme .card-gov-ministry {
+  color: #bae6fd;
+}
+
+.card-gov-portal {
+  font-size: 1.15rem;
+  font-weight: 900;
+  letter-spacing: 0.02em;
+  line-height: 1.2;
+  margin-top: 0.1rem;
+}
+
+.card-category-strip {
+  margin-top: 0.65rem;
+  padding: 0.35rem 0.75rem;
+  background: rgba(0, 0, 0, 0.22);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.card-category-title {
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.card-status-chip {
+  font-size: 0.68rem;
+  font-weight: 800;
+  padding: 0.15rem 0.5rem;
+  border-radius: 9999px;
+  background: #10b981;
+  color: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+/* Card Body */
+.card-inner-body {
+  padding: 1.15rem 1.25rem;
+  background: #ffffff;
+  position: relative;
+}
+
+/* Watermark background */
+.card-inner-body::before {
+  content: "🌾";
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  font-size: 120px;
+  opacity: 0.04;
+  pointer-events: none;
+  line-height: 1;
+}
+
+/* Identity Top Row: Photo + Primary Info */
+.card-identity-row {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.card-photo-box {
+  width: 90px;
+  height: 105px;
+  border-radius: 8px;
+  border: 2px solid #cbd5e1;
+  background: #f8fafc;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  position: relative;
+}
+
+.card-photo-avatar {
+  font-size: 2.8rem;
+  line-height: 1;
+}
+
+.card-photo-label {
+  font-size: 0.58rem;
+  font-weight: 700;
+  color: #64748b;
+  text-transform: uppercase;
+  margin-top: 0.35rem;
+  letter-spacing: 0.04em;
+}
+
+.card-primary-fields {
+  flex-grow: 1;
+  min-width: 0;
+}
+
+.card-field-group {
+  margin-bottom: 0.45rem;
+}
+
+.card-field-group:last-child {
+  margin-bottom: 0;
+}
+
+.card-field-label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #64748b;
+  margin-bottom: 0.1rem;
+}
+
+.card-field-val-lg {
+  font-size: 1.12rem;
+  font-weight: 800;
+  color: #0f172a;
+  line-height: 1.25;
+}
+
+.card-field-val-id {
+  font-family: 'SF Mono', SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #047857;
+  letter-spacing: 0.04em;
+}
+
+.officer-theme .card-field-val-id {
+  color: #0f766e;
+}
+
+.card-field-val-text {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+/* Secondary Grid of Fields */
+.card-details-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.65rem 0.85rem;
+  padding: 0.75rem;
+  background: #f8fafc;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  margin-bottom: 0.85rem;
+}
+
+/* Land Record Special Box (Farmer Card) */
+.card-land-record-box {
+  background: #f0fdf4;
+  border: 1.5px solid #86efac;
+  border-radius: 8px;
+  padding: 0.75rem;
+  margin-bottom: 0.85rem;
+}
+
+.card-land-record-title {
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #166534;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-bottom: 0.5rem;
+  border-bottom: 1px solid #bbf7d0;
+  padding-bottom: 0.35rem;
+}
+
+.card-land-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+}
+
+.card-land-status-pill {
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.2rem 0.45rem;
+  border-radius: 4px;
+  background: #fef3c7;
+  color: #92400e;
+  border: 1px solid #fde68a;
+  display: inline-block;
+  line-height: 1.2;
+}
+
+/* QR Code & Verification Section */
+.card-verification-section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem;
+  background: #ffffff;
+  border: 1.5px dashed #cbd5e1;
+  border-radius: 10px;
+}
+
+.card-qr-wrap {
+  width: 96px;
+  height: 96px;
+  flex-shrink: 0;
+  background: #ffffff;
+  padding: 4px;
+  border-radius: 6px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card-qr-img {
+  width: 88px;
+  height: 88px;
+  object-fit: contain;
+}
+
+.card-verify-instructions {
+  flex-grow: 1;
+}
+
+.card-verify-title {
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: #0f172a;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin-bottom: 0.25rem;
+}
+
+.card-verify-desc {
+  font-size: 0.7rem;
+  color: #64748b;
+  line-height: 1.35;
+  margin-bottom: 0.35rem;
+}
+
+.card-verify-url-preview {
+  font-size: 0.65rem;
+  color: #047857;
+  font-family: monospace;
+  font-weight: 600;
+  word-break: break-all;
+  background: #f1f5f9;
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+/* Card Footer Strip */
+.card-gov-footer {
+  background: #0f172a;
+  color: #94a3b8;
+  padding: 0.65rem 1.25rem;
+  font-size: 0.65rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid #334155;
+}
+
+.card-footer-branding {
+  font-weight: 700;
+  color: #f8fafc;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.card-footer-security {
+  font-size: 0.62rem;
+  opacity: 0.85;
+}
+
+/* Print-Only Elements (Hidden on screen) */
+.card-print-only {
+  display: none !important;
+}
+
+/* Clean, Printer-Friendly Rules */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 10mm 15mm 10mm 15mm;
+  }
+
+  /* Force background graphic printing and contrast */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+  }
+
+  html, body {
+    background: #ffffff !important;
+    color: #0f172a !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: auto !important;
+    font-size: 10pt !important;
+  }
+
+  /* Hide every page element that is not part of the printed ID card */
+  .site-header,
+  .site-footer,
+  .main-content,
+  .idcard-modal-header,
+  .idcard-modal-actions,
+  .whatsapp-widget,
+  .toast-container,
+  .no-print,
+  button,
+  header,
+  nav {
+    display: none !important;
+    visibility: hidden !important;
+  }
+
+  /* Modal containers collapse into clean page flow */
+  .idcard-modal-overlay {
+    display: block !important;
+    position: static !important;
+    background: transparent !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+    height: auto !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    backdrop-filter: none !important;
+  }
+
+  .idcard-modal-content {
+    display: block !important;
+    position: static !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    visibility: visible !important;
+    animation: none !important;
+  }
+
+  .idcard-modal-body {
+    display: block !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100% !important;
+    visibility: visible !important;
+  }
+
+  #digitalIdCardPrintArea {
+    display: block !important;
+    visibility: visible !important;
+    margin: 0 auto !important;
+    width: 100% !important;
+    max-width: 160mm !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  .card-print-only {
+    display: block !important;
+  }
+
+  .card-print-official-header {
+    text-align: center;
+    margin-bottom: 4mm;
+    padding-bottom: 3mm;
+    border-bottom: 2px solid #065f46;
+  }
+
+  .officer-theme .card-print-official-header,
+  .card-print-official-header.officer {
+    border-bottom-color: #0f766e;
+  }
+
+  .card-print-header-top {
+    font-size: 7.5pt;
+    font-weight: 800;
+    color: #065f46;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .card-print-header-title {
+    font-size: 14pt;
+    font-weight: 900;
+    color: #0f172a;
+    margin: 1mm 0;
+  }
+
+  .card-print-header-sub {
+    font-size: 8pt;
+    color: #475569;
+    font-weight: 600;
+  }
+
+  /* Cut guideline around the card */
+  .card-print-cut-line {
+    border: 1.5px dashed #94a3b8;
+    border-radius: 14px;
+    padding: 3mm;
+    margin: 3mm auto;
+    background: #fafafa;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  .card-print-cut-note {
+    text-align: center;
+    font-size: 7pt;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 2.5mm;
+  }
+
+  .digital-id-card-frame {
+    display: block !important;
+    visibility: visible !important;
+    margin: 0 auto !important;
+    width: 440px !important;
+    max-width: 440px !important;
+    border-radius: 12px !important;
+    border: 2px solid #065f46 !important;
+    box-shadow: none !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    background: #ffffff !important;
+    overflow: hidden !important;
+  }
+
+  .officer-theme.digital-id-card-frame {
+    border-color: #0f766e !important;
+  }
+
+  /* Print Footer & Security terms */
+  .card-print-official-footer {
+    margin-top: 4mm;
+    padding: 3.5mm 4.5mm;
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 7.2pt;
+    color: #334155;
+    line-height: 1.45;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  .card-print-security-title {
+    font-weight: 800;
+    font-size: 7.8pt;
+    color: #0f172a;
+    margin-bottom: 1.5mm;
+  }
+
+  .card-print-stamp-note {
+    text-align: center;
+    font-size: 6.8pt;
+    color: #64748b;
+    margin-top: 3mm;
+  }
+}

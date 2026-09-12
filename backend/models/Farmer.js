@@ -28,6 +28,14 @@ const farmerSchema = new mongoose.Schema({
   },
   assignedCentreId: { type: String, default: null },
   assignedCentreName: { type: String, default: null },
+  surveyNumber: { type: String, default: "KH-2024/782" },
+  landRecordStatus: { type: String, default: "Farmer Provided" },
+  designation: { type: String, default: "Procurement Centre Officer" },
+  photo: { type: String, default: "" },
+  verificationStatus: { type: String, default: "Active" },
+  hasGeneratedCard: { type: Boolean, default: false },
+  cardGeneratedAt: { type: Date, default: null },
+  cardId: { type: String, default: "" },
   isActive: { type: Boolean, default: true },
   createdAt: { type: Date, default: Date.now }
 });

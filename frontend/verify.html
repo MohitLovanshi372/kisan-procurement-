@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Official Digital Credential Verification — MandiSathi</title>
+  <link rel="icon" type="image/png" href="/img/logo.png">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/digital-card.css">
+  <style>
+    .verify-container {
+      max-width: 680px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+    .verify-card {
+      background: #ffffff;
+      border-radius: 16px;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08);
+      overflow: hidden;
+    }
+    .verify-header-strip {
+      background: linear-gradient(135deg, #065f46 0%, #047857 100%);
+      color: #ffffff;
+      padding: 1.5rem;
+      text-align: center;
+      position: relative;
+    }
+    .verify-badge-shield {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: #ffffff;
+      color: #047857;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      margin: 0 auto 0.75rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      border: 3px solid #f59e0b;
+    }
+    .verify-status-banner {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: #10b981;
+      color: #ffffff;
+      font-weight: 800;
+      font-size: 0.85rem;
+      padding: 0.35rem 1rem;
+      border-radius: 9999px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-top: 0.5rem;
+    }
+    .verify-status-banner.error {
+      background: #ef4444;
+    }
+    .verify-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+    .verify-table tr {
+      border-bottom: 1px solid #f1f5f9;
+    }
+    .verify-table tr:last-child {
+      border-bottom: none;
+    }
+    .verify-table th {
+      text-align: left;
+      padding: 0.75rem 1rem;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #64748b;
+      width: 38%;
+      background: #f8fafc;
+      font-weight: 700;
+    }
+    .verify-table td {
+      padding: 0.75rem 1rem;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #0f172a;
+    }
+    .security-notice-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 1rem;
+      margin: 1.5rem;
+      font-size: 0.8rem;
+      color: #475569;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body style="background: #f1f5f9; min-height: 100vh; display: flex; flex-direction: column;">
+
+  <!-- Site Header -->
+  <header class="site-header">
+    <div class="header-container">
+      <a href="/" class="brand-logo">
+        <span class="brand-icon">
+          <img src="/img/logo.png" alt="MandiSathi Logo" class="brand-icon-img" onerror="this.onerror=null; this.src='/img/brand-logo.png';">
+        </span>
+        <span class="brand-title">MandiSathi</span>
+      </a>
+      <div class="header-actions">
+        <a href="/" class="btn btn-secondary btn-sm">Home</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="verify-container" style="flex-grow: 1;">
+    <div class="verify-card" id="verifyCardBox">
+      <!-- Header -->
+      <div class="verify-header-strip" id="verifyHeaderStrip">
+        <div class="verify-badge-shield" id="verifyShield">🌾</div>
+        <div style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; opacity: 0.9; color: #fef08a;">
+          Govt. of Madhya Pradesh • Dept. of Food & Civil Supplies
+        </div>
+        <h1 style="font-size: 1.4rem; font-weight: 800; margin: 0.25rem 0;" id="verifyPortalTitle">
+          MandiSathi Official Digital Credential Verification
+        </h1>
+        <div id="verifyStatusChip" class="verify-status-banner">
+          ⏳ Verifying Token...
+        </div>
+      </div>
+
+      <!-- Content -->
+      <div id="verifyContentArea" style="padding: 1.5rem;">
+        <div style="text-align: center; padding: 2rem 0; color: #64748b;" id="verifyLoadingState">
+          <div style="font-size: 2rem; margin-bottom: 0.5rem;">🔍</div>
+          <div>Verifying credentials against official registry...</div>
+        </div>
+
+        <div id="verifyResultDetails" style="display: none;">
+          <h2 style="font-size: 1.1rem; font-weight: 800; color: #0f172a; margin-bottom: 0.5rem;" id="entityRoleHeading">
+            Credential Record
+          </h2>
+          <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 1rem;" id="entityRoleSubtitle">
+            Public verification details extracted from verified registry records.
+          </p>
+
+          <table class="verify-table" id="detailsTable">
+            <tbody id="detailsTableBody"></tbody>
+          </table>
+
+          <div class="security-notice-box">
+            🔒 <strong>Official Registry Notice:</strong> This digital token was verified directly from the MandiSathi e-Procurement Portal. For data privacy and farmer protection, no financial secrets, unmasked phone numbers, passwords, or authentication keys are shared publicly.
+          </div>
+
+          <div style="display: flex; gap: 0.75rem; justify-content: flex-end; margin-top: 1.25rem;">
+            <button type="button" class="btn btn-secondary btn-sm" onclick="window.print()">
+              🖨️ Print Verification
+            </button>
+            <a href="/" class="btn btn-primary btn-sm">
+              Return to Portal
+            </a>
+          </div>
+        </div>
+
+        <div id="verifyErrorBox" style="display: none; text-align: center; padding: 2rem 1rem;">
+          <div style="font-size: 3rem; margin-bottom: 0.75rem;">❌</div>
+          <h2 style="font-size: 1.2rem; font-weight: 800; color: #ef4444; margin-bottom: 0.5rem;">
+            Credential Not Verified
+          </h2>
+          <p id="verifyErrorMessage" style="font-size: 0.9rem; color: #64748b; max-width: 420px; margin: 0 auto 1.5rem;">
+            No authentic registered record was found matching this digital identification token.
+          </p>
+          <a href="/" class="btn btn-primary btn-sm">
+            Go to MandiSathi Home
+          </a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer style="text-align: center; padding: 1.5rem; font-size: 0.78rem; color: #64748b; border-top: 1px solid #e2e8f0; background: #ffffff;">
+    MandiSathi • Department of Food, Civil Supplies & Consumer Protection, Government of Madhya Pradesh
+  </footer>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", async () => {
+      const pathname = window.location.pathname;
+      const pathParts = pathname.split("/").filter(Boolean);
+      const searchParams = new URLSearchParams(window.location.search);
+
+      let type = "farmer";
+      let id = "";
+
+      // Extract from path e.g. /verify/farmer/FMR1001 or /verify/officer/OFF001
+      if (pathParts.length >= 3 && pathParts[0] === "verify") {
+        type = pathParts[1];
+        id = pathParts[2];
+      } else if (pathParts.length >= 2 && pathParts[0] === "verify") {
+        id = pathParts[1];
+      }
+
+      // Check query params if not found in path
+      if (!id) {
+        id = searchParams.get("id") || searchParams.get("farmerId") || searchParams.get("officerId") || "";
+        type = searchParams.get("type") || (searchParams.get("officerId") ? "officer" : "farmer");
+      }
+
+      if (!id) {
+        showError("Missing credential verification identifier. Please scan a valid MandiSathi QR code.");
+        return;
+      }
+
+      const endpoint = type === "officer" 
+        ? `/api/verify/officer/${encodeURIComponent(id)}` 
+        : `/api/verify/farmer/${encodeURIComponent(id)}`;
+
+      try {
+        const resp = await fetch(endpoint);
+        const json = await resp.json();
+
+        if (json.success && json.data) {
+          renderVerificationSuccess(json.data, type);
+        } else {
+          showError(json.message || "Record could not be verified in the MandiSathi registry.");
+        }
+      } catch (err) {
+        console.error("Verification error:", err);
+        showError("Unable to reach the MandiSathi verification registry server. Please try again.");
+      }
+    });
+
+    function renderVerificationSuccess(data, type) {
+      document.getElementById("verifyLoadingState").style.display = "none";
+      document.getElementById("verifyResultDetails").style.display = "block";
+      
+      const statusChip = document.getElementById("verifyStatusChip");
+      statusChip.textContent = "✓ AUTHENTIC & VERIFIED";
+      statusChip.className = "verify-status-banner";
+
+      const heading = document.getElementById("entityRoleHeading");
+      const sub = document.getElementById("entityRoleSubtitle");
+      const tbody = document.getElementById("detailsTableBody");
+
+      if (data.entityType === "CENTRE_OFFICER" || type === "officer") {
+        heading.textContent = "Authorized Procurement Centre Officer";
+        sub.textContent = "Officially appointed officer authorized to conduct grain inspection, weighbridge logging, and gate pass processing.";
+
+        tbody.innerHTML = `
+          <tr><th>Officer Name</th><td>${escapeHtml(data.name || "")}</td></tr>
+          <tr><th>Officer ID</th><td><code style="color: #0f766e; font-weight: 800;">${escapeHtml(data.officerId || "")}</code></td></tr>
+          <tr><th>Official Designation</th><td>${escapeHtml(data.designation || "Procurement Centre Officer")}</td></tr>
+          <tr><th>Assigned Mandi Centre</th><td style="color: #047857; font-weight: 700;">${escapeHtml(data.assignedCentre || "")}</td></tr>
+          <tr><th>Centre ID</th><td><code>${escapeHtml(data.centreId || "CENTRE_001")}</code></td></tr>
+          <tr><th>District</th><td>${escapeHtml(data.district || "Indore")}</td></tr>
+          <tr><th>State</th><td>${escapeHtml(data.state || "Madhya Pradesh")}</td></tr>
+          <tr><th>Verification Status</th><td><span style="color: #059669; font-weight: 700;">${escapeHtml(data.verificationStatus || "Active")}</span></td></tr>
+          <tr><th>Verified Timestamp</th><td>${new Date().toLocaleString("en-IN")}</td></tr>
+        `;
+      } else {
+        heading.textContent = "Official MandiSathi Registered Farmer";
+        sub.textContent = "Authentic registered farmer record eligible for Minimum Support Price (MSP) grain procurement.";
+
+        tbody.innerHTML = `
+          <tr><th>Farmer Name</th><td>${escapeHtml(data.name || "")}</td></tr>
+          <tr><th>Farmer ID</th><td><code style="color: #047857; font-weight: 800;">${escapeHtml(data.farmerId || "")}</code></td></tr>
+          <tr><th>Village</th><td>${escapeHtml(data.village || "")}</td></tr>
+          <tr><th>District / State</th><td>${escapeHtml(data.district || "")}, ${escapeHtml(data.state || "")}</td></tr>
+          <tr><th>Procurement Centre</th><td style="color: #047857; font-weight: 700;">${escapeHtml(data.procurementCentre || "")}</td></tr>
+          <tr><th>Primary Crop</th><td>${escapeHtml(data.crop || "Wheat")}</td></tr>
+          <tr><th>Land Area</th><td>${escapeHtml(data.landArea || "4.5 Acres")}</td></tr>
+          <tr><th>Land Record Status</th><td><span style="background: #fef3c7; color: #92400e; padding: 0.2rem 0.5rem; border-radius: 4px; font-weight: 700; font-size: 0.8rem;">${escapeHtml(data.landRecordStatus || "Farmer Provided")}</span></td></tr>
+          <tr><th>Verification Status</th><td><span style="color: #059669; font-weight: 700;">${escapeHtml(data.verificationStatus || "Active")}</span></td></tr>
+          <tr><th>Verified Timestamp</th><td>${new Date().toLocaleString("en-IN")}</td></tr>
+        `;
+      }
+    }
+
+    function showError(msg) {
+      document.getElementById("verifyLoadingState").style.display = "none";
+      document.getElementById("verifyResultDetails").style.display = "none";
+      document.getElementById("verifyErrorBox").style.display = "block";
+      document.getElementById("verifyErrorMessage").textContent = msg;
+
+      const statusChip = document.getElementById("verifyStatusChip");
+      statusChip.textContent = "✕ VERIFICATION FAILED";
+      statusChip.className = "verify-status-banner error";
+    }
+
+    function escapeHtml(str) {
+      if (!str) return "";
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+  </script>
+</body>
+</html>

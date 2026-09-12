@@ -22,6 +22,37 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 
+  // Initialize Digital Farmer ID Card
+  if (window.MandiSathiIDCard) {
+    MandiSathiIDCard.init({
+      type: "farmer",
+      openBtnId: "openDigitalCardBtn",
+      modalId: "digitalCardModal"
+    });
+
+    const bannerBtn = document.getElementById("openDigitalCardBannerBtn");
+    if (bannerBtn) {
+      bannerBtn.addEventListener("click", () => {
+        MandiSathiIDCard.showModal("digitalCardModal");
+      });
+    }
+
+    const bannerPrintBtn = document.getElementById("bannerPrintCardBtn");
+    if (bannerPrintBtn) {
+      bannerPrintBtn.addEventListener("click", async () => {
+        await MandiSathiIDCard.showModal("digitalCardModal");
+        MandiSathiIDCard.printCard();
+      });
+    }
+
+    const bannerPdfBtn = document.getElementById("bannerDownloadPdfBtn");
+    if (bannerPdfBtn) {
+      bannerPdfBtn.addEventListener("click", async () => {
+        await MandiSathiIDCard.downloadPDF();
+      });
+    }
+  }
+
   let currentAccountNumber = "";
   let isAccountMasked = true;
 

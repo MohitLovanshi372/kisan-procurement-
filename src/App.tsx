@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { OfficerQRScanner } from './components/OfficerQRScanner';
 import { GatePassToastContainer, ToastItem } from './components/GatePassToast';
 import { GatePassData } from './types';
@@ -371,36 +372,45 @@ export default function App() {
                     </td>
                   </tr>
                 ) : (
-                  validatedPasses.map((pass, idx) => (
-                    <tr key={pass.gatePassNumber || idx} className="hover:bg-slate-50 transition-colors">
-                      <td className="px-4 py-3 font-mono font-bold text-slate-900">
-                        {pass.gatePassNumber}
-                      </td>
-                      <td className="px-4 py-3 font-mono text-emerald-700 font-semibold">
-                        {pass.tokenNumber}
-                      </td>
-                      <td className="px-4 py-3 font-medium text-slate-900">
-                        <div>{pass.farmerName}</div>
-                        <div className="text-[10px] text-slate-400">{pass.farmerId}</div>
-                      </td>
-                      <td className="px-4 py-3">
-                        <span className="font-semibold text-slate-900">{pass.crop}</span>{' '}
-                        <span className="text-slate-500">({pass.quantity})</span>
-                      </td>
-                      <td className="px-4 py-3 font-medium text-slate-800">
-                        {pass.assignedGate || 'Gate 1'}
-                      </td>
-                      <td className="px-4 py-3 text-slate-500">
-                        {pass.verifiedAt || pass.gatePassPassedAt || 'Just now'}
-                      </td>
-                      <td className="px-4 py-3">
-                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                          <CheckCircle2 className="w-3 h-3 text-emerald-600" />
-                          <span>Passed</span>
-                        </span>
-                      </td>
-                    </tr>
-                  ))
+                  <AnimatePresence initial={false}>
+                    {validatedPasses.map((pass, idx) => (
+                      <motion.tr
+                        key={pass.gatePassNumber || pass.tokenNumber || idx}
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        transition={{ duration: 0.35, ease: 'easeOut' }}
+                        className="hover:bg-slate-50 transition-colors"
+                      >
+                        <td className="px-4 py-3 font-mono font-bold text-slate-900">
+                          {pass.gatePassNumber}
+                        </td>
+                        <td className="px-4 py-3 font-mono text-emerald-700 font-semibold">
+                          {pass.tokenNumber}
+                        </td>
+                        <td className="px-4 py-3 font-medium text-slate-900">
+                          <div>{pass.farmerName}</div>
+                          <div className="text-[10px] text-slate-400">{pass.farmerId}</div>
+                        </td>
+                        <td className="px-4 py-3">
+                          <span className="font-semibold text-slate-900">{pass.crop}</span>{' '}
+                          <span className="text-slate-500">({pass.quantity})</span>
+                        </td>
+                        <td className="px-4 py-3 font-medium text-slate-800">
+                          {pass.assignedGate || 'Gate 1'}
+                        </td>
+                        <td className="px-4 py-3 text-slate-500">
+                          {pass.verifiedAt || pass.gatePassPassedAt || 'Just now'}
+                        </td>
+                        <td className="px-4 py-3">
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                            <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+                            <span>Passed</span>
+                          </span>
+                        </td>
+                      </motion.tr>
+                    ))}
+                  </AnimatePresence>
                 )}
               </tbody>
             </table>
